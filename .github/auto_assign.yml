@@ -1,0 +1,17 @@
+addReviewers: true
+
+reviewers:
+  - nakyeonko3
+  - ssumanlife
+  - haruyam15
+  - Sonseongoh
+
+addAssignees: author
+numberOfReviewers: 4
+
+skipKeywords:
+  - wip  
+  - WIP  
+  - draft  
+  - "do not review"  
+  - "not ready"  

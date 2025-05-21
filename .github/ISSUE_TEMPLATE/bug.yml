@@ -1,0 +1,25 @@
+name: bug
+description: 버그를 보고하기 위한 템플릿입니다.
+title: '[bug]: '
+labels: ['bug']
+body:
+  - type: textarea
+    id: bug-report
+    attributes:
+      label: 버그 리포트
+      description: 아래 가이드라인에 권장 가이드라인에 따라 버그 리포트를 작성해 주세요.
+      placeholder: |
+        `버그에 대한 설명`과 `버그가 발생한 상황&환경`은 꼭 적어주세요️
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️시간이 없다면 **버그에 대한 설명**과 **버그가 발생한 상황&환경**만이라도 적어주세요⚠️
+
+        - 버그에 대한 간단한 설명
+        - 해당 버그가 발생한 환경(운영체제, npm, 등)
+        - 해당 버그가 발생한 상황(백엔드 API 관련, npm run dev 하고 10초 이후 발생, 등)
+        - 해결책의 상세한 설명
+        - 더 많은 상세 내용과 관련된 정보를 담은 기사나 URL의 참조
+        - 해결책의 일부나, 상세 내용을 깊게 이해하는데 도움이 될 만한 도표, 설계, 다이어그램 스냅샷

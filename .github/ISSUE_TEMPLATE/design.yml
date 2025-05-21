@@ -1,0 +1,12 @@
+name: design
+description: 퍼블리싱 관련 수정이 있나요?
+title: '[design] '
+labels: ['design']
+body:
+  - type: textarea
+    id: design-description
+    attributes:
+      label: 📄 설명
+      description: 새로 추가된 html, css에 대해 설명해주세요
+    validations:
+      required: true

@@ -1,0 +1,12 @@
+name: feature
+description: 새로운 기능이나 사양이 있나요?
+title: '[feat] '
+labels: ['feature']
+body:
+  - type: textarea
+    id: feat-description
+    attributes:
+      label: 📄 설명
+      description: 새로운 기능을 설명해주세요.
+    validations:
+      required: true
