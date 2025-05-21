@@ -1,0 +1,14 @@
+name: documentation
+description: 문서 업데이트가 있나요?
+title: '[doc] '
+labels: ['documentation']
+body:
+  - type: textarea
+    id: docs-update
+    attributes:
+      label: 📄 문서 업데이트 상세 내용
+      description: 어떤 문서가 업데이트되어야 하는지, 왜 업데이트가 필요한지 명확히 기술해 주세요.
+      placeholder: |
+        어떤 문서가 업데이트되어야 하는지, 왜 업데이트가 필요한지 명확히 기술해 주세요.
+    validations:
+      required: true
