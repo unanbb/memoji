@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import { MainLayout } from '@/app/components/layout/MainLayout';
+import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import "./globals.css";
+import './globals.css';
 
 // Pretendard 폰트 설정
 const pretendard = localFont({
@@ -32,10 +33,9 @@ const pretendard = localFont({
   fallback: ['system-ui', 'sans-serif'],
 });
 
-
 export const metadata: Metadata = {
-  title: "Memo",
-  description: "Simple Memo App",
+  title: 'Memo',
+  description: 'Simple Memo App',
 };
 
 export default function RootLayout({
@@ -45,10 +45,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${pretendard.className}`}
-      >
-        {children}
+      <body className={`${pretendard.className}`}>
+        <MainLayout>{children}</MainLayout>
       </body>
     </html>
   );
