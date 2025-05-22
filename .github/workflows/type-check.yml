@@ -1,10 +1,10 @@
-name: Type Check and Error Reporting
+name: Type Check and Lint
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -12,30 +12,56 @@ permissions:
   pull-requests: write
 
 jobs:
-  type-check:
+  quality-checks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: 1.0.11
-    - run: bun install
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm ci
 
-    - name: Check out the code
-      id: type-check
-      run: |
-        bun run type-check
-        bun run lint
-    
-    - name: Report type check errors
-      if: failure() && steps.type-check.outcome == 'failure'
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '타입 체크 중 에러가 발생했습니다. 자세한 내용은 로그를 확인해주세요.'
-          })
+      - name: Type Check
+        id: type-check
+        run: npm run type-check
+        continue-on-error: true
+
+      - name: Lint
+        id: lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Report errors
+        if: ${{ steps.type-check.outcome == 'failure' || steps.lint.outcome == 'failure' }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const typeCheckOutcome = '${{ steps.type-check.outcome }}';
+            const lintOutcome = '${{ steps.lint.outcome }}';
+
+            const commitSHA = context.payload.pull_request ? context.payload.pull_request.head.sha : context.sha;
+            const commitURL = `${context.payload.repository.html_url}/commit/${commitSHA}`;
+
+            let errorMessage = `## 품질 검사 - [${commitSHA.substring(0, 7)}](${commitURL})\n\n`;
+
+            if (typeCheckOutcome === 'failure') {
+              errorMessage += '## 타입 체크 오류\n타입 체크 중 오류가 발생했습니다. 자세한 내용은 로그를 확인해주세요.\n\n';
+            }
+
+            if (lintOutcome === 'failure') {
+              errorMessage += '## 린트 오류\nESLint 검사 중 오류가 발생했습니다. 자세한 내용은 로그를 확인해주세요.\n';
+            }
+
+            if (typeCheckOutcome !== 'failure' && lintOutcome !== 'failure') {
+              errorMessage += '## 성공\n타입 체크와 린트 검사 모두 성공했습니다.';
+            } 
+              
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: errorMessage
+            });
+
+            core.setFailed('Type check or lint failed');
