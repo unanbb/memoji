@@ -8,9 +8,19 @@ interface MemoCardProps {
   onClick: (id: string) => void;
 }
 
-export default function MemoCard({id, title, content, onClick} : MemoCardProps) {
+export default function MemoCard({ id, title, content, onClick }: MemoCardProps) {
   return (
-    <div onClick={() => onClick(id)} className="aspect-square border border-gray-300 rounded-lg p-4 overflow-hidden cursor-pointer">
+    <div 
+      onClick={() => onClick(id)} 
+      className="aspect-square border border-gray-300 rounded-lg p-4 overflow-hidden cursor-pointer"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onClick(id);
+        }
+      }}
+    >
       <div className="flex flex-col gap-1 overflow-y-hidden h-full">
         <h1 className="font-semibold text-lg">{title}</h1>
         <div className="prose prose-sm">
