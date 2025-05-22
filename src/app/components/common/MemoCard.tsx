@@ -1,5 +1,10 @@
 import ReactMarkdown from 'react-markdown';
 
+/**
+ * Renders a styled card displaying a title and markdown-formatted content.
+ *
+ * The markdown content includes a heading, horizontal rule, list items, and bold text, which are rendered as HTML using the {@link ReactMarkdown} component.
+ */
 export default function MemoCard() {
   const markdown = `
   ## 제목
