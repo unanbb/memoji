@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
 
 interface MemoCardProps {
   title: string;
@@ -11,7 +12,7 @@ export default function MemoCard({title, contents} : MemoCardProps) {
       <div className="flex flex-col gap-1 overflow-y-hidden h-full">
         <h1 className="font-semibold text-lg">{title}</h1>
         <div className="prose prose-sm">
-          <ReactMarkdown>{contents}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkBreaks]}>{contents}</ReactMarkdown>
         </div>
       </div>
     </div>
