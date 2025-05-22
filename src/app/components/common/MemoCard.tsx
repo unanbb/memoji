@@ -1,23 +1,17 @@
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
+import type { MemoProps } from '@/types/memo';
 
-interface MemoCardProps {
-  id: string;
-  title: string;
-  content: string;
-  onClick: (id: string) => void;
-}
-
-export default function MemoCard({ id, title, content, onClick }: MemoCardProps) {
+export default function MemoCard({ id, title, content }: MemoProps) {
   return (
-    <div 
-      onClick={() => onClick(id)} 
+    <div
+      onClick={() => console.log(id)}
       className="aspect-square border border-gray-300 rounded-lg p-4 overflow-hidden cursor-pointer"
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
-          onClick(id);
+          console.log(id);
         }
       }}
     >
