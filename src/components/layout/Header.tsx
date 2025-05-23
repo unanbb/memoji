@@ -1,5 +1,5 @@
 'use client';
-import SearchBar from '@/app/components/common/SearchBar';
+import SearchBar from '@/components/common/SearchBar';
 import Link from 'next/link';
 
 export default function Header() {

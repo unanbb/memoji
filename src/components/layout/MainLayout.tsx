@@ -1,6 +1,6 @@
-import GlobalPlusButton from '@/app/components/layout/GlobalPlusButton';
-import Header from '@/app/components/layout/Header';
-import { Sidebar } from '@/app/components/layout/sidebar/Sidebar';
+import GlobalPlusButton from '@/components/layout/GlobalPlusButton';
+import Header from '@/components/layout/Header';
+import { Sidebar } from '@/components/layout/sidebar/Sidebar';
 
 interface MainLayoutProps {
   children: React.ReactNode;

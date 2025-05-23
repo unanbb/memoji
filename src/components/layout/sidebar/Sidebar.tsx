@@ -1,5 +1,5 @@
-import { Separator } from '@/app/components/common/Separator';
-import { CategoryItem } from '@/app/components/layout/sidebar/CategoryItem';
+import { Separator } from '@/components/common/Separator';
+import { CategoryItem } from '@/components/layout/sidebar/CategoryItem';
 import { categories } from '@/data/mocks';
 import { MdMenu } from 'react-icons/md';
 
