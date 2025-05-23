@@ -1,4 +1,4 @@
-import { MainLayout } from '@/app/components/layout/MainLayout';
+import { MainLayout } from '@/components/layout/MainLayout';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
