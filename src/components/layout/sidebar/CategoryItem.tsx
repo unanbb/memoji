@@ -3,13 +3,12 @@ import Link from 'next/link';
 interface CategoryItemProps {
   name: string;
   route: string;
-  key: string;
   count?: number;
 }
 
-export function CategoryItem({ name, route, count, key }: CategoryItemProps) {
+export function CategoryItem({ name, route, count }: CategoryItemProps) {
   return (
-    <li className="py-2 pl-6 hover:bg-gray-200 rounded-md" key={key}>
+    <li className="py-2 pl-6 hover:bg-gray-200 rounded-md">
       <Link
         href={route}
         className="block w-full h-full"
