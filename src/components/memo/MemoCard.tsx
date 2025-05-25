@@ -1,8 +1,8 @@
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import type { MemoProps } from '@/types/memo';
+import type { MemoCardProps } from '@/types/memo';
 
-export default function MemoCard({ id, title, content }: MemoProps) {
+export default function MemoCard({ id, title, content }: MemoCardProps) {
   return (
     <div
       onClick={() => console.log(id)}

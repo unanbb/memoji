@@ -1,8 +1,11 @@
-export interface MemoProps {
+export interface MemoCardProps {
   id: string;
-  category: string;
   title: string;
   content: string;
+}
+
+export interface MemoProps extends MemoCardProps {
+  category: string;
 }
 
 export interface MemoListProps {
