@@ -1,10 +1,24 @@
+'use client';
+
 import { MemoListProps } from '@/types/memo';
 import MemoList from './MemoList';
 import Link from 'next/link';
 import { Separator } from '../common/Separator';
+import ToggleButton from '../common/ToggleButton';
+import { useState } from 'react';
 
 export default function MemoSection({ memos }: MemoListProps) {
   const categories = Array.from(new Set(memos.map(memo => memo.category)));
+  const [isOpen, setIsOpen] = useState<Record<string, boolean>>(
+    Object.fromEntries(categories.map(category => [category, true])),
+  );
+
+  const toggleOpen = (category: string) => {
+    setIsOpen(prev => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
+  };
 
   return (
     <div>
@@ -13,11 +27,20 @@ export default function MemoSection({ memos }: MemoListProps) {
 
         return (
           <div key={category} className="mb-6">
-            <Link href={`/${category}`} className="font-medium block">
-              {category}
-            </Link>
+            <div className="flex justify-between">
+              <Link href={`/${category}`} className="font-medium inline-block">
+                {category}
+              </Link>
+              <ToggleButton onClick={() => toggleOpen(category)} isOpen={isOpen[category]} />
+            </div>
             <Separator my={3} />
-            <MemoList memos={filteredMemos} />
+            <div
+              className={`transition-all duration-300 overflow-hidden ${
+                isOpen[category] ? 'max-h-[1000px]' : 'max-h-0'
+              }`}
+            >
+              <MemoList memos={filteredMemos} />
+            </div>
           </div>
         );
       })}
