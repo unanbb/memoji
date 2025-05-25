@@ -14,7 +14,7 @@ export default function ToggleButton({ onClick, isOpen, className }: ToggleButto
       type="button"
     >
       <FaChevronDown
-        className={`transition-transform bg-gray-700 duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
+        className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
       />
     </button>
   );
