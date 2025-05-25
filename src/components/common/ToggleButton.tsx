@@ -10,11 +10,11 @@ export default function ToggleButton({ onClick, isOpen, className }: ToggleButto
   return (
     <button
       onClick={onClick}
-      className={`bg-none border-none text-2xl transition-transform duration-300 ${className}`}
+      className={`rounded-full bg-none border-none text-2xl transition-transform duration-300 ${className}`}
       type="button"
     >
       <FaChevronDown
-        className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
+        className={`rounded-full transition-transform duration-300 cursor-pointer hover:bg-gray-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
       />
     </button>
   );
