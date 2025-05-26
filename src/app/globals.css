@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@source inline('{px-,my-}{0,1,2,3,4,5,6,8,10}');
 
 :root {
   --background: #ffffff;

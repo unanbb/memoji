@@ -1,10 +1,10 @@
-import MemoList from '@/components/memo/MemoList';
+import MemoSection from '@/components/memo/MemoSection';
 import { MEMOS } from '@/data/mocks';
 
 export default function Home() {
   return (
     <div>
-      <MemoList memos={MEMOS} />
+      <MemoSection memos={MEMOS} />
     </div>
   );
 }
