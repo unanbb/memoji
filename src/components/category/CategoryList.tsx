@@ -8,11 +8,15 @@ export default function CategoryList({ categories }: { categories: string[] }) {
   }
 
   return (
-    <div className="w-[200px] h-auto py-2 rounded-xs bg-white shadow-sm">
+    <div className="max-h-[250px] overflow-y-auto w-[200px] h-auto py-2 rounded-xs bg-white shadow-sm text-neutral-800">
       <ul>
         {uniqueCategories.map(category => {
           return (
-            <li key={category} className="px-2.5 py-1 cursor-pointer hover:bg-gray-100" onClick={() => console.log(category)}>
+            <li
+              key={category}
+              className="px-2.5 py-1 cursor-pointer hover:bg-gray-100"
+              onClick={() => console.log(category)}
+            >
               {category}
             </li>
           );
