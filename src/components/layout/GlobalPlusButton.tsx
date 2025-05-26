@@ -1,5 +1,4 @@
 'use client';
-import PlusButton from '../common/plusButton';
 
 export default function GlobalPlusButton() {
   const handleClick = () => {
