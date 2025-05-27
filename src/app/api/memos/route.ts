@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
 import { collection, getDocs, query, addDoc, Timestamp, orderBy } from 'firebase/firestore';
-import { MemoCardData, MemoProps, createMemoSchema, memoListSchema } from '@/types/memo';
+import type { MemoCardData, MemoProps} from '@/types/memo';
+import { createMemoSchema, memoListSchema } from '@/types/memo';
 import { db } from '@/lib/firebase';
 
 export async function GET() {
