@@ -12,6 +12,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
@@ -25,7 +26,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = originalOverflow;
     };
   }, [isOpen, onClose]);
 
@@ -48,4 +49,4 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
       </div>
     </div>
   );
-}; 
+};
