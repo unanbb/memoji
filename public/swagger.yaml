@@ -72,13 +72,14 @@ paths:
                   categories:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Category'
+                      type: string
+
         '500':
           description: 서버 에러
           content:
             application/json:
               schema:
-
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Memo:
@@ -115,15 +116,6 @@ components:
       required:
         - title
         - content
-        - category
-    CategoryInput:
-      type: object
-      properties:
-        category:
-          type: string
-          description: 카테고리 이름
-      required:
-        - category
     Error:
       type: object
       properties:
