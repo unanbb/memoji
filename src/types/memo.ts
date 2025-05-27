@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore/lite';
+
 export interface MemoCardProps {
   id: string;
   title: string;
@@ -6,8 +8,11 @@ export interface MemoCardProps {
 
 export interface MemoProps extends MemoCardProps {
   category: string;
+  createdAt: Timestamp;
 }
 
 export interface MemoListProps {
   memos: MemoProps[];
 }
+
+export type MemoCardData = Omit<MemoProps, 'id'>;
