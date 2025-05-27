@@ -1,7 +1,11 @@
 'use client';
 
 import MemoCard from './MemoCard';
-import type { MemoListProps } from '@/types/memo';
+import { MemoProps } from '@/types/memo';
+
+export interface MemoListProps {
+  memos: Omit<MemoProps, 'createdAt'>[];
+}
 
 export default function MemoList({ memos }: MemoListProps) {
   return (
