@@ -19,9 +19,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
-    "remark-breaks": "^4.0.0",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-react": "^5.11.12"
+    "remark-breaks": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
