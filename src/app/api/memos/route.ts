@@ -11,13 +11,12 @@ export async function GET() {
     const querySnapshot = await getDocs(q);
     const memos: MemoProps[] = querySnapshot.docs.map(doc => {
       const data = doc.data();
-
       return {
         id: doc.id,
         title: data.title,
         content: data.content,
         category: data.category,
-        createdAt: data.createdAt,
+        createdAt: Timestamp.fromDate(data.createdAt.toDate()),
       };
     });
 

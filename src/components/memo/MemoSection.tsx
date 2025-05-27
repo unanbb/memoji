@@ -1,13 +1,17 @@
 'use client';
 
-import { MemoListProps } from '@/types/memo';
 import MemoList from './MemoList';
 import Link from 'next/link';
 import { Separator } from '../common/Separator';
 import ToggleButton from '../common/ToggleButton';
 import { useState } from 'react';
+import { MemoProps } from '@/types/memo';
 
-export default function MemoSection({ memos }: MemoListProps) {
+export interface MemoSectionProps {
+  memos: Omit<MemoProps, 'createdAt'>[];
+}
+
+export default function MemoSection({ memos }: MemoSectionProps) {
   const categories = Array.from(new Set(memos.map(memo => memo.category)));
   const [isOpen, setIsOpen] = useState<Record<string, boolean>>(
     Object.fromEntries(categories.map(category => [category, true])),

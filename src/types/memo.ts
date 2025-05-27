@@ -9,10 +9,7 @@ export const memoCardSchema = z.object({
 
 export const memoSchema = memoCardSchema.extend({
   category: z.string().default('others'),
-  createdAt: z.any().transform(val => {
-    if (val instanceof Timestamp) return val;
-    return Timestamp.fromDate(new Date(val));
-  }),
+  createdAt: z.instanceof(Timestamp),
 });
 
 export const memoListSchema = z.object({
@@ -30,14 +27,9 @@ export interface MemoCardProps {
   title: string;
   content: string;
 }
-
 export interface MemoProps extends MemoCardProps {
   category: string;
   createdAt: Timestamp;
-}
-
-export interface MemoListProps {
-  memos: MemoProps[];
 }
 
 export type MemoCardData = Omit<MemoProps, 'id'>;
