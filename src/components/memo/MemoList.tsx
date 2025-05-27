@@ -1,7 +1,7 @@
 'use client';
 
 import MemoCard from './MemoCard';
-import { MemoListProps } from '@/types/memo';
+import type { MemoListProps } from '@/types/memo';
 
 export default function MemoList({ memos }: MemoListProps) {
   return (

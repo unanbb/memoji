@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Separator from '@/components/common/Separator';
 import ToggleButton from '@/components/common/ToggleButton';
 import { useState } from 'react';
-import { MemoListProps } from '@/types/memo';
+import type { MemoListProps } from '@/types/memo';
 
 export default function MemoSection({ memos }: MemoListProps) {
   const categories = Array.from(new Set(memos.map(memo => memo.category)));
