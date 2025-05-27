@@ -32,6 +32,10 @@ export interface MemoProps extends MemoCardProps {
   createdAt: Timestamp;
 }
 
+export interface MemoListProps {
+  memos: Omit<MemoProps, 'createdAt'>[];
+}
+
 export type MemoCardData = Omit<MemoProps, 'id'>;
 
 export type CreateMemoInput = z.infer<typeof createMemoSchema>;

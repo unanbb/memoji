@@ -5,13 +5,9 @@ import Link from 'next/link';
 import { Separator } from '../common/Separator';
 import ToggleButton from '../common/ToggleButton';
 import { useState } from 'react';
-import { MemoProps } from '@/types/memo';
+import { MemoListProps } from '@/types/memo';
 
-export interface MemoSectionProps {
-  memos: Omit<MemoProps, 'createdAt'>[];
-}
-
-export default function MemoSection({ memos }: MemoSectionProps) {
+export default function MemoSection({ memos }: MemoListProps) {
   const categories = Array.from(new Set(memos.map(memo => memo.category)));
   const [isOpen, setIsOpen] = useState<Record<string, boolean>>(
     Object.fromEntries(categories.map(category => [category, true])),
