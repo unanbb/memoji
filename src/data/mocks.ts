@@ -83,6 +83,90 @@ export const MEMOS = [
 **강조 텍스트**
 **강조 텍스트**`,
   },
+  {
+    id: '8',
+    category: 'game',
+    title: 'Memo 8',
+    content: `## 부제목
+- 리스트1
+- 리스트2
+
+**강조 텍스트**
+**강조 텍스트**
+**강조 텍스트**`,
+  },
+  {
+    id: '9',
+    category: 'game',
+    title: 'Memo 9',
+    content: `## 부제목
+- 리스트1
+- 리스트2
+
+**강조 텍스트**
+**강조 텍스트**
+**강조 텍스트**`,
+  },
+  {
+    id: '10',
+    category: 'ideas',
+    title: 'Memo 10',
+    content: `## 부제목
+- 리스트1
+- 리스트2
+
+**강조 텍스트**
+**강조 텍스트**
+**강조 텍스트**`,
+  },
+  {
+    id: '11',
+    category: 'tips',
+    title: 'Memo 11',
+    content: `## 부제목
+- 리스트1
+- 리스트2
+
+**강조 텍스트**
+**강조 텍스트**
+**강조 텍스트**`,
+  },
+  {
+    id: '12',
+    category: 'conference',
+    title: 'Memo 12',
+    content: `## 부제목
+- 리스트1
+- 리스트2
+
+**강조 텍스트**
+**강조 텍스트**
+**강조 텍스트**`,
+  },
+  {
+    id: '13',
+    category: 'exercise',
+    title: 'Memo 13',
+    content: `## 부제목
+- 리스트1
+- 리스트2
+
+**강조 텍스트**
+**강조 텍스트**
+**강조 텍스트**`,
+  },
+  {
+    id: '14',
+    category: 'beauty',
+    title: 'Memo 14',
+    content: `## 부제목
+- 리스트1
+- 리스트2
+
+**강조 텍스트**
+**강조 텍스트**
+**강조 텍스트**`,
+  },
 ];
 
 export const categories = [
