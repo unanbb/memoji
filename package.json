@@ -11,13 +11,17 @@
     "git-config": "git config --local include.path ../.gitconfig"
   },
   "dependencies": {
+    "@scalar/nextjs-api-reference": "^0.8.3",
     "@tailwindcss/typography": "^0.5.16",
+    "firebase": "^11.8.1",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
-    "remark-breaks": "^4.0.0"
+    "remark-breaks": "^4.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-react": "^5.11.12"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
