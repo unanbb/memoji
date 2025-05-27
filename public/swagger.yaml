@@ -71,6 +71,13 @@ paths:
                 properties:
                   categories:
                     type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
 
 components:
   schemas:
