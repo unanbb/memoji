@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore/lite';
+import { Timestamp } from 'firebase/firestore';
 import { z } from 'zod';
 
 export const memoCardSchema = z.object({
@@ -9,7 +9,10 @@ export const memoCardSchema = z.object({
 
 export const memoSchema = memoCardSchema.extend({
   category: z.string().default('others'),
-  createdAt: z.instanceof(Timestamp),
+  createdAt: z.any().transform(val => {
+    if (val instanceof Timestamp) return val;
+    return Timestamp.fromDate(new Date(val));
+  }),
 });
 
 export const memoListSchema = z.object({
@@ -39,5 +42,4 @@ export interface MemoListProps {
 
 export type MemoCardData = Omit<MemoProps, 'id'>;
 
-// Zod 스키마로부터 타입 추론
 export type CreateMemoInput = z.infer<typeof createMemoSchema>;

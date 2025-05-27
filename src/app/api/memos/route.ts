@@ -1,17 +1,13 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, getDocs, query, addDoc, Timestamp } from 'firebase/firestore';
-import { MemoCardData, MemoProps } from '@/types/memo';
 
-function formatKstTime(date: Date) {
-  const kstTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-  return kstTime;
-}
+import { collection, getDocs, query, addDoc, Timestamp, orderBy } from 'firebase/firestore';
+import { MemoCardData, MemoProps, createMemoSchema, memoListSchema } from '@/types/memo';
+import { db } from '@/lib/firebase';
 
 export async function GET() {
   try {
     const memosRef = collection(db, 'memos');
-    const q = query(memosRef);
+    const q = query(memosRef, orderBy('createdAt', 'desc'));
     const querySnapshot = await getDocs(q);
     const memos: MemoProps[] = querySnapshot.docs.map(doc => {
       const data = doc.data();
@@ -21,30 +17,43 @@ export async function GET() {
         title: data.title,
         content: data.content,
         category: data.category,
-        createdAt: data.createdAt.toDate(),
+        createdAt: data.createdAt,
       };
     });
 
-    return NextResponse.json({ memos }, { status: 200 });
+    const validatedData = memoListSchema.parse({ memos });
+    return NextResponse.json(validatedData, { status: 200 });
   } catch (error) {
     console.error('Error fetching memos:', error);
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json({ error: 'Failed to fetch memos' }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const { title, content, category } = await req.json();
+    const body = await req.json();
+
+    const validatedData = createMemoSchema.parse(body);
+    const { title, content, category } = validatedData;
+
     const memosRef = collection(db, 'memos');
+    const memo: MemoCardData = {
+      title,
+      content,
+      category,
+      createdAt: Timestamp.now(),
+    };
 
-    const timestamp = Timestamp.fromDate(formatKstTime(new Date()));
-
-    const memo: MemoCardData = { title, content, category, createdAt: timestamp };
     const newDocRef = await addDoc(memosRef, memo);
-
     return NextResponse.json({ id: newDocRef.id }, { status: 201 });
   } catch (error) {
     console.error('Error creating memo:', error);
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     return NextResponse.json({ error: 'Failed to create memo' }, { status: 500 });
   }
 }
