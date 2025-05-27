@@ -1,14 +1,14 @@
 'use client';
 import GlobalPlusButton from '@/components/layout/GlobalPlusButton';
 import Header from '@/components/layout/Header';
-import { Sidebar } from '@/components/layout/sidebar/Sidebar';
+import Sidebar from '@/components/layout/sidebar/Sidebar';
 import { useState } from 'react';
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout({ children }: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {

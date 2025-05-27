@@ -1,6 +1,7 @@
-import { Separator } from '@/components/common/Separator';
-import { CategoryItem } from '@/components/layout/sidebar/CategoryItem';
+import Separator from '@/components/common/Separator';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
+
+import CategoryItem from './CategoryItem';
 import { categories } from '@/data/mocks';
 
 interface SidebarProps {
@@ -9,7 +10,7 @@ interface SidebarProps {
   className?: string;
 }
 
-export function Sidebar({ isOpen, onToggle, className = '' }: SidebarProps) {
+export default function Sidebar({ isOpen, onToggle, className = '' }: SidebarProps) {
   const sidebar_px = 4;
   const sidebar_my = 2;
 
