@@ -32,12 +32,22 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+firebase-credentials.json
+firebase-config.json
+firebase-env.json
 
 # vercel
 .vercel
 
+# temp
 .temp
+temp
+
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# editor
+.vscode
+.cursor
