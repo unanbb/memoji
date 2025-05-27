@@ -2,8 +2,8 @@
 
 import MemoList from './MemoList';
 import Link from 'next/link';
-import { Separator } from '../common/Separator';
-import ToggleButton from '../common/ToggleButton';
+import Separator from '@/components/common/Separator';
+import ToggleButton from '@/components/common/ToggleButton';
 import { useState } from 'react';
 import { MemoListProps } from '@/types/memo';
 

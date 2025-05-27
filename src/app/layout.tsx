@@ -1,4 +1,4 @@
-import { MainLayout } from '@/components/layout/MainLayout';
+import MainLayout from '@/components/layout/MainLayout';
 import { ModalProvider } from '@/components/ModalProvider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';

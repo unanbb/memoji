@@ -6,7 +6,7 @@ interface CategoryItemProps {
   count?: number;
 }
 
-export function CategoryItem({ name, route, count }: CategoryItemProps) {
+export default function CategoryItem({ name, route, count }: CategoryItemProps) {
   return (
     <li className="py-2 pl-6 hover:bg-gray-200 rounded-md">
       <Link
