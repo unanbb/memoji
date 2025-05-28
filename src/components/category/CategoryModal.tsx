@@ -2,17 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
-import { IoMdArrowDropright, IoMdTrash } from 'react-icons/io';
+import { IoMdTrash } from 'react-icons/io';
+import { HiPencil } from 'react-icons/hi';
+import { PiTagChevronFill } from 'react-icons/pi';
+import { FaCheck } from 'react-icons/fa6';
 
 export default function CategoryModal({ categories }: { categories: string[] }) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState<boolean[]>([]);
   const [newCategory, setNewCategory] = useState('');
   const [isCategoryHovered, setIsCategoryHovered] = useState<boolean[]>([]);
 
   const sortedCategories = categories.sort((a, b) => a.localeCompare(b));
 
   const handlePlusClick = () => {
-    setIsEditing(!isEditing);
+    setIsCreating(!isCreating);
   };
 
   const handleCreateClick = () => {
@@ -20,7 +24,7 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
       alert('카테고리 이름을 입력해주세요.');
     } else {
       console.log('새 카테고리 생성:', newCategory);
-      setIsEditing(!isEditing);
+      setIsCreating(!isCreating);
 
       /**
        * 카테고리 생성 로직
@@ -50,8 +54,25 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
     });
   };
 
+  const handleModifyClick = (category: string, index: number) => {
+    setIsEditing(prev => {
+      const newStates = [...prev];
+      newStates[index] = !newStates[index];
+
+      if(newStates[index]) {
+      console.log(`${category} 수정 중`);
+      } else {
+        console.log(`${category} 수정 완료`);
+        // 수정 로직 (예: 서버로 업데이트 요청)
+      }
+
+      return newStates;
+    });
+  };
+
   useEffect(() => {
     setIsCategoryHovered(new Array(categories.length).fill(false));
+    setIsEditing(new Array(categories.length).fill(false));
   }, [categories]);
 
   return (
@@ -62,28 +83,28 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
           <FaTimes />
         </div>
       </div>
-      <div className="flex h-[32px] gap-2 my-2">
+      <div className="flex h-[24px] gap-2 my-2">
         <div
           className="flex w-[24px] aspect-ratio items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
           onClick={handlePlusClick}
         >
-          {isEditing ? <FaTimes /> : <FaPlus />}
+          {isCreating ? <FaTimes /> : <FaPlus />}
         </div>
-        {isEditing ? (
+        {isCreating ? (
           <input
             type="text"
             value={newCategory}
             onChange={handleChange}
             placeholder="새 카테고리 입력"
-            className="w-[200px] border-b border-gray-300 focus:border-gray-500 focus:outline-none flex-grow"
+            className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
             onBlur={handleCreateClick}
           />
         ) : (
           <div>Create New Category</div>
         )}
-        {isEditing && (
+        {isCreating && (
           <div
-            className="flex w-[24px] aspect-ratio items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+            className="ml-auto flex w-[24px] aspect-ratio items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
             onClick={handleCreateClick}
           >
             <FaPlus />
@@ -93,34 +114,54 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
       <div>
         <ul>
           {sortedCategories.map((category, idx) => (
-            <li
-              key={category}
-              className="flex -mx-4 px-4 py-3 hover:bg-gray-100 cursor-pointer"
-              onClick={() => console.log(category)}
-            >
+            <li key={category} className="flex h-[48px] -mx-4 px-4 py-3">
               {!isCategoryHovered[idx] ? (
-                <IoMdArrowDropright
-                  className="flex items-center justify-center w-[24px] h-full mr-2 rounded-2xl hover:bg-gray-200"
+                <div
+                  className="flex items-center justify-center w-[24px] h-[24px] mr-2 cursor-pointer"
                   onMouseEnter={() => handleMouseEnter(idx)}
                   onMouseLeave={() => handleMouseLeave(idx)}
+                >
+                  <PiTagChevronFill />
+                </div>
+              ) : (
+                <div
+                  className="flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl hover:bg-gray-200 cursor-pointer"
+                  onMouseEnter={() => handleMouseEnter(idx)}
+                  onMouseLeave={() => handleMouseLeave(idx)}
+                  onClick={() => console.log(`${category} 삭제`)}
+                >
+                  <IoMdTrash className="p-0.25 w-[20px] h-[20px]" />
+                </div>
+              )}
+              {isEditing[idx] ? (
+                <input
+                  type="text"
+                  value={category}
+                  onChange={() => {}}
+                  className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
                 />
               ) : (
-                <IoMdTrash
-                  className="flex items-center justify-center w-[24px] h-[24px] p-1 mr-2 rounded-2xl hover:bg-gray-200"
-                  onMouseEnter={() => handleMouseEnter(idx)}
-                  onMouseLeave={() => handleMouseLeave(idx)}
-                  onClick={()=> console.log(`${category} 삭제`)}
-                />
+                <span>{category}</span>
               )}
-              <span>{category}</span>
+              {isEditing[idx] ? (
+                <div
+                  className="ml-auto flex items-center justify-center w-[24px] h-[24px] rounded-2xl hover:bg-gray-200 cursor-pointer"
+                  onClick={() => handleModifyClick(category, idx)}
+                >
+                  <FaCheck className="w-[20px] h-[20px]" />
+                </div>
+              ) : (
+                <div
+                  className="ml-auto flex items-center justify-center w-[24px] h-[24px] rounded-2xl hover:bg-gray-200 cursor-pointer"
+                  onClick={() => handleModifyClick(category, idx)}
+                >
+                  <HiPencil className="w-[20px] h-[20px]" />
+                </div>
+              )}
             </li>
           ))}
         </ul>
       </div>
     </div>
   );
-}
-
-{
-  /* <input type="text" placeholder="카테고리 입력" className="border-b-1  focus:outline-none"/> */
 }
