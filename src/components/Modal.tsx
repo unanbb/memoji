@@ -1,5 +1,4 @@
 'use client';
-
 import { cn } from '@/utils/cn';
 import { useEffect, useRef } from 'react';
 
@@ -14,15 +13,16 @@ interface ModalProps {
 const sizeClasses = {
   small: 'max-w-sm',
   medium: 'max-w-md',
-  large: 'max-w-lg',
+  large: 'max-w-7xl',
 };
 
-export const Modal = ({ isOpen, onClose, children, size = 'medium', className }: ModalProps) => {
+export const Modal = ({ isOpen, onClose, children, size = 'large', className }: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     const handleEscape = (e: KeyboardEvent) => {
+      e.stopPropagation();
       if (e.key === 'Escape') {
         onClose();
       }
