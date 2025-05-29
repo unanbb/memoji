@@ -1,5 +1,4 @@
 import MainLayout from '@/components/layout/MainLayout';
-import { ModalProvider } from '@/components/ModalProvider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -47,9 +46,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${pretendard.className}`}>
-        <ModalProvider>
-          <MainLayout>{children}</MainLayout>
-        </ModalProvider>
+        <MainLayout>{children}</MainLayout>
       </body>
     </html>
   );

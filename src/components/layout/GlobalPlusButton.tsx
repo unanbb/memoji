@@ -1,33 +1,90 @@
 'use client';
 
 import PlusButton from '@/components/common/PlusButton';
-import { useModal } from '@/components/ModalProvider';
+import MemoCreateModal from '@/components/MemoCreateModal';
+import type { MemoProps } from '@/types/memo';
+import { useCallback, useState } from 'react';
 
 interface GlobalPlusButtonProps {
   onClick?: () => void;
 }
 
-export default function GlobalPlusButton({ onClick }: GlobalPlusButtonProps) {
-  const { showModal, hideModal } = useModal();
+const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) => {
+  try {
+    const response = await fetch(`/api/memos`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(memoData),
+    });
 
-  const handleClick = () => {
+    if (!response.ok) {
+      throw new Error('메모 생성에 실패했습니다.');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('메모 생성 중 오류 발생:', error);
+    throw new Error('메모 생성 중 오류가 발생했습니다.');
+  }
+};
+
+export default function GlobalPlusButton({ onClick }: GlobalPlusButtonProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [memoData, setMemoData] = useState<Omit<MemoProps, 'id' | 'createdAt'>>({
+    title: '',
+    content: '',
+    category: '',
+  });
+
+  const saveMemo = useCallback(async () => {
+    if (!memoData.title || !memoData.content || !memoData.category) {
+      console.error('메모 제목, 내용, 카테고리는 필수입니다.');
+      return;
+    }
+    try {
+      const response = await fetchCreateMemo(memoData);
+      console.log('메모가 성공적으로 생성되었습니다:', response);
+    } catch (error) {
+      console.error('메모 생성 중 오류 발생:', error);
+      //TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요
+    }
+    setMemoData({
+      title: '',
+      content: '',
+      category: '',
+    });
+  }, [memoData]);
+
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
+    setMemoData({
+      title: '',
+      content: '',
+      category: '',
+    });
+  }, []);
+
+  const hideModal = useCallback(() => {
+    setIsModalOpen(false);
+    saveMemo();
+  }, [saveMemo]);
+
+  const handlePlusButtonClick = () => {
     onClick?.();
-    showModal(
-      <div className="w-full h-full">
-        <button
-          onClick={hideModal}
-          className="absolute top-0 right-0 text-2xl p-2 cursor-pointer rounded-full"
-        >
-          X
-        </button>
-        빈 모달입니당
-      </div>,
-    );
+    openModal();
   };
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <PlusButton onClick={handleClick} />
+      <MemoCreateModal
+        isOpen={isModalOpen}
+        onClose={hideModal}
+        memoData={memoData}
+        setMemoData={setMemoData}
+      />
+      <div className="absolute top-2 right-2"></div>
+      <PlusButton onClick={handlePlusButtonClick} />
     </div>
   );
 }
