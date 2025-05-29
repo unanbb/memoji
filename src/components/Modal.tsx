@@ -1,19 +1,28 @@
 'use client';
-
+import { cn } from '@/utils/cn';
 import { useEffect, useRef } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  size?: 'small' | 'medium' | 'large';
+  className?: string;
 }
 
-export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
+const sizeClasses = {
+  small: 'max-w-sm',
+  medium: 'max-w-md',
+  large: 'max-w-7xl',
+};
+
+export const Modal = ({ isOpen, onClose, children, size = 'large', className }: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     const handleEscape = (e: KeyboardEvent) => {
+      e.stopPropagation();
       if (e.key === 'Escape') {
         onClose();
       }
@@ -41,7 +50,11 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
       />
       <div
         ref={modalRef}
-        className="relative z-50 w-full max-w-md rounded-lg bg-white p-6 shadow-xl"
+        className={cn(
+          'relative z-50 w-full rounded-lg bg-white p-6 shadow-xl',
+          sizeClasses[size],
+          className,
+        )}
         role="dialog"
         aria-modal="true"
       >
