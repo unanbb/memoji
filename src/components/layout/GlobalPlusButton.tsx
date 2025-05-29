@@ -37,6 +37,25 @@ export default function GlobalPlusButton({ onClick }: GlobalPlusButtonProps) {
     category: '',
   });
 
+  const saveMemo = useCallback(async () => {
+    if (!memoData.title || !memoData.content || !memoData.category) {
+      console.error('메모 제목, 내용, 카테고리는 필수입니다.');
+      return;
+    }
+    try {
+      const response = await fetchCreateMemo(memoData);
+      console.log('메모가 성공적으로 생성되었습니다:', response);
+    } catch (error) {
+      console.error('메모 생성 중 오류 발생:', error);
+      //TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요
+    }
+    setMemoData({
+      title: '',
+      content: '',
+      category: '',
+    });
+  }, [memoData]);
+
   const openModal = useCallback(() => {
     setIsModalOpen(true);
     setMemoData({
@@ -48,22 +67,8 @@ export default function GlobalPlusButton({ onClick }: GlobalPlusButtonProps) {
 
   const hideModal = useCallback(() => {
     setIsModalOpen(false);
-    if (!memoData.title || !memoData.content || !memoData.category) {
-      return;
-    }
-    fetchCreateMemo(memoData)
-      .then(() => {
-        console.log('메모가 성공적으로 생성되었습니다.');
-      })
-      .catch(error => {
-        console.error('메모 생성 중 오류 발생:', error);
-      });
-    setMemoData({
-      title: '',
-      content: '',
-      category: '',
-    });
-  }, [memoData]);
+    saveMemo();
+  }, [saveMemo]);
 
   const handlePlusButtonClick = () => {
     onClick?.();
