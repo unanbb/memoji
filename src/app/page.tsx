@@ -1,10 +1,23 @@
 import MemoSection from '@/components/memo/MemoSection';
 
 const getMemos = async () => {
-  const res = await fetch('http://localhost:3000/api/memos');
-  const data = await res.json();
-  return data.memos;
+  try {
+    const res = await fetch('http://localhost:3000/api/memos');
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    return data.memos;
+  } catch (error) {
+    console.error('Failed to fetch memos:', error);
+
+    return [];
+  }
 };
+
 export default async function Home() {
   const memos = await getMemos();
 
