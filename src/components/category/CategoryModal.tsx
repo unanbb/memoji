@@ -1,19 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { IoMdTrash } from 'react-icons/io';
 import { HiPencil } from 'react-icons/hi';
 import { PiTagChevronFill } from 'react-icons/pi';
 import { FaCheck } from 'react-icons/fa6';
 
-export default function CategoryModal({ categories }: { categories: string[] }) {
+export default function CategoryModal({ categories: initialCategories }: { categories: string[] }) {
+  const [categories, setCategories] = useState<string[]>(initialCategories);
   const [isCreating, setIsCreating] = useState(false);
-  const [isEditing, setIsEditing] = useState<boolean[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean[]>(new Array(initialCategories.length).fill(false));
   const [newCategory, setNewCategory] = useState('');
-  const [isCategoryHovered, setIsCategoryHovered] = useState<boolean[]>([]);
-
-  const sortedCategories = categories.sort((a, b) => a.localeCompare(b));
+  const [isCategoryHovered, setIsCategoryHovered] = useState<boolean[]>(new Array(initialCategories.length).fill(false));
+  const [value, setValue] = useState<string[]>([...initialCategories]);
 
   const handlePlusClick = () => {
     setIsCreating(!isCreating);
@@ -24,12 +24,15 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
       alert('카테고리 이름을 입력해주세요.');
     } else {
       console.log('새 카테고리 생성:', newCategory);
-      setIsCreating(!isCreating);
 
-      /**
-       * 카테고리 생성 로직
-       *  */
+      // TODO: 서버에 카테고리 생성 요청 보내는 로직 추가
+      // 성공 시 로컬 상태 업데이트:
+      setCategories(prev => [...prev, newCategory]);
+      setValue(prev => [...prev, newCategory]);
+      setIsEditing(prev => [...prev, false]);
+      setIsCategoryHovered(prev => [...prev, false]);
 
+      setIsCreating(false);
       setNewCategory('');
     }
   };
@@ -54,26 +57,38 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
     });
   };
 
+  const handleDeleteClick = (category: string, index: number) => {
+    console.log(`${index}. ${category} 삭제`);
+
+    // TODO: 서버에 삭제 요청
+    // 성공 시 로컬 상태에서 제거
+    setCategories(prev => prev.filter((_, i) => i !== index));
+    setValue(prev => prev.filter((_, i) => i !== index));
+    setIsEditing(prev => prev.filter((_, i) => i !== index));
+    setIsCategoryHovered(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleModifyClick = (category: string, index: number) => {
+    if (isEditing[index]) {
+      console.log(`${category} -> ${value[index]} 수정 완료`);
+
+      // TODO: 서버에 수정 요청
+      // 성공 시 로컬 상태 업데이트
+      setCategories(prev => {
+        const newCategories = [...prev];
+        newCategories[index] = value[index];
+        return newCategories;
+      });
+    } else {
+      console.log(`${category} 수정 시작`);
+    }
+
     setIsEditing(prev => {
       const newStates = [...prev];
       newStates[index] = !newStates[index];
-
-      if(newStates[index]) {
-      console.log(`${category} 수정 중`);
-      } else {
-        console.log(`${category} 수정 완료`);
-        // 수정 로직 (예: 서버로 업데이트 요청)
-      }
-
       return newStates;
     });
   };
-
-  useEffect(() => {
-    setIsCategoryHovered(new Array(categories.length).fill(false));
-    setIsEditing(new Array(categories.length).fill(false));
-  }, [categories]);
 
   return (
     <div className="flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 border border-gray-300 rounded-xs overflow-y-auto">
@@ -113,7 +128,7 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
       </div>
       <div>
         <ul>
-          {sortedCategories.map((category, idx) => (
+          {categories.map((category, idx) => (
             <li key={category} className="flex h-[48px] -mx-4 px-4 py-3">
               {!isCategoryHovered[idx] ? (
                 <div
@@ -128,7 +143,7 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
                   className="flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl hover:bg-gray-200 cursor-pointer"
                   onMouseEnter={() => handleMouseEnter(idx)}
                   onMouseLeave={() => handleMouseLeave(idx)}
-                  onClick={() => console.log(`${category} 삭제`)}
+                  onClick={() => handleDeleteClick(category, idx)}
                 >
                   <IoMdTrash className="p-0.25 w-[20px] h-[20px]" />
                 </div>
@@ -136,8 +151,12 @@ export default function CategoryModal({ categories }: { categories: string[] }) 
               {isEditing[idx] ? (
                 <input
                   type="text"
-                  value={category}
-                  onChange={() => {}}
+                  value={value[idx]}
+                  onChange={e => {
+                    const newValue = [...value];
+                    newValue[idx] = e.target.value;
+                    setValue(newValue);
+                  }}
                   className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
                 />
               ) : (
