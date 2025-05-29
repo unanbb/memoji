@@ -2,7 +2,7 @@
 import '@uiw/react-markdown-preview/markdown.css';
 import '@uiw/react-md-editor/markdown-editor.css';
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
@@ -12,11 +12,25 @@ interface MarkDownEditorProps {
 }
 
 export default function MarkDownEditor({ value, onChange }: MarkDownEditorProps) {
-  const isMobile = window.innerWidth <= 768;
+  const mobileSize = 768;
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileSize);
+
+  const checkIsMobile = useCallback(() => {
+    setIsMobile(window.innerWidth <= mobileSize);
+  }, [mobileSize]);
+
+  useEffect(() => {
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, [checkIsMobile]);
+
   const editorStyle = isMobile
     ? {
         height: '100%',
-        ContainerHeight: '95vh',
+        ContainerHeight: '80vh',
         preview: 'edit',
       }
     : {

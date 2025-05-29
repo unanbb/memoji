@@ -15,7 +15,12 @@ export default function MemoCreateModal({
   setMemoData: React.Dispatch<React.SetStateAction<Omit<MemoProps, 'id' | 'createdAt'>>>;
 }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="large" className="max-w-2xl relative">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="large"
+      className="max-w-2xl relative sm:h-[60vh] h-[100vh]"
+    >
       <div className="absolute top-1 right-1">
         <CrossButton onClick={onClose} label="Close editor" />
       </div>
