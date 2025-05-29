@@ -31,17 +31,17 @@ export default function MarkDownEditor({ value, onChange, markDownProps }: MarkD
   const editorStyle = isMobile
     ? {
         height: '100%',
-        ContainerHeight: '78vh',
+        containerHeight: '78vh',
         preview: 'edit',
       }
     : {
         height: '50vh',
-        ContainerHeight: '50vh',
+        containerHeight: '50vh',
         preview: 'live',
       };
 
   return (
-    <div data-color-mode="light" style={{ height: editorStyle.ContainerHeight }}>
+    <div data-color-mode="light" style={{ height: editorStyle.containerHeight }}>
       <Suspense fallback={<div>Loading editor...</div>}>
         <MDEditor
           value={value}
