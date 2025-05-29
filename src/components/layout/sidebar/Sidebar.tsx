@@ -1,8 +1,8 @@
 import Separator from '@/components/common/Separator';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
 
-import CategoryItem from './CategoryItem';
 import { categories } from '@/data/mocks';
+import CategoryItem from './CategoryItem';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ export default function Sidebar({ isOpen, onToggle, className = '' }: SidebarPro
 
   return (
     <aside
-      className={`top-0 right-0 w-64 md:w-1/5 min-h-screen bg-gray-100 overflow-y-auto z-11 ${isOpen ? 'block' : 'hidden'} ${className}`}
+      className={`top-0 right-0 w-64 min-h-screen bg-gray-100 overflow-y-auto z-11 ${isOpen ? 'block' : 'hidden'} ${className}`}
     >
       <div className="flex items-center justify-between px-4 pt-3 pb-1">
         <h2 className="font-bold text-lg translate-y-[5px]">Categories</h2>
