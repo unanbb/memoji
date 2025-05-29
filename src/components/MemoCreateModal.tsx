@@ -1,4 +1,5 @@
 import CrossButton from '@/components/common/CrossButton';
+import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
 import type { MemoProps } from '@/types/memo';
@@ -24,21 +25,22 @@ export default function MemoCreateModal({
       <div className="absolute top-1 right-1">
         <CrossButton onClick={onClose} label="Close editor" />
       </div>
-      <input
-        type="text"
-        placeholder="제목"
-        value={memoData.title}
-        onChange={e => setMemoData(prev => ({ ...prev, title: e.target.value }))}
-        className="w-full border-none text-lg font-medium focus:outline-none mb-2 mt-2"
-      />
+      <div className="mb-2 mt-2">
+        <InputField
+          placeholder="제목"
+          label="메모 제목"
+          value={memoData.title}
+          variant="title"
+          onChange={e => setMemoData(prev => ({ ...prev, title: e.target.value }))}
+        />
+      </div>
 
       <div className="mb-4">
-        <input
-          type="text"
+        <InputField
           placeholder="카테고리"
+          label="메모 카테고리"
           value={memoData.category}
           onChange={e => setMemoData(prev => ({ ...prev, category: e.target.value }))}
-          className="w-full border-none text-gray-500 focus:outline-none"
         />
       </div>
       <MarkDownEditor

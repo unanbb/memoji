@@ -9,9 +9,10 @@ const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 interface MarkDownEditorProps {
   value?: string;
   onChange?: (value: string | undefined) => void;
+  markDownProps?: React.ComponentProps<typeof MDEditor>;
 }
 
-export default function MarkDownEditor({ value, onChange }: MarkDownEditorProps) {
+export default function MarkDownEditor({ value, onChange, markDownProps }: MarkDownEditorProps) {
   const mobileSize = 768;
   const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileSize);
 
@@ -30,7 +31,7 @@ export default function MarkDownEditor({ value, onChange }: MarkDownEditorProps)
   const editorStyle = isMobile
     ? {
         height: '100%',
-        ContainerHeight: '80vh',
+        ContainerHeight: '78vh',
         preview: 'edit',
       }
     : {
@@ -49,6 +50,8 @@ export default function MarkDownEditor({ value, onChange }: MarkDownEditorProps)
           style={{ height: editorStyle.height }}
           preview={editorStyle.preview === 'live' ? 'live' : 'edit'}
           autoFocus
+          autoFocusEnd
+          {...markDownProps}
         />
       </Suspense>
     </div>
