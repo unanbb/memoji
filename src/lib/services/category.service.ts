@@ -21,22 +21,17 @@ export async function createCategory(name: string): Promise<string> {
   return newDocRef.id;
 }
 
-// Added createCategoryIfNotExists function that returns category ID
 export async function createCategoryIfNotExists(name: string): Promise<string> {
   try {
-    // If no category name provided, use 'others'
     const categoryName = !name || name.trim() === '' ? 'others' : name;
 
-    // Check if category already exists
     const q = query(collection(db, 'categories'), where('name', '==', categoryName));
     const snapshot = await getDocs(q);
 
-    // If category exists, return its ID
     if (!snapshot.empty) {
       return snapshot.docs[0].id;
     }
 
-    // If category doesn't exist, create it and return the new ID
     return await createCategory(categoryName);
   } catch (error) {
     console.error('Error creating category if not exists:', error);

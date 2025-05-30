@@ -23,13 +23,8 @@ import {
 export async function createMemo(memo: Omit<MemoProps, 'id' | 'createdAt'>): Promise<MemoProps> {
   const createdAt = Timestamp.now();
 
-  // 1. 메모를 생성하기 전에 해당 name이 있는 카테고리가 있는지 확인한다.
-  // 2. 해당 name의 카테고리가 있으면 카테고리를 생성하지 않는다.
-  // 3. 카테고리가 없으면 카테고리를 생성한다.
-  // createCategoryIfNotExists 함수에서 위의 로직을 처리하고 카테고리 ID를 반환한다.
   const categoryId = await createCategoryIfNotExists(memo.category);
 
-  // 4. 생성한 카테고리의 id값을 메모 데이터가 참조하도록 한다.
   const newDocRef = await addDoc(collection(db, 'memos'), {
     ...memo,
     categoryId,
