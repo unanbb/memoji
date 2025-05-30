@@ -1,16 +1,16 @@
 'use client';
 
 export default function CategoryList({ categories }: { categories: string[] }) {
-  const uniqueCategories = [...new Set(categories)].sort((a, b) => a.localeCompare(b)); // 중복 제거 및 정렬
+  const sortedCategories = categories.sort((a, b) => a.localeCompare(b));
 
-  if (uniqueCategories.length === 0) {
+  if (sortedCategories.length === 0) {
     return <div className="w-[200px] h-[200px] py-2">카테고리가 없습니다.</div>;
   }
 
   return (
     <div className="max-h-[250px] overflow-y-auto w-[200px] h-auto py-2 rounded-xs bg-white shadow-sm text-neutral-800">
       <ul>
-        {uniqueCategories.map(category => {
+        {sortedCategories.map(category => {
           return (
             <li
               key={category}
