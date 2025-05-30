@@ -73,6 +73,9 @@ export default function CategoryModal({
 
   const handleDeleteClick = (category: string, index: number) => {
     if (!confirm(`"${category}" 카테고리를 삭제하시겠습니까?`)) {
+      setCategoryStates(prev =>
+        prev.map((state, i) => (i === index ? { ...state, isHovered: false } : state)),
+      );
       return;
     }
     console.log(`${index}. ${category} 삭제`);
@@ -191,12 +194,14 @@ export default function CategoryModal({
             return (
               <li key={`${category}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
                 <div
-                  className={`flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl ${
-                    isHovered ? 'hover:bg-gray-200 cursor-pointer' : ''
-                  }`}
+                  className={`flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl ${'hover:bg-gray-200 cursor-pointer'}`}
                   onMouseEnter={() => handleMouseEnter(idx)}
                   onMouseLeave={() => handleMouseLeave(idx)}
-                  onClick={isHovered ? () => handleDeleteClick(category, idx) : undefined}
+                  onClick={() => {
+                    if (isHovered || window.innerWidth <= 768) {
+                      handleDeleteClick(category, idx);
+                    }
+                  }}
                 >
                   {isHovered ? (
                     <IoMdTrash className="p-0.25 w-[20px] h-[20px]" />
