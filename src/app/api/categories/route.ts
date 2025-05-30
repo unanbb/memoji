@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { category } = body;
 
-    if (!validateCategoryName(category) || typeof category !== 'string') {
+    if (typeof category !== 'string' || !validateCategoryName(category)) {
       return NextResponse.json({ error: 'Invalid category name' }, { status: 400 });
     }
 

@@ -6,6 +6,6 @@
  * @returns - 유효한 경우 true, 그렇지 않은 경우 false
  */
 export function validateCategoryName(name: string): boolean {
-  const categoryNameRegex = /^[a-zA-Z0-9가-힣\s]+$/;
+  const categoryNameRegex = /^[a-zA-Z0-9가-힣\s]*$/;
   return categoryNameRegex.test(name);
 }
