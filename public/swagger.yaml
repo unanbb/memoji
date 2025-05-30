@@ -4,10 +4,6 @@ info:
   version: 1.0.0
   description: 메모 애플리케이션을 위한 API 문서
 
-servers:
-  - url: http://localhost:3000
-    description: 개발 서버
-
 paths:
   /api/memos:
     get:
@@ -57,7 +53,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
   /api/categories:
+    post:
+      summary: 새 카테고리 생성
+      description: 새로운 카테고리를 생성합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                  description: 생성할 카테고리 이름
+              required:
+                - category
+      responses:
+        '201':
+          description: 카테고리 생성 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: string
+                    description: 생성된 카테고리 이름
+
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     get:
       summary: 모든 카테고리 조회
       description: 모든 카테고리를 조회합니다.
@@ -80,6 +110,103 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /api/categories/{categoryName}:
+    put:
+      summary: 카테고리 이름 수정
+      description: 카테고리 이름을 수정합니다.
+      parameters:
+        - name: categoryName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 수정할 카테고리의 이름
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newName:
+                  type: string
+                  description: 변경할 새 카테고리 이름
+              required:
+                - newName
+      responses:
+        '200':
+          description: 카테고리 이름 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: string
+                    description: 수정된 카테고리 이름
+                  message:
+                    type: string
+                    description: 성공 메시지
+        '400':
+          description: 잘못된 요청 (유효하지 않은 이름이나 중복된 이름)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: 카테고리를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: 카테고리 삭제
+      description: 카테고리 이름을 이용해 카테고리를 삭제합니다. 카테고리에 속한 메모는 'others' 카테고리로 이동됩니다. 'others' 카테고리는 삭제할 수 없습니다.
+      parameters:
+        - name: categoryName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 삭제할 카테고리의 이름
+      responses:
+        '200':
+          description: 카테고리 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 성공 메시지
+        '400':
+          description: 잘못된 요청 ('others' 카테고리 삭제 시도 등)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: 카테고리를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Memo:
