@@ -7,7 +7,13 @@ import { HiPencil } from 'react-icons/hi';
 import { PiTagChevronFill } from 'react-icons/pi';
 import { FaCheck } from 'react-icons/fa6';
 
-export default function CategoryModal({ categories: initialCategories }: { categories: string[] }) {
+export default function CategoryModal({
+  categories: initialCategories,
+  onClose,
+}: {
+  categories: string[];
+  onClose: () => void;
+}) {
   const [categories, setCategories] = useState<string[]>(initialCategories);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -123,15 +129,17 @@ export default function CategoryModal({ categories: initialCategories }: { categ
     }
   };
 
-  const handleCategoryModifyKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, category: string, index: number) => {
+  const handleCategoryModifyKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    category: string,
+    index: number,
+  ) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleModifyClick(category, index);
     } else if (e.key === 'Escape') {
       setCategoryStates(prev =>
-        prev.map((state, i) =>
-          i === index ? { ...state, isEditing: false } : state
-        )
+        prev.map((state, i) => (i === index ? { ...state, isEditing: false } : state)),
       );
     }
   };
@@ -140,7 +148,10 @@ export default function CategoryModal({ categories: initialCategories }: { categ
     <div className="flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 border border-gray-300 rounded-xs overflow-y-auto">
       <div className="flex justify-between mb-2">
         <h1 className="text-lg font-semibold">Category List</h1>
-        <div className="flex w-[28px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl">
+        <div
+          className="flex w-[28px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+          onClick={onClose}
+        >
           <FaTimes />
         </div>
       </div>
