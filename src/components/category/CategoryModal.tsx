@@ -10,9 +10,13 @@ import { FaCheck } from 'react-icons/fa6';
 export default function CategoryModal({ categories: initialCategories }: { categories: string[] }) {
   const [categories, setCategories] = useState<string[]>(initialCategories);
   const [isCreating, setIsCreating] = useState(false);
-  const [isEditing, setIsEditing] = useState<boolean[]>(new Array(initialCategories.length).fill(false));
+  const [isEditing, setIsEditing] = useState<boolean[]>(
+    new Array(initialCategories.length).fill(false),
+  );
   const [newCategory, setNewCategory] = useState('');
-  const [isCategoryHovered, setIsCategoryHovered] = useState<boolean[]>(new Array(initialCategories.length).fill(false));
+  const [isCategoryHovered, setIsCategoryHovered] = useState<boolean[]>(
+    new Array(initialCategories.length).fill(false),
+  );
   const [value, setValue] = useState<string[]>([...initialCategories]);
 
   const handlePlusClick = () => {
@@ -22,6 +26,8 @@ export default function CategoryModal({ categories: initialCategories }: { categ
   const handleCreateClick = () => {
     if (newCategory.trim() === '') {
       alert('카테고리 이름을 입력해주세요.');
+      // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요
+      return;
     } else {
       console.log('새 카테고리 생성:', newCategory);
 
@@ -90,6 +96,16 @@ export default function CategoryModal({ categories: initialCategories }: { categ
     });
   };
 
+  const handleCategoryKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCreateClick();
+    } else if (e.key === 'Escape') {
+      setIsCreating(false);
+      setNewCategory('');
+    }
+  };
+
   return (
     <div className="flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 border border-gray-300 rounded-xs overflow-y-auto">
       <div className="flex justify-between mb-2">
@@ -112,7 +128,7 @@ export default function CategoryModal({ categories: initialCategories }: { categ
             onChange={handleChange}
             placeholder="새 카테고리 입력"
             className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
-            onBlur={handleCreateClick}
+            onKeyDown={handleCategoryKeyDown}
           />
         ) : (
           <div>Create New Category</div>
@@ -129,7 +145,7 @@ export default function CategoryModal({ categories: initialCategories }: { categ
       <div>
         <ul>
           {categories.map((category, idx) => (
-            <li key={category} className="flex h-[48px] -mx-4 px-4 py-3">
+            <li key={`${category}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
               {!isCategoryHovered[idx] ? (
                 <div
                   className="flex items-center justify-center w-[24px] h-[24px] mr-2 cursor-pointer"
