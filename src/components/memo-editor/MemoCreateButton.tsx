@@ -1,7 +1,7 @@
 'use client';
 
 import PlusButton from '@/components/common/PlusButton';
-import MemoCreateModal from '@/components/MemoCreateModal';
+import MemoCreateModal from '@/components/memo-editor/MemoCreateModal';
 import type { MemoProps } from '@/types/memo';
 import { useCallback, useState } from 'react';
 
@@ -29,7 +29,7 @@ const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) =>
   }
 };
 
-export default function GlobalPlusButton({ onClick }: GlobalPlusButtonProps) {
+export default function MemoCreateButton({ onClick }: GlobalPlusButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [memoData, setMemoData] = useState<Omit<MemoProps, 'id' | 'createdAt'>>({
     title: '',
