@@ -1,9 +1,12 @@
 import MemoSection from '@/components/memo/MemoSection';
+import { headers } from 'next/headers';
 
 const getMemos = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/memos');
-
+    const headersList = await headers();
+    const host = headersList.get('host');
+    const res = await fetch(`http://${host}/api/memos`);
+    // const res = await fetch('/api/memos', {
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
