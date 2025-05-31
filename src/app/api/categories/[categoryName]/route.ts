@@ -56,7 +56,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<Params
       return NextResponse.json({ error: '해당 카테고리를 찾을 수 없습니다.' }, { status: 404 });
     }
 
-    if (existingCategoryId.toLowerCase() === 'others') {
+    if (categoryName.toLowerCase() === 'others') {
       return NextResponse.json(
         { error: "'others' 카테고리는 삭제할 수 없습니다." },
         { status: 400 },
