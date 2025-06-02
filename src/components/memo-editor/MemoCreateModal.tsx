@@ -1,3 +1,4 @@
+'use client';
 import { fetchCreateMemo } from '@/action';
 import CrossButton from '@/components/common/CrossButton';
 import InputField from '@/components/common/InputField';
@@ -6,7 +7,11 @@ import { Modal } from '@/components/Modal';
 import type { MemoProps } from '@/types/memo';
 import { useCallback, useState } from 'react';
 
-export default function MemoCreateModal() {
+interface MemoCreateModalProps {
+  onClose: () => void;
+}
+
+export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
   const [memoData, setMemoData] = useState<Omit<MemoProps, 'id' | 'createdAt'>>({
     title: '',
     content: '',
@@ -14,6 +19,7 @@ export default function MemoCreateModal() {
   });
 
   const submitMemo = useCallback(async () => {
+    onClose();
     if (!memoData.title || !memoData.content || !memoData.category) {
       console.error('메모 제목, 내용, 카테고리는 필수입니다.');
       return;
