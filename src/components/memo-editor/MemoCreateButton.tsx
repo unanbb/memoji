@@ -1,35 +1,12 @@
 'use client';
 
+import { fetchCreateMemo } from '@/action';
 import PlusButton from '@/components/common/PlusButton';
 import MemoCreateModal from '@/components/memo-editor/MemoCreateModal';
 import type { MemoProps } from '@/types/memo';
 import { useCallback, useState } from 'react';
 
-interface GlobalPlusButtonProps {
-  onClick?: () => void;
-}
-
-const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) => {
-  try {
-    const response = await fetch(`/api/memos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(memoData),
-    });
-
-    if (!response.ok) {
-      throw new Error('메모 생성에 실패했습니다.');
-    }
-    return response.json();
-  } catch (error) {
-    console.error('메모 생성 중 오류 발생:', error);
-    throw new Error('메모 생성 중 오류가 발생했습니다.');
-  }
-};
-
-export default function MemoCreateButton({ onClick }: GlobalPlusButtonProps) {
+export default function MemoCreateButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [memoData, setMemoData] = useState<Omit<MemoProps, 'id' | 'createdAt'>>({
     title: '',
@@ -71,7 +48,6 @@ export default function MemoCreateButton({ onClick }: GlobalPlusButtonProps) {
   }, [saveMemo]);
 
   const handlePlusButtonClick = () => {
-    onClick?.();
     openModal();
   };
 
