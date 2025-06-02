@@ -16,9 +16,7 @@ export default function CategoryModal({
 }) {
   const [categories, setCategories] = useState<string[]>(initialCategories);
   const [isCreating, setIsCreating] = useState(false);
-
   const [newCategory, setNewCategory] = useState('');
-
   const [categoryStates, setCategoryStates] = useState(() =>
     initialCategories.map(() => ({
       isEditing: false,
@@ -220,7 +218,7 @@ export default function CategoryModal({
                     <PiTagChevronFill />
                   )}
                 </div>
-
+                
                 {isEditing ? (
                   <input
                     type="text"
