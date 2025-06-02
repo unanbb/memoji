@@ -32,22 +32,27 @@ export default function CategoryModal({
   };
 
   const handleCreateClick = () => {
-    if (newCategory.trim() === '') {
+    const trimmedCategory = newCategory.trim();
+    if (trimmedCategory === '') {
       alert('카테고리 이름을 입력해주세요.');
-      // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요
+      //TODO: 토스트 or 모달로 개선 필요
       return;
-    } else if (categories.includes(newCategory.trim())) {
+    } else if (
+      categories.some(category => category.toLowerCase() === trimmedCategory.toLowerCase())
+    ) {
       alert('이미 존재하는 카테고리입니다.');
+      //TODO: 토스트 or 모달로 개선 필요
       return;
     } else {
-      console.log('새 카테고리 생성:', newCategory);
+      console.log('새 카테고리 생성:', trimmedCategory);
 
       // TODO: 서버에 카테고리 생성 요청
-      // 성공 시 로컬 상태 업데이트:
-      setCategories(prev => [...prev, newCategory]);
+
+      // 성공 시 로컬 상태 업데이트
+      setCategories(prev => [...prev, trimmedCategory]);
       setCategoryStates(prev => [
         ...prev,
-        { isEditing: false, isHovered: false, editValue: newCategory },
+        { isEditing: false, isHovered: false, editValue: trimmedCategory },
       ]);
 
       setIsCreating(false);
