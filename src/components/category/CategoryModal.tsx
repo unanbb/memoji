@@ -94,11 +94,17 @@ export default function CategoryModal({
   const handleModifyClick = (category: string, index: number) => {
     const target = categoryStates[index];
     if (target.isEditing) {
-      if (target.editValue.trim() === '') {
+      const trimmedValue = target.editValue.trim();
+      if (trimmedValue === '') {
         alert('카테고리 이름을 입력해주세요.');
+        //TODO: 토스트 or 모달로 개선 필요
         return;
-      } else if (categories.includes(target.editValue.trim())) {
+      } else if (
+        trimmedValue.toLowerCase() !== category.toLowerCase() &&
+        categories.some(cat => cat.toLowerCase() === trimmedValue.toLowerCase())
+      ) {
         alert('이미 존재하는 카테고리입니다.');
+        //TODO: 토스트 or 모달로 개선 필요
         return;
       }
 
