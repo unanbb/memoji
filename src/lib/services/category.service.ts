@@ -55,10 +55,12 @@ export async function getCategoryById(id: string): Promise<string | null> {
 export async function getCategories(): Promise<string[]> {
   try {
     const querySnapshot = await getDocs(collection(db, 'categories'));
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return data.name || '';
-    });
+    return querySnapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        return data.name || '';
+      })
+      .sort((a, b) => a.localeCompare(b));
   } catch (error) {
     console.error('Error fetching categories:', error);
     throw new Error('Failed to fetch categories');
