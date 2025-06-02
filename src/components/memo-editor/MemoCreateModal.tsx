@@ -5,6 +5,7 @@ import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
 import type { MemoProps } from '@/types/memo';
+import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
 interface MemoCreateModalProps {
@@ -18,6 +19,7 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
     category: '',
   });
 
+  const router = useRouter();
   const submitMemo = useCallback(async () => {
     onClose();
     if (!memoData.title || !memoData.content || !memoData.category) {
@@ -36,7 +38,8 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
       content: '',
       category: '',
     });
-  }, [memoData]);
+    router.push('/');
+  }, [memoData, onClose, router]);
 
   return (
     <Modal
