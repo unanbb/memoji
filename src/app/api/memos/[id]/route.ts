@@ -35,12 +35,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const body = await req.json();
 
     const updatedMemo = await updateMemo(id, body);
-    if (!updatedMemo) {
-      return NextResponse.json(
-        { error: '메모를 업데이트할 수 없습니다. 메모가 존재하지 않거나 잘못된 데이터입니다.' },
-        { status: 400 },
-      );
-    }
     return NextResponse.json(
       { message: '메모가 성공적으로 업데이트되었습니다.', memo: updatedMemo },
       { status: 200 },

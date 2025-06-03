@@ -87,6 +87,10 @@ export async function deleteMemo(id: string) {
 export async function updateMemo(id: string, memo: Omit<MemoProps, 'id' | 'createdAt'>) {
   const memoRef = doc(collection(db, 'memos'), id);
 
+  const docSnapshot = await getDoc(memoRef);
+  if (!docSnapshot.exists()) {
+    throw new Error('메모가 존재하지 않습니다.');
+  }
   const categoryId = await createCategoryIfNotExists(memo.category);
 
   await setDoc(
