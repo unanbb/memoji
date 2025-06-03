@@ -15,8 +15,8 @@ export default function MemoCard({ id, title, content }: MemoCardProps) {
         }
       }}
     >
-      <div className="flex flex-col gap-1 overflow-y-hidden h-full">
-        <h1 className="font-semibold text-lg">{title}</h1>
+      <div className="flex flex-col gap-1 overflow-hidden h-full">
+        <h1 className="font-semibold text-lg overflow-hidden whitespace-nowrap text-ellipsis">{title}</h1>
         <div className="prose prose-sm">
           <ReactMarkdown remarkPlugins={[remarkBreaks]}>{content}</ReactMarkdown>
         </div>
