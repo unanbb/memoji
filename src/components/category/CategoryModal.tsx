@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
-import { IoMdTrash } from 'react-icons/io';
-import { HiPencil } from 'react-icons/hi';
-import { PiTagChevronFill } from 'react-icons/pi';
 import { FaCheck } from 'react-icons/fa6';
+import { HiPencil } from 'react-icons/hi';
+import { IoMdTrash } from 'react-icons/io';
+import { PiTagChevronFill } from 'react-icons/pi';
 
 export default function CategoryModal({
   categories: initialCategories,
@@ -157,7 +157,7 @@ export default function CategoryModal({
   };
 
   return (
-    <div className="flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 border border-gray-300 rounded-xs overflow-y-auto">
+    <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 border border-gray-300 rounded-xs overflow-y-auto">
       <div className="flex justify-between mb-2">
         <h1 className="text-lg font-semibold">Category List</h1>
         <div
@@ -218,7 +218,7 @@ export default function CategoryModal({
                     <PiTagChevronFill />
                   )}
                 </div>
-                
+
                 {isEditing ? (
                   <input
                     type="text"
