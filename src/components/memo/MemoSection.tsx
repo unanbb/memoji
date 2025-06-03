@@ -36,7 +36,7 @@ export default function MemoSection({ memos }: MemoListProps) {
             <Separator my={3} />
             <div
               className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                isOpen[category] ? 'max-h-[auto]' : 'max-h-0'
+                isOpen[category] ? 'max-h-full' : 'max-h-0 opacity-0'
               }`}
             >
               <MemoList memos={filteredMemos} />
