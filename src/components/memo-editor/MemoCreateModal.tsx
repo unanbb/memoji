@@ -22,10 +22,11 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
   });
 
   const router = useRouter();
+
   const submitMemo = useCallback(async () => {
     onClose();
     if (!memoData.title || !memoData.content) {
-      console.error('메모 제목, 내용, 카테고리는 필수입니다.');
+      console.error('메모 제목과 내용은 필수입니다.');
       return;
     }
     try {
@@ -35,11 +36,6 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
       console.error('메모 생성 중 오류 발생:', error);
       //TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요
     }
-    setMemoData({
-      title: '',
-      content: '',
-      category: '',
-    });
     router.push('/');
   }, [memoData, onClose, router]);
 
