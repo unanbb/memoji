@@ -1,14 +1,14 @@
 'use client';
 import MemoUpdateModal from '@/components/memo-editor/MemoUpdateModal';
 import type { MemoCardProps } from '@/types/memo';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 
 export default function MemoCard({ id, title, content }: MemoCardProps) {
   const [open, setOpen] = useState(false);
 
-  const handleOpenModal = e => {
+  const handleOpenModal = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setOpen(true);
     console.log(`MemoCard open modal: ${id}`);
