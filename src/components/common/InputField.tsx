@@ -4,7 +4,7 @@ interface InputFieldProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
-  label: string;
+  name: string;
   className?: string;
   error?: boolean;
   disabled?: boolean;
@@ -14,8 +14,8 @@ interface InputFieldProps {
 export default function InputField({
   value,
   onChange,
+  name,
   placeholder,
-  label,
   className = '',
   error = false,
   disabled = false,
@@ -25,7 +25,7 @@ export default function InputField({
     <input
       type="text"
       placeholder={placeholder}
-      aria-label={label}
+      name={name}
       value={value}
       onChange={onChange}
       disabled={disabled}

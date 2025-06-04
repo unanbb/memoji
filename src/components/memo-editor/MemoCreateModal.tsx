@@ -48,6 +48,10 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
     setIsOpenCategoryModal(true);
   }, []);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMemoData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   return (
     <Modal
       onClose={submitMemo}
@@ -63,18 +67,18 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
       <div className="mb-2 mt-2">
         <InputField
           placeholder="제목"
-          label="메모 제목"
+          name="title"
           value={memoData.title}
           variant="title"
-          onChange={e => setMemoData(prev => ({ ...prev, title: e.target.value }))}
+          onChange={handleChange}
         />
       </div>
       <div className="mb-4 relative">
         <InputField
           placeholder="카테고리"
-          label="메모 카테고리"
+          name="category"
           value={memoData.category}
-          onChange={e => setMemoData(prev => ({ ...prev, category: e.target.value }))}
+          onChange={handleChange}
         />
         <AddButton
           onClick={openCategoryModal}

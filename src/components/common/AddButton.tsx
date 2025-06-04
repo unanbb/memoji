@@ -8,7 +8,14 @@ interface PlusButtonProps {
 
 export default function AddButton({ className, onClick, label }: PlusButtonProps) {
   return (
-    <button className={`cursor-pointer ${className}`} onClick={onClick} aria-label={label}>
+    <button
+      className={`cursor-pointer ${className}`}
+      onClick={onClick}
+      aria-label={label}
+      name="add-button"
+      type="button"
+      title={label}
+    >
       <CiCirclePlus size={30} />
     </button>
   );

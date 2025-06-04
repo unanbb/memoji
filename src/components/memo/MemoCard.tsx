@@ -1,11 +1,27 @@
+'use client';
+import MemoUpdateModal from '@/components/memo-editor/MemoUpdateModal';
+import type { MemoCardProps } from '@/types/memo';
+import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import type { MemoCardProps } from '@/types/memo';
 
 export default function MemoCard({ id, title, content }: MemoCardProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleOpenModal = e => {
+    e.stopPropagation();
+    setOpen(true);
+    console.log(`MemoCard open modal: ${id}`);
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false);
+    console.log(`MemoCard close modal: ${id}`);
+  };
+
   return (
     <div
-      onClick={() => console.log(id)}
+      onClick={handleOpenModal}
       className="aspect-square border border-gray-300 rounded-lg p-4 overflow-hidden cursor-pointer"
       role="button"
       tabIndex={0}
@@ -20,6 +36,7 @@ export default function MemoCard({ id, title, content }: MemoCardProps) {
         <div className="prose prose-sm">
           <ReactMarkdown remarkPlugins={[remarkBreaks]}>{content}</ReactMarkdown>
         </div>
+        {open && <MemoUpdateModal id={id} onClose={handleCloseModal} />}
       </div>
     </div>
   );
