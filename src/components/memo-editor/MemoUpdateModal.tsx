@@ -61,8 +61,8 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     <Modal
       onClose={handleUpdateMemo}
       isOpen={true}
-      aria-label="메모 생성"
-      aria-labelledby="memo-create-modal"
+      aria-label="메모 수정"
+      aria-labelledby="memo-update-modal"
       size="large"
       className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
     >
