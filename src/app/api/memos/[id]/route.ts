@@ -2,8 +2,12 @@ import { deleteMemo, getMemoById, updateMemo } from '@/lib/services/memo.service
 import { updateMemoSchema } from '@/types/memo';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+interface Params {
+  id: string;
+}
+
+export async function GET(req: Request, { params }: { params: Promise<Params> }) {
+  const { id } = await params;
   try {
     const memo = await getMemoById(id);
     if (!memo) {
@@ -30,8 +34,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(req: Request, { params }: { params: Promise<Params> }) {
+  const { id } = await params;
   try {
     const body = await req.json();
 
