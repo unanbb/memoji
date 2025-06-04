@@ -26,6 +26,7 @@ export default function InputField({
       type="text"
       placeholder={placeholder}
       name={name}
+      aria-label={name}
       value={value}
       onChange={onChange}
       disabled={disabled}
