@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (e?: React.MouseEvent) => void;
   children: React.ReactNode;
   size?: 'small' | 'medium' | 'large';
   className?: string;
