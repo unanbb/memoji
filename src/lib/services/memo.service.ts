@@ -74,25 +74,40 @@ export async function getMemoById(id: string): Promise<MemoProps | null> {
   };
 }
 
-export async function deleteMemo(id: string): Promise<void> {
+export async function deleteMemo(id: string) {
   try {
     await deleteDoc(doc(collection(db, 'memos'), id));
+    return id;
   } catch (error) {
     console.error('메모 삭제 중 오류 발생:', error);
     throw new Error('메모 삭제에 실패했습니다. 다시 시도해주세요.');
   }
 }
 
-export async function updateMemo(
-  id: string,
-  memo: Omit<MemoProps, 'id' | 'createdAt'>,
-): Promise<void> {
+export async function updateMemo(id: string, memo: Omit<MemoProps, 'id' | 'createdAt'>) {
   const memoRef = doc(collection(db, 'memos'), id);
 
-  await setDoc(memoRef, {
+  const docSnapshot = await getDoc(memoRef);
+  if (!docSnapshot.exists()) {
+    throw new Error('메모가 존재하지 않습니다.');
+  }
+  const categoryId = await createCategoryIfNotExists(memo.category);
+
+  await setDoc(
+    memoRef,
+    {
+      ...memo,
+      categoryId,
+      updatedAt: Timestamp.now(),
+    },
+    { merge: true },
+  );
+
+  return {
     ...memo,
-    updatedAt: Timestamp.now(),
-  });
+    id,
+    category: memo.category,
+  };
 }
 export async function removeCategoryAndUpdateMemos(
   categoryId: string,

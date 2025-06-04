@@ -54,6 +54,119 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /api/memos/{id}:
+    get:
+      summary: 특정 메모 조회
+      description: ID를 이용해 특정 메모를 조회합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 조회할 메모의 ID
+      responses:
+        '200':
+          description: 메모 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Memo'
+        '404':
+          description: 메모를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: 메모 삭제
+      description: ID를 이용해 메모를 삭제합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 삭제할 메모의 ID
+      responses:
+        '200':
+          description: 메모 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 성공 메시지
+        '404':
+          description: 메모를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: 메모 수정
+      description: ID를 이용해 메모를 수정합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 수정할 메모의 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoInput'
+              example:
+                title: '새로운 제목'
+                content: '수정된 내용입니다.'
+                category: 'work'
+      responses:
+        '200':
+          description: 메모 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 성공 메시지
+        '400':
+          description: 잘못된 요청 (유효하지 않은 데이터 등)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: 메모를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: 서버 에러
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /api/categories:
     post:
       summary: 새 카테고리 생성
@@ -81,7 +194,6 @@ paths:
                   category:
                     type: string
                     description: 생성된 카테고리 이름
-
         '500':
           description: 서버 에러
           content:
@@ -103,7 +215,6 @@ paths:
                     type: array
                     items:
                       type: string
-
         '500':
           description: 서버 에러
           content:
@@ -166,7 +277,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
     delete:
       summary: 카테고리 삭제
       description: 카테고리 이름을 이용해 카테고리를 삭제합니다. 카테고리에 속한 메모는 'others' 카테고리로 이동됩니다. 'others' 카테고리는 삭제할 수 없습니다.
@@ -224,10 +334,15 @@ components:
         category:
           type: string
           description: 메모의 카테고리
+        createdAt:
+          type: string
+          format: date-time
+          description: 메모 생성 시간
       required:
         - id
         - title
         - content
+        - category
     MemoInput:
       type: object
       properties:
@@ -243,6 +358,7 @@ components:
       required:
         - title
         - content
+        - category
     Error:
       type: object
       properties:
