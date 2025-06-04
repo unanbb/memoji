@@ -24,17 +24,21 @@ const fetchMemoById = async (id: string): Promise<MemoProps> => {
 
 export default function useGetMemoById(id: string) {
   const [memo, setMemo] = useState<MemoProps | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error' | 'success'>('idle');
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      const fetchedMemo = await fetchMemoById(id);
-      setMemo(fetchedMemo);
-      setIsLoading(false);
+      setStatus('loading');
+      try {
+        const fetchedMemo = await fetchMemoById(id);
+        setMemo(fetchedMemo);
+        setStatus('success');
+      } catch (error) {
+        console.error('Error fetching memo:', error);
+        setStatus('error');
+      }
     };
     fetchData();
   }, [id]);
 
-  return { memo, isLoading };
+  return { memo, status };
 }
