@@ -22,6 +22,12 @@ export const createMemoSchema = z.object({
   category: z.string().default('others'),
 });
 
+export const updateMemoSchema = memoCardSchema.extend({
+  title: z.string(),
+  content: z.string(),
+  category: z.string().default('others'),
+});
+
 export interface MemoCardProps {
   id: string;
   title: string;

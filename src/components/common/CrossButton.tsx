@@ -2,7 +2,7 @@ import { cn } from '@/utils/cn';
 import { MdClose } from 'react-icons/md';
 
 interface CrossButtonProps {
-  onClick: () => void;
+  onClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   label: string;
   className?: string;
 }
