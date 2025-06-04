@@ -36,9 +36,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const body = await req.json();
 
     const validatedData = updateMemoSchema.parse(body);
-    if (!validatedData) {
-      return NextResponse.json({ error: '유효하지 않은 요청 본문입니다.' }, { status: 400 });
-    }
     const updatedMemo = await updateMemo(id, validatedData);
     return NextResponse.json(
       { message: '메모가 성공적으로 업데이트되었습니다.', memo: updatedMemo },
