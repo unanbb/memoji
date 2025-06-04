@@ -53,10 +53,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Modal
       onClose={handleUpdateMemo}
@@ -66,6 +62,12 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       size="large"
       className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
     >
+      {isLoading && (
+        <div className="flex items-center justify-center h-full">
+          <p>Loading...</p>
+        </div>
+      )}
+      {/* TODO: 로딩 스켈레톤 구현 필요 */}
       <div className="absolute top-1 right-1">
         <CrossButton onClick={handleUpdateMemo} label="Close editor" />
       </div>
