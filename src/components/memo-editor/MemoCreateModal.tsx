@@ -6,7 +6,6 @@ import CrossButton from '@/components/common/CrossButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
-import useCategories from '@/hooks/useCategories';
 import type { MemoProps } from '@/types/memo';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
@@ -41,8 +40,6 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
   }, [memoData, onClose, router]);
 
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
-
-  const { categories, isLoading } = useCategories();
 
   const openCategoryModal = useCallback(() => {
     setIsOpenCategoryModal(true);
@@ -85,17 +82,11 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
           className="absolute -top-1 right-0"
           label="카테고리 추가"
         />
-        {isOpenCategoryModal &&
-          (isLoading ? (
-            <div className="text-gray-500">카테고리 불러오는 중...</div>
-          ) : (
-            <div className="absolute top-4 right-1 z-51">
-              <CategoryModal
-                onClose={() => setIsOpenCategoryModal(false)}
-                categories={categories}
-              />
-            </div>
-          ))}
+        {isOpenCategoryModal && (
+          <div className="absolute top-4 right-1 z-51">
+            <CategoryModal onClose={() => setIsOpenCategoryModal(false)} />
+          </div>
+        )}
       </div>
       <MarkDownEditor
         value={memoData.content}

@@ -1,30 +1,32 @@
 'use client';
 
 import { fetchCreateCategory } from '@/action';
-import { useState } from 'react';
+import useCategories from '@/hooks/useCategories';
+import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa6';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdTrash } from 'react-icons/io';
 import { PiTagChevronFill } from 'react-icons/pi';
 
-export default function CategoryModal({
-  categories: initialCategories,
-  onClose,
-}: {
-  categories: string[];
-  onClose: () => void;
-}) {
-  const [categories, setCategories] = useState<string[]>(initialCategories);
+export default function CategoryModal({ onClose }: { onClose: () => void }) {
+  const { categories: fetchedCategories, isLoading } = useCategories();
   const [isCreating, setIsCreating] = useState(false);
   const [newCategory, setNewCategory] = useState('');
-  const [categoryStates, setCategoryStates] = useState(() =>
-    initialCategories.map(() => ({
-      isEditing: false,
-      isHovered: false,
-      editValue: '',
-    })),
-  );
+  const [categoryStates, setCategoryStates] = useState<
+    { name: string; isEditing: boolean; isHovered: boolean; editValue: string }[]
+  >([]);
+
+  useEffect(() => {
+    setCategoryStates(() =>
+      fetchedCategories.map((categoryName: string) => ({
+        name: categoryName,
+        isEditing: false,
+        isHovered: false,
+        editValue: '',
+      })),
+    );
+  }, [fetchedCategories]);
 
   const handlePlusClick = () => {
     setIsCreating(!isCreating);
@@ -37,7 +39,7 @@ export default function CategoryModal({
       //TODO: 토스트 or 모달로 개선 필요
       return;
     } else if (
-      categories.some(category => category.toLowerCase() === trimmedCategory.toLowerCase())
+      categoryStates.some(category => category.name.toLowerCase() === trimmedCategory.toLowerCase())
     ) {
       alert('이미 존재하는 카테고리입니다.');
       //TODO: 토스트 or 모달로 개선 필요
@@ -46,19 +48,17 @@ export default function CategoryModal({
       console.log('새 카테고리 생성:', trimmedCategory);
 
       try {
-        const res = await fetchCreateCategory({ category: trimmedCategory });
-        console.log('카테고리 생성 성공!', res);
-
         // 로컬 상태 업데이트
-        setCategories(prev => [...prev, trimmedCategory]);
         setCategoryStates(prev => [
+          { name: trimmedCategory, isEditing: false, isHovered: false, editValue: trimmedCategory },
           ...prev,
-          { isEditing: false, isHovered: false, editValue: trimmedCategory },
         ]);
-
         // Create 상태 off & input창 비움
         setIsCreating(false);
         setNewCategory('');
+
+        const res = await fetchCreateCategory({ category: trimmedCategory });
+        console.log('카테고리 생성 성공!', res);
       } catch (error) {
         console.error('카테고리 생성 실패', error);
         throw new Error('카테고리 생성 실패');
@@ -93,11 +93,10 @@ export default function CategoryModal({
 
     // TODO: 서버에 삭제 요청
     // 성공 시 로컬 상태에서 제거
-    setCategories(prev => prev.filter((_, i) => i !== index));
     setCategoryStates(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleModifyClick = (category: string, index: number) => {
+  const handleModifyClick = (categoryName: string, index: number) => {
     const target = categoryStates[index];
     if (target.isEditing) {
       const trimmedValue = target.editValue.trim();
@@ -106,28 +105,29 @@ export default function CategoryModal({
         //TODO: 토스트 or 모달로 개선 필요
         return;
       } else if (
-        trimmedValue.toLowerCase() !== category.toLowerCase() &&
-        categories.some(cat => cat.toLowerCase() === trimmedValue.toLowerCase())
+        trimmedValue.toLowerCase() !== categoryName.toLowerCase() &&
+        categoryStates.some(cat => cat.name.toLowerCase() === trimmedValue.toLowerCase())
       ) {
         alert('이미 존재하는 카테고리입니다.');
         //TODO: 토스트 or 모달로 개선 필요
         return;
       }
 
-      console.log(`${category} -> ${target.editValue} 수정 완료`);
-
-      // TODO: 서버에 수정 요청
-
       // 로컬 상태 업데이트: 이름 변경 & isEditing 종료
-      setCategories(prev => prev.map((c, i) => (i === index ? target.editValue.trim() : c)));
-      setCategoryStates(prev =>
-        prev.map((state, i) => (i === index ? { ...state, isEditing: false } : state)),
-      );
-    } else {
-      console.log(`${category} 수정 시작`);
       setCategoryStates(prev =>
         prev.map((state, i) =>
-          i === index ? { ...state, isEditing: true, editValue: category } : state,
+          i === index ? { ...state, name: target.editValue, isEditing: false } : state,
+        ),
+      );
+
+      console.log(`${categoryName} -> ${target.editValue} 수정 완료`);
+
+      // TODO: 서버에 수정 요청
+    } else {
+      console.log(`${categoryName} 수정 시작`);
+      setCategoryStates(prev =>
+        prev.map((state, i) =>
+          i === index ? { ...state, isEditing: true, editValue: categoryName } : state,
         ),
       );
     }
@@ -165,95 +165,97 @@ export default function CategoryModal({
   };
 
   return (
-    <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 pr-0 border border-gray-300 rounded-xs">
-      <div className="flex justify-between mb-2 pr-4">
-        <h1 className="text-lg font-semibold">Category List</h1>
-        <div
-          className="flex w-[28px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
-          onClick={onClose}
-        >
-          <FaTimes />
-        </div>
-      </div>
-      <div className="flex h-[24px] gap-2 my-2 pr-4">
-        <div
-          className="flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
-          onClick={handlePlusClick}
-        >
-          {isCreating ? <FaTimes /> : <FaPlus />}
-        </div>
-        {isCreating ? (
-          <input
-            type="text"
-            value={newCategory}
-            onChange={handleChange}
-            placeholder="새 카테고리 입력"
-            className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
-            onKeyDown={handleCategoryCreateKeyDown}
-          />
-        ) : (
-          <div>Create New Category</div>
-        )}
-        {isCreating && (
-          <div
-            className="ml-auto flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
-            onClick={handleCreateClick}
-          >
-            <FaPlus />
+    <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 pr-0 border border-gray-300 rounded-xs overflow-y-auto">
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <div className="flex justify-between mb-2  pr-4">
+            <h1 className="text-lg font-semibold">Category List</h1>
+            <div
+              className="flex w-[28px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+              onClick={onClose}
+            >
+              <FaTimes />
+            </div>
           </div>
-        )}
-      </div>
-      <div className='overflow-y-auto pr-4'>
-        <ul>
-          {categories.map((category, idx) => {
-            const { isEditing, isHovered, editValue } = categoryStates[idx] || {};
+          <div className="flex h-[24px] gap-2 my-2 pr-4">
+            <div
+              className="flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+              onClick={handlePlusClick}
+            >
+              {isCreating ? <FaTimes /> : <FaPlus />}
+            </div>
+            {isCreating ? (
+              <input
+                type="text"
+                value={newCategory}
+                onChange={handleChange}
+                placeholder="새 카테고리 입력"
+                className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
+                onKeyDown={handleCategoryCreateKeyDown}
+              />
+            ) : (
+              <div>Create New Category</div>
+            )}
+            {isCreating && (
+              <div
+                className="ml-auto flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+                onClick={handleCreateClick}
+              >
+                <FaPlus />
+              </div>
+            )}
+          </div>
+          <div className="overflow-y-auto pr-4">
+            <ul>
+              {categoryStates.map((category, idx) => (
+                <li key={`${category}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
+                  <div
+                    className={`flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl ${'hover:bg-gray-200 cursor-pointer'}`}
+                    onMouseEnter={() => handleMouseEnter(idx)}
+                    onMouseLeave={() => handleMouseLeave(idx)}
+                    onClick={() => {
+                      if (category.isHovered || window.innerWidth <= 768) {
+                        handleDeleteClick(category.name, idx);
+                      }
+                    }}
+                  >
+                    {category.isHovered ? (
+                      <IoMdTrash className="p-0.25 w-[20px] h-[20px]" />
+                    ) : (
+                      <PiTagChevronFill />
+                    )}
+                  </div>
 
-            return (
-              <li key={`${category}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
-                <div
-                  className={`flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl ${'hover:bg-gray-200 cursor-pointer'}`}
-                  onMouseEnter={() => handleMouseEnter(idx)}
-                  onMouseLeave={() => handleMouseLeave(idx)}
-                  onClick={() => {
-                    if (isHovered || window.innerWidth <= 768) {
-                      handleDeleteClick(category, idx);
-                    }
-                  }}
-                >
-                  {isHovered ? (
-                    <IoMdTrash className="p-0.25 w-[20px] h-[20px]" />
+                  {category.isEditing ? (
+                    <input
+                      type="text"
+                      value={category.editValue}
+                      onChange={e => handleEditInputChange(idx, e.target.value)}
+                      onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
+                      className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
+                    />
                   ) : (
-                    <PiTagChevronFill />
+                    <span>{category.name}</span>
                   )}
-                </div>
 
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={editValue}
-                    onChange={e => handleEditInputChange(idx, e.target.value)}
-                    onKeyDown={e => handleCategoryModifyKeyDown(e, category, idx)}
-                    className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
-                  />
-                ) : (
-                  <span>{category}</span>
-                )}
-
-                <div
-                  className="ml-auto flex items-center justify-center w-[24px] h-[24px] rounded-2xl hover:bg-gray-200 cursor-pointer"
-                  onClick={() => handleModifyClick(category, idx)}
-                >
-                  {isEditing ? (
-                    <FaCheck className="w-[20px] h-[20px]" />
-                  ) : (
-                    <HiPencil className="w-[20px] h-[20px]" />
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+                  <div
+                    className="ml-auto flex items-center justify-center w-[24px] h-[24px] rounded-2xl hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleModifyClick(category.name, idx)}
+                  >
+                    {category.isEditing ? (
+                      <FaCheck className="w-[20px] h-[20px]" />
+                    ) : (
+                      <HiPencil className="w-[20px] h-[20px]" />
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 }
