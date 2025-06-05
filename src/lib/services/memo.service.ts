@@ -61,7 +61,7 @@ export async function getMemos(): Promise<MemoProps[]> {
 export async function getMemoById(id: string): Promise<MemoProps | null> {
   const memosRef = collection(db, 'memos');
   const docSnapshot = await getDoc(doc(memosRef, id));
-  if (!docSnapshot.exists()) {
+  if (!docSnapshot.exists() || docSnapshot.data().isDeleted) {
     return null;
   }
   const data = docSnapshot.data();
@@ -76,13 +76,12 @@ export async function getMemoById(id: string): Promise<MemoProps | null> {
 
 export async function deleteMemo(id: string) {
   try {
-    // await deleteDoc(doc(collection(db, 'memos'), id));
     const memoRef = doc(collection(db, 'memos'), id);
     const docSnapshot = await getDoc(memoRef);
     if (!docSnapshot.exists()) {
       throw new Error('메모가 존재하지 않습니다.');
     }
-    setDoc(
+    await setDoc(
       memoRef,
       {
         isDeleted: true,
@@ -94,20 +93,25 @@ export async function deleteMemo(id: string) {
   } catch (error) {
     console.error('메모 삭제 중 오류 발생:', error);
     if (error instanceof Error) {
-      return { success: false, message: error.message };
+      throw error;
     }
-    return { success: false, message: '메모 삭제 중 알 수 없는 오류가 발생했습니다.' };
+    throw new Error('메모 삭제 중 알 수 없는 오류 발생');
   }
 }
 
-export async function undoDeleteMemo(id: string): Promise<MemoProps> {
-  const memoRef = doc(collection(db, 'memos'), id);
-  const docSnapshot = await getDoc(memoRef);
-  if (!docSnapshot.exists()) {
-    throw new Error('메모가 존재하지 않습니다.');
+export async function undoDeleteMemo(id: string) {
+  try {
+    const memoRef = doc(collection(db, 'memos'), id);
+    const docSnapshot = await getDoc(memoRef);
+    if (!docSnapshot.exists()) {
+      throw new Error('메모가 존재하지 않습니다.');
+    }
+    await setDoc(memoRef, { isDeleted: false, deletedAt: null }, { merge: true });
+    return docSnapshot.data() as MemoProps;
+  } catch (error) {
+    console.error('메모 복원 중 오류 발생:', error);
+    throw error;
   }
-  await setDoc(memoRef, { isDeleted: false, deletedAt: null }, { merge: true });
-  return docSnapshot.data() as MemoProps;
 }
 
 export async function updateMemo(id: string, memo: Omit<MemoProps, 'id' | 'createdAt'>) {
