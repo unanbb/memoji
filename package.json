@@ -9,7 +9,8 @@
     "lint": "next lint --fix",
     "type-check": "tsc --noEmit",
     "git-config": "git config --local include.path ../.gitconfig",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install",
+    "depcheck": "npx depcheck"
   },
   "dependencies": {
     "@scalar/nextjs-api-reference": "^0.8.3",
@@ -24,7 +25,6 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-toastify": "^11.0.5",
-    "react-use": "^17.6.0",
     "remark-breaks": "^4.0.0",
     "tailwind-merge": "^3.3.0",
     "zod": "^3.25.30"
