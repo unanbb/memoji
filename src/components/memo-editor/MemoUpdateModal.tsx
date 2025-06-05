@@ -94,6 +94,9 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       ) : status === 'error' ? (
         <div className="flex items-center justify-center h-full">
           <p>메모를 불러오는 중 오류가 발생했습니다.</p>
+          <div className="absolute top-1 right-1">
+            <CrossButton onClick={handleClose} label="Close editor" />
+          </div>
         </div>
       ) : (
         <>
