@@ -165,8 +165,8 @@ export default function CategoryModal({
   };
 
   return (
-    <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 border border-gray-300 rounded-xs overflow-y-auto">
-      <div className="flex justify-between mb-2">
+    <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 pr-0 border border-gray-300 rounded-xs">
+      <div className="flex justify-between mb-2 pr-4">
         <h1 className="text-lg font-semibold">Category List</h1>
         <div
           className="flex w-[28px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
@@ -175,7 +175,7 @@ export default function CategoryModal({
           <FaTimes />
         </div>
       </div>
-      <div className="flex h-[24px] gap-2 my-2">
+      <div className="flex h-[24px] gap-2 my-2 pr-4">
         <div
           className="flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
           onClick={handlePlusClick}
@@ -203,7 +203,7 @@ export default function CategoryModal({
           </div>
         )}
       </div>
-      <div>
+      <div className='overflow-y-auto pr-4'>
         <ul>
           {categories.map((category, idx) => {
             const { isEditing, isHovered, editValue } = categoryStates[idx] || {};
