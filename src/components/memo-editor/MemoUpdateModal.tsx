@@ -5,12 +5,12 @@ import DeleteButton from '@/components/common/DeleteButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
+import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
 interface MemoUpdateModalProps {
   onClose: () => void;
   id: string;
@@ -34,6 +34,8 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     if (result.success) {
       console.log('메모가 성공적으로 삭제되었습니다.');
       router.push('/');
+      onClose();
+      showUndoDeleteToast(id);
     } else {
       console.error('메모 삭제 중 오류가 발생했습니다:', result.message);
       // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
@@ -94,6 +96,9 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       ) : status === 'error' ? (
         <div className="flex items-center justify-center h-full">
           <p>메모를 불러오는 중 오류가 발생했습니다.</p>
+          <div className="absolute top-1 right-1">
+            <CrossButton onClick={handleClose} label="Close editor" />
+          </div>
         </div>
       ) : (
         <>

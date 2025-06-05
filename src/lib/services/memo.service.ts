@@ -8,7 +8,6 @@ import type { MemoProps } from '@/types/memo';
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -29,6 +28,7 @@ export async function createMemo(memo: Omit<MemoProps, 'id' | 'createdAt'>): Pro
     ...memo,
     categoryId,
     createdAt,
+    isDeleted: false,
   });
 
   return {
@@ -40,7 +40,7 @@ export async function createMemo(memo: Omit<MemoProps, 'id' | 'createdAt'>): Pro
 
 export async function getMemos(): Promise<MemoProps[]> {
   const memosRef = collection(db, 'memos');
-  const q = query(memosRef, orderBy('createdAt', 'desc'));
+  const q = query(memosRef, orderBy('createdAt', 'desc'), where('isDeleted', '!=', true));
   const querySnapshot = await getDocs(q);
   const categoryMap = await getCategoryMap();
 
@@ -61,7 +61,7 @@ export async function getMemos(): Promise<MemoProps[]> {
 export async function getMemoById(id: string): Promise<MemoProps | null> {
   const memosRef = collection(db, 'memos');
   const docSnapshot = await getDoc(doc(memosRef, id));
-  if (!docSnapshot.exists()) {
+  if (!docSnapshot.exists() || docSnapshot.data().isDeleted) {
     return null;
   }
   const data = docSnapshot.data();
@@ -76,11 +76,41 @@ export async function getMemoById(id: string): Promise<MemoProps | null> {
 
 export async function deleteMemo(id: string) {
   try {
-    await deleteDoc(doc(collection(db, 'memos'), id));
+    const memoRef = doc(collection(db, 'memos'), id);
+    const docSnapshot = await getDoc(memoRef);
+    if (!docSnapshot.exists()) {
+      throw new Error('메모가 존재하지 않습니다.');
+    }
+    await setDoc(
+      memoRef,
+      {
+        isDeleted: true,
+        deletedAt: Timestamp.now(),
+      },
+      { merge: true },
+    );
     return id;
   } catch (error) {
     console.error('메모 삭제 중 오류 발생:', error);
-    throw new Error('메모 삭제에 실패했습니다. 다시 시도해주세요.');
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('메모 삭제 중 알 수 없는 오류 발생');
+  }
+}
+
+export async function undoDeleteMemo(id: string) {
+  try {
+    const memoRef = doc(collection(db, 'memos'), id);
+    const docSnapshot = await getDoc(memoRef);
+    if (!docSnapshot.exists()) {
+      throw new Error('메모가 존재하지 않습니다.');
+    }
+    await setDoc(memoRef, { isDeleted: false, deletedAt: null }, { merge: true });
+    return docSnapshot.data() as MemoProps;
+  } catch (error) {
+    console.error('메모 복원 중 오류 발생:', error);
+    throw error;
   }
 }
 

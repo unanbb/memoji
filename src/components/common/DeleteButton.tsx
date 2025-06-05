@@ -12,7 +12,7 @@ interface DeleteButtonProps {
 export default function DeleteButton({ onClick, label, className }: DeleteButtonProps) {
   return (
     <button
-      className={cn('p-2 rounded-full hover:bg-red-200/70 transition-colors', className)}
+      className={cn('p-1 rounded-full hover:bg-red-200/70 transition-colors', className)}
       onClick={onClick}
       aria-label={label}
       title={label}

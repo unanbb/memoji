@@ -1,9 +1,9 @@
 'use client';
+import useWindowSize from '@/hooks/useWindowSize';
 import '@uiw/react-markdown-preview/markdown.css';
 import type { PreviewType } from '@uiw/react-md-editor';
-import '@uiw/react-md-editor/markdown-editor.css';
 import dynamic from 'next/dynamic';
-import { useWindowSize } from 'react-use';
+// import { useWindowSize } from 'react-use';
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), {
   ssr: false,

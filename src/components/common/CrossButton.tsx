@@ -11,7 +11,7 @@ export default function CrossButton({ onClick, label, className }: CrossButtonPr
   return (
     <button
       className={cn(
-        'p-2 rounded-full bg-gray-100/60 hover:bg-gray-200/70 transition-colors',
+        'p-1 rounded-full bg-gray-100/60 hover:bg-gray-200/70 transition-colors',
         className,
       )}
       onClick={onClick}
