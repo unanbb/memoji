@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   setDoc,
   Timestamp,
@@ -54,13 +55,13 @@ export async function getCategoryById(id: string): Promise<string | null> {
 
 export async function getCategories(): Promise<string[]> {
   try {
-    const querySnapshot = await getDocs(collection(db, 'categories'));
-    return querySnapshot.docs
-      .map(doc => {
-        const data = doc.data();
-        return data.name || '';
-      })
-      .sort((a, b) => a.localeCompare(b));
+    const categoriesRef = collection(db, 'categories');
+    const q = query(categoriesRef, orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return data.name || '';
+    });
   } catch (error) {
     console.error('Error fetching categories:', error);
     throw new Error('Failed to fetch categories');
