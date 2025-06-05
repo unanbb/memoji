@@ -1,5 +1,6 @@
 'use client';
 
+import { fetchCreateCategory } from '@/action';
 import { useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa6';
@@ -29,7 +30,7 @@ export default function CategoryModal({
     setIsCreating(!isCreating);
   };
 
-  const handleCreateClick = () => {
+  const handleCreateClick = async () => {
     const trimmedCategory = newCategory.trim();
     if (trimmedCategory === '') {
       alert('카테고리 이름을 입력해주세요.');
@@ -44,17 +45,24 @@ export default function CategoryModal({
     } else {
       console.log('새 카테고리 생성:', trimmedCategory);
 
-      // TODO: 서버에 카테고리 생성 요청
+      try {
+        const res = await fetchCreateCategory({ category: trimmedCategory });
+        console.log('카테고리 생성 성공!', res);
 
-      // 성공 시 로컬 상태 업데이트
-      setCategories(prev => [...prev, trimmedCategory]);
-      setCategoryStates(prev => [
-        ...prev,
-        { isEditing: false, isHovered: false, editValue: trimmedCategory },
-      ]);
+        // 로컬 상태 업데이트
+        setCategories(prev => [...prev, trimmedCategory]);
+        setCategoryStates(prev => [
+          ...prev,
+          { isEditing: false, isHovered: false, editValue: trimmedCategory },
+        ]);
 
-      setIsCreating(false);
-      setNewCategory('');
+        // Create 상태 off & input창 비움
+        setIsCreating(false);
+        setNewCategory('');
+      } catch (error) {
+        console.error('카테고리 생성 실패', error);
+        throw new Error('카테고리 생성 실패');
+      }
     }
   };
 
