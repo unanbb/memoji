@@ -11,12 +11,10 @@ export default function MemoCard({ id, title, content }: MemoCardProps) {
   const handleOpenModal = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setOpen(true);
-    console.log(`MemoCard open modal: ${id}`);
   };
 
   const handleCloseModal = () => {
     setOpen(false);
-    console.log(`MemoCard close modal: ${id}`);
   };
 
   return (
@@ -32,8 +30,10 @@ export default function MemoCard({ id, title, content }: MemoCardProps) {
           }
         }}
       >
-        <div className="flex flex-col gap-1 overflow-y-hidden h-full">
-          <h1 className="font-semibold text-lg">{title}</h1>
+        <div className="flex flex-col gap-1 overflow-hidden h-full">
+          <h1 className="font-semibold text-lg overflow-hidden whitespace-nowrap text-ellipsis flex-shrink-0 w-full">
+            {title}
+          </h1>
           <div className="prose prose-sm">
             <ReactMarkdown remarkPlugins={[remarkBreaks]}>{content}</ReactMarkdown>
           </div>
