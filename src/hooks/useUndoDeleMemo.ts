@@ -9,7 +9,11 @@ const fetchUndoDeleteMemo = async (id: string) => {
     if (!response.ok) {
       throw new Error('메모 복원 실패');
     }
-    return await response.json();
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(data.error || '메모 복원 중 알 수 없는 오류 발생');
+    }
+    return data;
   } catch (error) {
     console.error('메모 복원 중 오류 발생:', error);
     throw error;
