@@ -1,9 +1,11 @@
 'use client';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
+import DeleteButton from '@/components/common/DeleteButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
+import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
 import { useRouter } from 'next/navigation';
@@ -14,8 +16,9 @@ interface MemoUpdateModalProps {
   id: string;
 }
 export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
-  const { memo, isLoading } = useGetMemoById(id);
+  const { memo, status } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
+  const { deleteMemo } = useDeleteMemo();
 
   const [memoData, setMemoData] = useState({
     id,
@@ -26,8 +29,19 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
 
   const router = useRouter();
 
+  const handleDeleteMemo = async () => {
+    const result = await deleteMemo(id);
+    if (result.success) {
+      console.log('메모가 성공적으로 삭제되었습니다.');
+      router.push('/');
+    } else {
+      console.error('메모 삭제 중 오류가 발생했습니다:', result.message);
+      // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
+    }
+  };
+
   useEffect(() => {
-    if (!isLoading && memo) {
+    if (status === 'success' && memo) {
       setMemoData({
         id: memo.id,
         title: memo.title,
@@ -35,7 +49,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
         category: memo.category,
       });
     }
-  }, [isLoading, memo]);
+  }, [status, memo]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMemoData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -49,7 +63,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     const result = await updateMemo(id, memoData);
     if (result.success) {
       console.log('메모가 성공적으로 업데이트되었습니다.');
-      router.push('/');
     } else {
       console.error('메모 업데이트 중 오류가 발생했습니다:', result.message);
       // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
@@ -59,7 +72,9 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const handleClose = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     onClose();
+    if (status !== 'success') return;
     handleUpdateMemo();
+    router.push('/');
   };
 
   // TODO: 로딩 스켈레톤 구현 필요
@@ -72,12 +87,21 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       size="large"
       className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
     >
-      {isLoading ? (
+      {status === 'loading' ? (
         <div className="flex items-center justify-center h-full">
           <p>Loading...</p>
         </div>
+      ) : status === 'error' ? (
+        <div className="flex items-center justify-center h-full">
+          <p>메모를 불러오는 중 오류가 발생했습니다.</p>
+        </div>
       ) : (
         <>
+          <DeleteButton
+            onClick={handleDeleteMemo}
+            label="Delete memo"
+            className="absolute top-1 right-12"
+          />
           <div className="absolute top-1 right-1">
             <CrossButton onClick={handleClose} label="Close editor" />
           </div>

@@ -15,29 +15,33 @@ interface MarkDownEditorProps {
   value?: string;
   onChange?: (value: string | undefined) => void;
   markDownProps?: React.ComponentProps<typeof MDEditor>;
+  defaultMode?: PreviewType;
 }
 
-export default function MarkDownEditor({ value, onChange, markDownProps }: MarkDownEditorProps) {
+const getPreviewMode = (width: number, defaultMode: PreviewType): PreviewType => {
+  if (width <= 768) {
+    return 'edit';
+  }
+  return defaultMode;
+};
+
+export default function MarkDownEditor({
+  value,
+  onChange,
+  markDownProps,
+  defaultMode = 'live',
+}: MarkDownEditorProps) {
   const { width } = useWindowSize();
-  const editorStyle =
-    width <= 768
-      ? {
-          height: '80%',
-          preview: 'edit',
-        }
-      : {
-          height: '50vh',
-          preview: 'live',
-        };
+  const previewMode = getPreviewMode(width, defaultMode);
+  const editorHeight = width <= 768 ? '87%' : '50vh';
 
   return (
     <MDEditor
       data-color-mode="light"
       value={value}
       onChange={onChange}
-      height={editorStyle.height}
-      style={{ height: editorStyle.height }}
-      preview={editorStyle.preview as PreviewType}
+      height={editorHeight}
+      preview={previewMode as PreviewType}
       autoFocus
       autoFocusEnd
       {...markDownProps}
