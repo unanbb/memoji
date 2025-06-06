@@ -1,6 +1,7 @@
 'use client';
 
 import { fetchCreateCategory } from '@/action';
+import Toast from '@/components/common/Toast';
 import useCategories from '@/hooks/useCategories';
 import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
@@ -8,6 +9,7 @@ import { FaCheck } from 'react-icons/fa6';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdTrash } from 'react-icons/io';
 import { PiTagChevronFill } from 'react-icons/pi';
+import { toast } from 'react-toastify';
 
 export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const { categories: fetchedCategories, isLoading } = useCategories();
@@ -59,6 +61,24 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
         const res = await fetchCreateCategory({ category: trimmedCategory });
         console.log('카테고리 생성 성공!', res);
+        toast(() => (
+          <Toast
+            closeToast={() => toast.dismiss()}
+            name="카테고리"
+            type="생성"
+            options={{
+              ariaLabel: '카테고리 생성 성공',
+              showCloseButton: false,
+              pauseOnHover: false,
+              hideProgressBar: true,
+            }}
+            style={{
+              backgroundColor: 'black',
+              width: '440px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+            }}
+          />
+        ));
       } catch (error) {
         console.error('카테고리 생성 실패', error);
         throw new Error('카테고리 생성 실패');

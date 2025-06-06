@@ -24,16 +24,16 @@ function MemoDeleteToast({ closeToast, id }: SplitButtonsProps) {
   };
 
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between">
-        <span className="text-gray-800 text-sm">메모가 삭제되었습니다</span>
+    <div className="w-full flex items-center justify-between">
+      <span className="text-gray-100 text-sm">메모가 삭제되었습니다</span>
+      <div className="flex items-center gap-2">
         <button
-          className="text-black hover:bg-gray-100 rounded px-4 py-2 text-sm font-semibold transition"
+          className="text-blue-400 hover:bg-gray-700 rounded px-4 py-2 text-sm font-semibold transition cursor-pointer"
           onClick={handleUndo}
         >
           삭제 취소
         </button>
-        <CrossButton label="닫기" onClick={closeToast} />
+        <CrossButton label="닫기" onClick={closeToast} theme="dark" iconSize="small" />
       </div>
     </div>
   );
@@ -47,10 +47,13 @@ export const showUndoDeleteToast = (id: string) => {
   toast(() => <MemoDeleteToast closeToast={() => toast.dismiss()} id={id} />, {
     closeButton: false,
     position: 'bottom-left',
-    className: 'w-[400px] border border-gray-300 rounded-lg p-4 shadow-lg',
     ariaLabel: '메모 삭제 알림',
     pauseOnHover: false,
     hideProgressBar: true,
-    autoClose: 3000,
+    style: {
+      backgroundColor: 'black',
+      width: '440px',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+    },
   });
 };
