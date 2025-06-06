@@ -20,8 +20,8 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(req: Request, { params }: { params: Promise<Params> }) {
+  const { id } = await params;
   try {
     const deletedId = await deleteMemo(id);
     return NextResponse.json(
