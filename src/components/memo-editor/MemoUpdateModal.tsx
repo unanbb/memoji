@@ -10,13 +10,14 @@ import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 interface MemoUpdateModalProps {
   onClose: () => void;
   id: string;
 }
+
 export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
-  const { memo, status } = useGetMemoById(id);
+  const { memo, error, isLoading } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
 
@@ -42,17 +43,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     }
   };
 
-  useEffect(() => {
-    if (status === 'success' && memo) {
-      setMemoData({
-        id: memo.id,
-        title: memo.title,
-        content: memo.content,
-        category: memo.category,
-      });
-    }
-  }, [status, memo]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMemoData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -74,7 +64,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const handleClose = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     onClose();
-    if (status !== 'success') return;
+    // if (status !== 'success') return;
     handleUpdateMemo();
     router.push('/');
   };
@@ -89,11 +79,11 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       size="large"
       className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
     >
-      {status === 'loading' ? (
+      {isLoading ? (
         <div className="flex items-center justify-center h-full">
           <p>Loading...</p>
         </div>
-      ) : status === 'error' ? (
+      ) : error ? (
         <div className="flex items-center justify-center h-full">
           <p>메모를 불러오는 중 오류가 발생했습니다.</p>
           <div className="absolute top-1 right-1">
