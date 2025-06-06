@@ -68,14 +68,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
             type="생성"
             options={{
               ariaLabel: '카테고리 생성 성공',
-              showCloseButton: false,
-              pauseOnHover: false,
-              hideProgressBar: true,
-            }}
-            style={{
-              backgroundColor: 'black',
-              width: '440px',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
             }}
           />
         ));
