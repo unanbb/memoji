@@ -5,16 +5,8 @@ export default function Toast({
   closeToast,
   name,
   type,
-  options = {
-    showCloseButton: false,
-    pauseOnHover: false,
-    hideProgressBar: true,
-  },
-  style = {
-    backgroundColor: 'black',
-    width: '440px',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
-  },
+  options,
+  style,
 }: {
   closeToast: () => void;
   name: string;

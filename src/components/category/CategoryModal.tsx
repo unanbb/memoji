@@ -61,16 +61,18 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
         const res = await fetchCreateCategory({ category: trimmedCategory });
         console.log('카테고리 생성 성공!', res);
-        toast(() => (
-          <Toast
-            closeToast={() => toast.dismiss()}
-            name="카테고리"
-            type="생성"
-            options={{
-              ariaLabel: '카테고리 생성 성공',
-            }}
-          />
-        ));
+        toast(() => <Toast closeToast={() => toast.dismiss()} name="카테고리" type="생성" />, {
+          closeButton: false,
+          position: 'bottom-left',
+          ariaLabel: '메모 삭제 알림',
+          pauseOnHover: false,
+          hideProgressBar: true,
+          style: {
+            backgroundColor: 'black',
+            width: '440px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+          },
+        });
       } catch (error) {
         console.error('카테고리 생성 실패', error);
         throw new Error('카테고리 생성 실패');
