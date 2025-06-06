@@ -5,28 +5,17 @@ export default function Toast({
   closeToast,
   name,
   type,
-  options,
-  style,
+  ariaLabel,
 }: {
   closeToast: () => void;
   name: string;
   type: string;
-  options?: {
-    showCloseButton?: boolean;
-    ariaLabel?: string;
-    pauseOnHover?: boolean;
-    hideProgressBar?: boolean;
-  };
-  style?: React.CSSProperties;
+  ariaLabel: string;
 }) {
-  const { showCloseButton = true, ariaLabel } = options || {};
-
   return (
-    <div className="w-full flex items-center justify-between" style={style} aria-label={ariaLabel}>
+    <div className="w-full flex items-center justify-between" aria-label={ariaLabel}>
       <span className="text-gray-100 text-sm">{`${name}가 ${type}되었습니다`}</span>
-      {showCloseButton && (
-        <CrossButton label="닫기" onClick={closeToast} theme="dark" iconSize="small" />
-      )}
+      <CrossButton label="닫기" onClick={closeToast} theme="dark" iconSize="small" />
     </div>
   );
 }
