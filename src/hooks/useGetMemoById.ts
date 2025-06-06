@@ -23,12 +23,12 @@ const fetchMemoById = async (id: string): Promise<MemoProps> => {
 };
 
 export default function useGetMemoById(id: string) {
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['memo', id],
     queryFn: () => fetchMemoById(id),
     staleTime: 1000 * 60 * 5,
     retry: 0,
   });
 
-  return { memo: data, error, isLoading };
+  return { memo: data, isLoading, isError };
 }
