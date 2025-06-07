@@ -8,7 +8,7 @@ import { FaCheck } from 'react-icons/fa6';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdTrash } from 'react-icons/io';
 import { PiTagChevronFill } from 'react-icons/pi';
-import { showCatCreateToast } from '@/components/toast/showToast';
+import showCatCreateToast from '@/components/toast/showToast';
 
 export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const { categories: fetchedCategories, isLoading } = useCategories();

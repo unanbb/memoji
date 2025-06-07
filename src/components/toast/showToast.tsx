@@ -7,7 +7,7 @@ interface ToastProps {
   ariaLabel: string;
 }
 
-export function showCatCreateToast ({name, type, ariaLabel} : ToastProps) {
+export default function showToast ({name, type, ariaLabel} : ToastProps) {
   toast(
     () => (
       <Toast
