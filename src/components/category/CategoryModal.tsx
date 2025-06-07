@@ -36,14 +36,13 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const handleCreateClick = async () => {
     const trimmedCategory = newCategory.trim();
     if (trimmedCategory === '') {
-      alert('카테고리 이름을 입력해주세요.');
-      //TODO: 토스트 or 모달로 개선 필요
+      console.error('카테고리 이름을 입력해주세요.');
       return;
     } else if (
       categoryStates.some(category => category.name.toLowerCase() === trimmedCategory.toLowerCase())
     ) {
-      alert('이미 존재하는 카테고리입니다.');
-      //TODO: 토스트 or 모달로 개선 필요
+      console.error('이미 존재하는 카테고리입니다.');
+      //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
       return;
     } else {
       console.log('새 카테고리 생성:', trimmedCategory);
@@ -66,6 +65,11 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         });
       } catch (error) {
         console.error('카테고리 생성 실패', error);
+        showToast({
+          name: '카테고리',
+          state: '생성',
+          type: 'error',
+        });
         throw new Error('카테고리 생성 실패');
       }
     }
