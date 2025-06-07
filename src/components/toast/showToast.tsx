@@ -3,16 +3,18 @@ import Toast from '@/components/common/Toast';
 
 interface ToastProps {
   name: string;
-  type: string;
+  state: string;
+  type?: 'success' | 'error';
   ariaLabel: string;
 }
 
-export default function showToast ({name, type, ariaLabel} : ToastProps) {
+export default function showToast({ name, state, type = 'success', ariaLabel }: ToastProps) {
   toast(
     () => (
       <Toast
         closeToast={() => toast.dismiss()}
         name={name}
+        state={state}
         type={type}
         ariaLabel={ariaLabel}
       />

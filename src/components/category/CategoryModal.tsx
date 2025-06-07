@@ -62,7 +62,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         console.log('카테고리 생성 성공!', res);
         showToast({
           name: '카테고리',
-          type: '생성',
+          state: '생성',
           ariaLabel: '카테고리 생성 알림',
         });
       } catch (error) {
