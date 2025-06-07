@@ -8,7 +8,7 @@ import { FaCheck } from 'react-icons/fa6';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdTrash } from 'react-icons/io';
 import { PiTagChevronFill } from 'react-icons/pi';
-import showCatCreateToast from '@/components/toast/showToast';
+import showToast from '@/components/toast/showToast';
 
 export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const { categories: fetchedCategories, isLoading } = useCategories();
@@ -60,7 +60,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
         const res = await fetchCreateCategory({ category: trimmedCategory });
         console.log('카테고리 생성 성공!', res);
-        showCatCreateToast({
+        showToast({
           name: '카테고리',
           type: '생성',
           ariaLabel: '카테고리 생성 알림',
