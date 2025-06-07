@@ -1,14 +1,8 @@
 import { toast } from 'react-toastify';
 import Toast from '@/components/common/Toast';
+import type { ToastArgs } from '@/types/toast';
 
-interface ToastProps {
-  name: string;
-  state: string;
-  type?: 'success' | 'error';
-  ariaLabel: string;
-}
-
-export default function showToast({ name, state, type = 'success', ariaLabel }: ToastProps) {
+export default function showToast({ name, state, type = 'success', ariaLabel }: ToastArgs) {
   toast(
     () => (
       <Toast

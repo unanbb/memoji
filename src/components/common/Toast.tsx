@@ -1,4 +1,5 @@
 import CrossButton from '@/components/common/CrossButton';
+import type { ToastProps } from '@/types/toast';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Toast({
@@ -7,13 +8,7 @@ export default function Toast({
   state,
   type,
   ariaLabel,
-}: {
-  closeToast: () => void;
-  name: string;
-  state: string;
-  type: 'success' | 'error';
-  ariaLabel: string;
-}) {
+}: ToastProps) {
   return (
     <div className="w-full flex items-center justify-between" aria-label={ariaLabel}>
       <span className="text-gray-100 text-sm">
