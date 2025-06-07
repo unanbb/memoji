@@ -1,3 +1,6 @@
+import getQueryClient from '@/app/getQueryClient';
+import { useMutation } from '@tanstack/react-query';
+
 async function fetchDeleteMemo(id: string): Promise<{ success: boolean; message?: string }> {
   try {
     const response = await fetch(`/api/memos/${id}`, {
@@ -18,9 +21,14 @@ async function fetchDeleteMemo(id: string): Promise<{ success: boolean; message?
 }
 
 export default function useDeleteMemo() {
-  const deleteMemo = async (id: string): Promise<{ success: boolean; message?: string }> => {
-    return fetchDeleteMemo(id);
-  };
-
-  return { deleteMemo };
+  const queryClient = getQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: fetchDeleteMemo,
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['memos'],
+      });
+    },
+  });
+  return { deleteMemo: mutate };
 }

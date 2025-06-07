@@ -15,8 +15,9 @@ interface MemoUpdateModalProps {
   onClose: () => void;
   id: string;
 }
+
 export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
-  const { memo, status } = useGetMemoById(id);
+  const { memo, isError, isLoading } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
 
@@ -29,29 +30,32 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
 
   const router = useRouter();
 
-  const handleDeleteMemo = async () => {
-    const result = await deleteMemo(id);
-    if (result.success) {
-      console.log('메모가 성공적으로 삭제되었습니다.');
-      router.push('/');
-      onClose();
-      showUndoDeleteToast(id);
-    } else {
-      console.error('메모 삭제 중 오류가 발생했습니다:', result.message);
-      // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
-    }
-  };
-
   useEffect(() => {
-    if (status === 'success' && memo) {
+    if (memo) {
       setMemoData({
         id: memo.id,
         title: memo.title,
         content: memo.content,
-        category: memo.category,
+        category: memo.category || '',
       });
     }
-  }, [status, memo]);
+  }, [memo]);
+  // TODO: useEffect를 지우기, memoData를 memo로부터 직접 가져오도록 변경
+
+  const handleDeleteMemo = () => {
+    deleteMemo(id, {
+      onSuccess: () => {
+        console.log('메모가 성공적으로 삭제되었습니다.');
+        router.push('/');
+        onClose();
+        showUndoDeleteToast(id);
+      },
+      onError: (error: Error) => {
+        console.error('메모 삭제 중 오류가 발생했습니다:', error.message);
+        // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
+      },
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMemoData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -61,20 +65,22 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     setMemoData(prev => ({ ...prev, content: newValue || '' }));
   };
 
-  const handleUpdateMemo = async () => {
-    const result = await updateMemo(id, memoData);
-    if (result.success) {
-      console.log('메모가 성공적으로 업데이트되었습니다.');
-    } else {
-      console.error('메모 업데이트 중 오류가 발생했습니다:', result.message);
-      // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
-    }
+  const handleUpdateMemo = () => {
+    updateMemo(
+      { id, memo: memoData },
+      {
+        onError: (error: Error) => {
+          console.error('메모 업데이트 중 오류가 발생했습니다:', error.message);
+          //TODO: 사용자에게 메모 업데이트 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
+        },
+      },
+    );
   };
 
   const handleClose = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     onClose();
-    if (status !== 'success') return;
+    if (isError || isLoading) return;
     handleUpdateMemo();
     router.push('/');
   };
@@ -89,11 +95,11 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       size="large"
       className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
     >
-      {status === 'loading' ? (
+      {isLoading ? (
         <div className="flex items-center justify-center h-full">
           <p>Loading...</p>
         </div>
-      ) : status === 'error' ? (
+      ) : isError ? (
         <div className="flex items-center justify-center h-full">
           <p>메모를 불러오는 중 오류가 발생했습니다.</p>
           <div className="absolute top-1 right-1">

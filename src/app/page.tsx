@@ -1,4 +1,6 @@
+import getQueryClient from '@/app/getQueryClient';
 import MemoSection from '@/components/memo/MemoSection';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { headers } from 'next/headers';
 
 const getMemos = async () => {
@@ -10,9 +12,7 @@ const getMemos = async () => {
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-
     const data = await res.json();
-
     return data.memos;
   } catch (error) {
     console.error('Failed to fetch memos:', error);
@@ -22,11 +22,17 @@ const getMemos = async () => {
 };
 
 export default async function Home() {
-  const memos = await getMemos();
+  const memos = await getQueryClient().fetchQuery({
+    queryKey: ['memos'],
+    queryFn: getMemos,
+    staleTime: 1000 * 60 * 5,
+  });
 
   return (
     <div>
-      <MemoSection memos={memos} />
+      <HydrationBoundary state={dehydrate(getQueryClient())}>
+        <MemoSection memos={memos} />
+      </HydrationBoundary>
     </div>
   );
 }
