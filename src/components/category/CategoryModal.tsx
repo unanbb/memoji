@@ -8,6 +8,7 @@ import { FaCheck } from 'react-icons/fa6';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdTrash } from 'react-icons/io';
 import { PiTagChevronFill } from 'react-icons/pi';
+import showToast from '@/components/toast/showToast';
 
 export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const { categories: fetchedCategories, isLoading } = useCategories();
@@ -35,14 +36,13 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const handleCreateClick = async () => {
     const trimmedCategory = newCategory.trim();
     if (trimmedCategory === '') {
-      alert('카테고리 이름을 입력해주세요.');
-      //TODO: 토스트 or 모달로 개선 필요
+      console.error('카테고리 이름을 입력해주세요.');
       return;
     } else if (
       categoryStates.some(category => category.name.toLowerCase() === trimmedCategory.toLowerCase())
     ) {
-      alert('이미 존재하는 카테고리입니다.');
-      //TODO: 토스트 or 모달로 개선 필요
+      console.error('이미 존재하는 카테고리입니다.');
+      //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
       return;
     } else {
       console.log('새 카테고리 생성:', trimmedCategory);
@@ -59,8 +59,17 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
         const res = await fetchCreateCategory({ category: trimmedCategory });
         console.log('카테고리 생성 성공!', res);
+        showToast({
+          name: '카테고리',
+          state: '생성',
+        });
       } catch (error) {
         console.error('카테고리 생성 실패', error);
+        showToast({
+          name: '카테고리',
+          state: '생성',
+          type: 'error',
+        });
         throw new Error('카테고리 생성 실패');
       }
     }
@@ -101,15 +110,14 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     if (target.isEditing) {
       const trimmedValue = target.editValue.trim();
       if (trimmedValue === '') {
-        alert('카테고리 이름을 입력해주세요.');
-        //TODO: 토스트 or 모달로 개선 필요
+        console.error('카테고리 이름을 입력해주세요.');
         return;
       } else if (
         trimmedValue.toLowerCase() !== categoryName.toLowerCase() &&
         categoryStates.some(cat => cat.name.toLowerCase() === trimmedValue.toLowerCase())
       ) {
-        alert('이미 존재하는 카테고리입니다.');
-        //TODO: 토스트 or 모달로 개선 필요
+        console.error('이미 존재하는 카테고리입니다.');
+        //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
         return;
       }
 
