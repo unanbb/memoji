@@ -110,15 +110,14 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     if (target.isEditing) {
       const trimmedValue = target.editValue.trim();
       if (trimmedValue === '') {
-        alert('카테고리 이름을 입력해주세요.');
-        //TODO: 토스트 or 모달로 개선 필요
+        console.error('카테고리 이름을 입력해주세요.');
         return;
       } else if (
         trimmedValue.toLowerCase() !== categoryName.toLowerCase() &&
         categoryStates.some(cat => cat.name.toLowerCase() === trimmedValue.toLowerCase())
       ) {
-        alert('이미 존재하는 카테고리입니다.');
-        //TODO: 토스트 or 모달로 개선 필요
+        console.error('이미 존재하는 카테고리입니다.');
+        //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
         return;
       }
 
