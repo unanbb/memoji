@@ -22,6 +22,7 @@ export default function showToast ({name, type, ariaLabel} : ToastProps) {
       position: 'bottom-left',
       pauseOnHover: false,
       hideProgressBar: true,
+      autoClose: 3000,
       style: {
         backgroundColor: 'black',
         width: '440px',
