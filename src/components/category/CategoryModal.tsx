@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchCreateCategory } from '@/action';
+import { fetchCreateCategory, fetchDeleteCategory } from '@/action';
 import useCategories from '@/hooks/useCategories';
 import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
@@ -91,18 +91,26 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     );
   };
 
-  const handleDeleteClick = (category: string, index: number) => {
-    if (!confirm(`"${category}" 카테고리를 삭제하시겠습니까?`)) {
-      setCategoryStates(prev =>
-        prev.map((state, i) => (i === index ? { ...state, isHovered: false } : state)),
-      );
-      return;
-    }
-    console.log(`${index}. ${category} 삭제`);
+  const handleDeleteClick = async (category: string, index: number) => {
+    // 서버에 삭제 요청
+    try {
+      await fetchDeleteCategory(category);
 
-    // TODO: 서버에 삭제 요청
-    // 성공 시 로컬 상태에서 제거
-    setCategoryStates(prev => prev.filter((_, i) => i !== index));
+      showToast({
+        name: '카테고리',
+        state: '삭제',
+      });
+
+      // 성공 시 로컬 상태에서 제거
+      setCategoryStates(prev => prev.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error('카테고리 삭제 실패', error);
+      showToast({
+        name: '카테고리',
+        state: '삭제',
+        type: 'error',
+      });
+    }
   };
 
   const handleModifyClick = (categoryName: string, index: number) => {
