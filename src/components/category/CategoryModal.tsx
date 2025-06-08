@@ -110,7 +110,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         state: '삭제',
         type: 'error',
       });
-      throw new Error('카테고리 삭제 실패');
     }
   };
 
