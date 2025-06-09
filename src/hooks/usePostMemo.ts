@@ -1,6 +1,6 @@
-import getQueryClient from '@/app/getQueryClient';
+import { queryKeys } from '@/lib/queryKeys';
 import type { MemoProps } from '@/types/memo';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) => {
   try {
@@ -18,16 +18,21 @@ export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdA
     return response.json();
   } catch (error) {
     console.error('메모 생성 중 오류 발생:', error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('알 수 없는 오류가 발생했습니다.');
+    }
   }
 };
 
 export default function usePostMemo() {
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: fetchCreateMemo,
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['memos'],
+        queryKey: queryKeys.memo.lists(),
       });
     },
   });
