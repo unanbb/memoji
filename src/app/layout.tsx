@@ -1,3 +1,4 @@
+import QueryProvider from '@/app/provider';
 import MainLayout from '@/components/layout/MainLayout';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
@@ -46,7 +47,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${pretendard.className}`}>
-        <MainLayout>{children}</MainLayout>
+        <QueryProvider>
+          <MainLayout>{children}</MainLayout>
+        </QueryProvider>
       </body>
     </html>
   );
