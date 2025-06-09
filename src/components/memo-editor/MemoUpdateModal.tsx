@@ -95,11 +95,20 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
     >
       {isError ? (
-        <div className="text-red-500 text-center">
-          메모를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.
+        <div className="flex flex-col items-center justify-center h-full space-y-4">
+          <div className="text-red-500 text-center">메모를 불러오는 중 오류가 발생했습니다.</div>
+          <button
+            onClick={() => handleUpdateMemo()}
+            className="px-4 py-2 bg-gray-700 text-white rounded"
+          >
+            다시 시도
+          </button>
         </div>
       ) : isLoading ? (
-        <div className="text-gray-500 text-center">메모를 불러오는 중...</div>
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-2 text-gray-500">메모를 불러오는 중...</span>
+        </div>
       ) : (
         <>
           <DeleteButton
