@@ -20,7 +20,7 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import type { EditorState } from 'lexical';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 interface MarkDownEditorProps {
   value?: string;
@@ -49,10 +49,8 @@ export default function MarkDownEditor({
   placeholder = '마크다운으로 작성하세요...',
 }: MarkDownEditorProps) {
   const { width } = useWindowSize();
-  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const editorHeight = width <= 768 ? '87%' : '50vh';
-  const isMobile = width <= 768;
 
   // 초기 에디터 설정
   const initialConfig = useMemo(
@@ -133,83 +131,32 @@ export default function MarkDownEditor({
     [onChange],
   );
 
-  // 프리뷰/편집 모드 토글
-  const togglePreviewMode = () => {
-    setIsPreviewMode(!isPreviewMode);
-  };
-
-  // 마크다운을 HTML로 변환하여 프리뷰 표시
-  const renderPreview = () => {
-    if (!value) return <div className="p-4 text-gray-500">프리뷰할 내용이 없습니다.</div>;
-
-    // 간단한 마크다운 -> HTML 변환 (실제로는 markdown parser 라이브러리 사용 권장)
-    const html = value
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
-      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-      .replace(/\*(.*)\*/gim, '<em>$1</em>')
-      .replace(/!\[([^\]]*)\]\(([^\)]*)\)/gim, '<img alt="$1" src="$2" />')
-      .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
-      .replace(/\n$/gim, '<br />');
-
-    return (
-      <div className="p-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: html }} />
-    );
-  };
-
   return (
     <div
       className="border border-gray-300 rounded-lg overflow-hidden"
       style={{ height: editorHeight }}
     >
-      {/* 툴바 */}
-      <div className="border-b border-gray-300 p-2 bg-gray-50 flex items-center justify-between">
-        <div className="text-sm text-gray-600">
-          {isMobile ? '마크다운 에디터' : 'Markdown Editor'}
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className="h-full flex flex-col relative">
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable className="flex-1 overflow-auto resize-none outline-none p-4" />
+            }
+            placeholder={
+              <div className="absolute top-4 left-4 text-gray-400 pointer-events-none">
+                {placeholder}
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <HistoryPlugin />
+          <AutoFocusPlugin />
+          <ListPlugin />
+          <LinkPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+          <OnChangePlugin onChange={handleEditorChange} />
         </div>
-        <div className="flex items-center gap-2">
-          {!isMobile && (
-            <button
-              onClick={togglePreviewMode}
-              className="px-3 py-1 text-sm border rounded hover:bg-gray-100 transition-colors"
-              type="button"
-            >
-              {isPreviewMode ? '편집' : '미리보기'}
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* 에디터 컨텐츠 */}
-      <div className="flex-1 overflow-hidden">
-        {isPreviewMode && !isMobile ? (
-          <div className="h-full overflow-auto">{renderPreview()}</div>
-        ) : (
-          <LexicalComposer initialConfig={initialConfig}>
-            <div className="h-full flex flex-col relative">
-              <RichTextPlugin
-                contentEditable={
-                  <ContentEditable className="flex-1 overflow-auto resize-none outline-none p-4" />
-                }
-                placeholder={
-                  <div className="absolute top-4 left-4 text-gray-400 pointer-events-none">
-                    {placeholder}
-                  </div>
-                }
-                ErrorBoundary={LexicalErrorBoundary}
-              />
-              <HistoryPlugin />
-              <AutoFocusPlugin />
-              <ListPlugin />
-              <LinkPlugin />
-              <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-              <OnChangePlugin onChange={handleEditorChange} />
-            </div>
-          </LexicalComposer>
-        )}
-      </div>
+      </LexicalComposer>
     </div>
   );
 }

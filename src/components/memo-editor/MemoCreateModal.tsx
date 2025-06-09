@@ -27,10 +27,6 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
 
   const submitMemo = useCallback(async () => {
     onClose();
-    if (!memoData.title || !memoData.content) {
-      console.error('메모 제목과 내용은 필수입니다.');
-      return;
-    }
     postMemo(memoData, {
       onSuccess: () => {
         router.push('/');

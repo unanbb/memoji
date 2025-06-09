@@ -17,8 +17,8 @@ export const memoListSchema = z.object({
 });
 
 export const createMemoSchema = z.object({
-  title: z.string().min(1, '제목은 필수입니다'),
-  content: z.string().min(1, '내용은 필수입니다'),
+  title: z.string(),
+  content: z.string(),
   category: z.string().default('others'),
 });
 
