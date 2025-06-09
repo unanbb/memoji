@@ -1,5 +1,5 @@
-import getQueryClient from '@/app/getQueryClient';
-import { useMutation } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 async function fetchDeleteMemo(id: string): Promise<{ success: boolean; message?: string }> {
   try {
@@ -21,12 +21,15 @@ async function fetchDeleteMemo(id: string): Promise<{ success: boolean; message?
 }
 
 export default function useDeleteMemo() {
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: fetchDeleteMemo,
-    onSettled: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({
-        queryKey: ['memos'],
+        queryKey: queryKeys.memo.lists(),
+      });
+      queryClient.removeQueries({
+        queryKey: queryKeys.memo.detail(id),
       });
     },
   });

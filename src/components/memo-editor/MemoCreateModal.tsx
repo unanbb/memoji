@@ -6,7 +6,7 @@ import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
 import usePostMemo from '@/hooks/usePostMemo';
-import type { MemoProps } from '@/types/memo';
+import { type MemoProps } from '@/types/memo';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
@@ -26,10 +26,15 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
   const { postMemo } = usePostMemo();
 
   const submitMemo = useCallback(async () => {
-    onClose();
+    if (!memoData.content) {
+      console.error('메모 내용은 필수입니다.');
+      return;
+    }
     postMemo(memoData, {
       onSuccess: () => {
+        console.log('메모가 성공적으로 생성되었습니다.');
         router.push('/');
+        onClose();
       },
       onError: (error: Error) => {
         console.error('메모 생성 중 오류가 발생했습니다:', error.message);

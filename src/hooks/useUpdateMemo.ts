@@ -1,6 +1,6 @@
-import getQueryClient from '@/app/getQueryClient';
+import { queryKeys } from '@/lib/queryKeys';
 import type { MemoProps } from '@/types/memo';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 async function fetchUpdateMemo(
   id: string,
@@ -30,13 +30,14 @@ async function fetchUpdateMemo(
 }
 
 export default function useUpdateMemo() {
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (params: { id: string; memo: Omit<MemoProps, 'id' | 'createdAt'> }) =>
       fetchUpdateMemo(params.id, params.memo),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['memos'] });
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.memo.detail(variables.id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.memo.lists() });
     },
   });
 
