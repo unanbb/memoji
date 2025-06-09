@@ -39,7 +39,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
         content: memo.content,
         category: memo.category || '',
       });
-      console.log('Memo data has been set:', memo);
     }
   }, [memo]);
 
@@ -47,8 +46,8 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     deleteMemo(id, {
       onSuccess: () => {
         console.log('메모가 성공적으로 삭제되었습니다.');
-        router.push('/');
         onClose();
+        router.push('/');
         showUndoDeleteToast(id);
       },
       onError: (error: Error) => {
