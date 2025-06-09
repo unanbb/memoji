@@ -2,13 +2,9 @@
 import useWindowSize from '@/hooks/useWindowSize';
 import '@uiw/react-markdown-preview/markdown.css';
 import type { PreviewType } from '@uiw/react-md-editor';
-import dynamic from 'next/dynamic';
+import MDEditor from '@uiw/react-md-editor';
 // import { useWindowSize } from 'react-use';
 
-const MDEditor = dynamic(() => import('@uiw/react-md-editor'), {
-  ssr: false,
-  loading: () => <div>에디터 로딩 중...</div>,
-});
 // TODO: 에디터 로딩 중 대신 스켈레톤 UI로 변경하기
 
 interface MarkDownEditorProps {
@@ -43,7 +39,6 @@ export default function MarkDownEditor({
       height={editorHeight}
       preview={previewMode as PreviewType}
       autoFocus
-      autoFocusEnd
       {...markDownProps}
     />
   );

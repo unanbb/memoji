@@ -1,5 +1,5 @@
 import type { MemoProps } from '@/types/memo';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 const fetchMemoById = async (id: string): Promise<MemoProps> => {
   try {
@@ -23,7 +23,7 @@ const fetchMemoById = async (id: string): Promise<MemoProps> => {
 };
 
 export default function useGetMemoById(id: string) {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useSuspenseQuery({
     queryKey: ['memo', id],
     queryFn: () => fetchMemoById(id),
     staleTime: 1000 * 60 * 5,

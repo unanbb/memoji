@@ -4,19 +4,49 @@ import CrossButton from '@/components/common/CrossButton';
 import DeleteButton from '@/components/common/DeleteButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
+import MemoErrorFallbackModal from '@/components/memo-editor/MemoErrorFallbackModal';
+import MemoLoadingModal from '@/components/memo-editor/MemoLoadingModal';
 import { Modal } from '@/components/Modal';
 import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+
 interface MemoUpdateModalProps {
   onClose: () => void;
   id: string;
 }
 
-export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
+export default function MemoUpdateModalWrapper({ onClose, id }: MemoUpdateModalProps) {
+  return (
+    <ErrorBoundary
+      fallback={
+        <MemoErrorFallbackModal
+          name="메모 수정 오류"
+          message="메모를 불러오는 중 오류가 발생했습니다."
+          onClose={onClose}
+        />
+      }
+    >
+      <Suspense
+        fallback={
+          <MemoLoadingModal
+            name="메모 수정 로딩 중"
+            message="메모를 불러오는 중입니다..."
+            onClose={onClose}
+          />
+        }
+      >
+        <MemoUpdateModal onClose={onClose} id={id} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+export function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { memo, isError, isLoading } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
@@ -29,18 +59,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   });
 
   const router = useRouter();
-
-  useEffect(() => {
-    if (memo) {
-      setMemoData({
-        id: memo.id,
-        title: memo.title,
-        content: memo.content,
-        category: memo.category || '',
-      });
-    }
-  }, [memo]);
-  // TODO: useEffect를 지우기, memoData를 memo로부터 직접 가져오도록 변경
 
   const handleDeleteMemo = () => {
     deleteMemo(id, {
