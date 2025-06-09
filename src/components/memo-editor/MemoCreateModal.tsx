@@ -1,11 +1,11 @@
 'use client';
-import { fetchCreateMemo } from '@/action';
 import CategoryModal from '@/components/category/CategoryModal';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
+import usePostMemo from '@/hooks/usePostMemo';
 import type { MemoProps } from '@/types/memo';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
@@ -23,21 +23,24 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
 
   const router = useRouter();
 
+  const { postMemo } = usePostMemo();
+
   const submitMemo = useCallback(async () => {
     onClose();
     if (!memoData.title || !memoData.content) {
       console.error('메모 제목과 내용은 필수입니다.');
       return;
     }
-    try {
-      const response = await fetchCreateMemo(memoData);
-      console.log('메모가 성공적으로 생성되었습니다:', response);
-    } catch (error) {
-      console.error('메모 생성 중 오류 발생:', error);
-      //TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요
-    }
-    router.push('/');
-  }, [memoData, onClose, router]);
+    postMemo(memoData, {
+      onSuccess: () => {
+        router.push('/');
+      },
+      onError: (error: Error) => {
+        console.error('메모 생성 중 오류가 발생했습니다:', error.message);
+        // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
+      },
+    });
+  }, [memoData, onClose, postMemo, router]);
 
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
 

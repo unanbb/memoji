@@ -1,5 +1,5 @@
 import type { MemoProps } from '@/types/memo';
-import { useEffect, useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 const fetchMemoById = async (id: string): Promise<MemoProps> => {
   try {
@@ -23,22 +23,12 @@ const fetchMemoById = async (id: string): Promise<MemoProps> => {
 };
 
 export default function useGetMemoById(id: string) {
-  const [memo, setMemo] = useState<MemoProps | null>(null);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error' | 'success'>('idle');
-  useEffect(() => {
-    const fetchData = async () => {
-      setStatus('loading');
-      try {
-        const fetchedMemo = await fetchMemoById(id);
-        setMemo(fetchedMemo);
-        setStatus('success');
-      } catch (error) {
-        console.error('Error fetching memo:', error);
-        setStatus('error');
-      }
-    };
-    fetchData();
-  }, [id]);
+  const { data, isLoading, isError } = useSuspenseQuery({
+    queryKey: ['memo', id],
+    queryFn: () => fetchMemoById(id),
+    staleTime: 1000 * 60 * 5,
+    retry: 0,
+  });
 
-  return { memo, status };
+  return { memo: data, isLoading, isError };
 }

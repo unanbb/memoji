@@ -32,12 +32,12 @@ export const fetchCreateCategory = async (category: { category: string }) => {
     });
 
     if (!response.ok) {
-      throw new Error('메모 생성에 실패했습니다.');
+      throw new Error('카테고리 생성에 실패했습니다.');
     }
     return response.json();
   } catch (error) {
     console.error('카테고리 생성 중 오류 발생:', error);
-    throw new Error('메모 생성 중 오류가 발생했습니다.');
+    throw new Error('카테고리 생성 중 오류가 발생했습니다.');
   }
 };
 
