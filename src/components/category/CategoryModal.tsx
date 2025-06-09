@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchCreateCategory, fetchDeleteCategory } from '@/action';
+import { fetchCreateCategory, fetchDeleteCategory, fetchModifyCategory } from '@/action';
 import useCategories from '@/hooks/useCategories';
 import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
@@ -113,37 +113,53 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const handleModifyClick = (categoryName: string, index: number) => {
+  const handleModifyClick = async (categoryName: string, index: number) => {
     const target = categoryStates[index];
+
     if (target.isEditing) {
-      const trimmedValue = target.editValue.trim();
-      if (trimmedValue === '') {
+      // isEditing이 true -> 데이터를 수정하는 로직
+      const newCategoryName = target.editValue.trim();
+      if (newCategoryName === '') {
         console.error('카테고리 이름을 입력해주세요.');
         return;
       } else if (
-        trimmedValue.toLowerCase() !== categoryName.toLowerCase() &&
-        categoryStates.some(cat => cat.name.toLowerCase() === trimmedValue.toLowerCase())
+        newCategoryName.toLowerCase() !== categoryName.toLowerCase() &&
+        categoryStates.some(cat => cat.name.toLowerCase() === newCategoryName.toLowerCase())
       ) {
         console.error('이미 존재하는 카테고리입니다.');
         //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
         return;
       }
 
-      // 로컬 상태 업데이트: 이름 변경 & isEditing 종료
-      setCategoryStates(prev =>
-        prev.map((state, i) =>
-          i === index ? { ...state, name: target.editValue, isEditing: false } : state,
-        ),
-      );
+      try {
+        // 서버에 삭제 요청
+        await fetchModifyCategory(categoryName, newCategoryName);
 
-      console.log(`${categoryName} -> ${target.editValue} 수정 완료`);
+        // 로컬 상태 업데이트: 이름 변경 & isEditing 종료
+        setCategoryStates(prev =>
+          prev.map((state, i) =>
+            i === index ? { ...state, name: target.editValue, isEditing: false } : state,
+          ),
+        );
 
-      // TODO: 서버에 수정 요청
+        showToast({
+          name: '카테고리',
+          state: '수정',
+        });
+      } catch (error) {
+        console.error('카테고리 수정 실패.', error);
+
+        showToast({
+          name: '카테고리',
+          state: '수정',
+          type: 'error',
+        });
+      }
     } else {
-      console.log(`${categoryName} 수정 시작`);
+      // isEditing이 false -> true로 바꾸고 수정 모드로 진입
       setCategoryStates(prev =>
         prev.map((state, i) =>
-          i === index ? { ...state, isEditing: true, editValue: categoryName } : state,
+          i === index ? { ...state, editValue: state.name, isEditing: true } : state,
         ),
       );
     }
