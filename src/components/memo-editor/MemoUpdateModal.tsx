@@ -47,7 +47,7 @@ export default function MemoUpdateModalWrapper({ onClose, id }: MemoUpdateModalP
 }
 
 export function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
-  const { memo, isError, isLoading } = useGetMemoById(id);
+  const { memo } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
 
@@ -98,7 +98,6 @@ export function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const handleClose = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     onClose();
-    if (isError || isLoading) return;
     handleUpdateMemo();
     router.push('/');
   };
@@ -113,52 +112,33 @@ export function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       size="large"
       className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
     >
-      {isLoading ? (
-        <div className="flex items-center justify-center h-full">
-          <p>Loading...</p>
-        </div>
-      ) : isError ? (
-        <div className="flex items-center justify-center h-full">
-          <p>메모를 불러오는 중 오류가 발생했습니다.</p>
-          <div className="absolute top-1 right-1">
-            <CrossButton onClick={handleClose} label="Close editor" />
-          </div>
-        </div>
-      ) : (
-        <>
-          <DeleteButton
-            onClick={handleDeleteMemo}
-            label="Delete memo"
-            className="absolute top-1 right-12"
-          />
-          <div className="absolute top-1 right-1">
-            <CrossButton onClick={handleClose} label="Close editor" />
-          </div>
-          <div className="mb-2 mt-2">
-            <InputField
-              placeholder="제목"
-              name="title"
-              value={memoData.title}
-              variant="title"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="mb-4 relative">
-            <InputField
-              placeholder="카테고리"
-              name="category"
-              value={memoData.category}
-              onChange={handleChange}
-            />
-            <AddButton
-              onClick={() => {}}
-              className="absolute -top-1 right-0"
-              label="카테고리 추가"
-            />
-          </div>
-          <MarkDownEditor value={memoData.content} onChange={handleMemoContentChange} />
-        </>
-      )}
+      <DeleteButton
+        onClick={handleDeleteMemo}
+        label="Delete memo"
+        className="absolute top-1 right-12"
+      />
+      <div className="absolute top-1 right-1">
+        <CrossButton onClick={handleClose} label="Close editor" />
+      </div>
+      <div className="mb-2 mt-2">
+        <InputField
+          placeholder="제목"
+          name="title"
+          value={memoData.title}
+          variant="title"
+          onChange={handleChange}
+        />
+      </div>
+      <div className="mb-4 relative">
+        <InputField
+          placeholder="카테고리"
+          name="category"
+          value={memoData.category}
+          onChange={handleChange}
+        />
+        <AddButton onClick={() => {}} className="absolute -top-1 right-0" label="카테고리 추가" />
+      </div>
+      <MarkDownEditor value={memoData.content} onChange={handleMemoContentChange} />
     </Modal>
   );
 }
