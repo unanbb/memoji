@@ -117,6 +117,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     const target = categoryStates[index];
 
     if (target.isEditing) {
+      // isEditing이 true -> 데이터를 수정하는 로직
       const newCategoryName = target.editValue.trim();
       if (newCategoryName === '') {
         console.error('카테고리 이름을 입력해주세요.');
@@ -132,7 +133,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
       try {
         // 서버에 삭제 요청
-        await fetchModifyCategory(newCategoryName);
+        await fetchModifyCategory(categoryName, newCategoryName);
 
         // 로컬 상태 업데이트: 이름 변경 & isEditing 종료
         setCategoryStates(prev =>
@@ -154,6 +155,13 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           type: 'error',
         });
       }
+    } else {
+      // isEditing이 false -> true로 바꾸고 수정 모드로 진입
+      setCategoryStates(prev =>
+        prev.map((state, i) =>
+          i === index ? { ...state, editValue: state.name, isEditing: true } : state,
+        ),
+      );
     }
   };
 
