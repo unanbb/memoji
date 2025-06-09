@@ -1,7 +1,6 @@
-import getQueryClient from '@/app/getQueryClient';
 import { queryKeys } from '@/lib/queryKeys';
 import type { MemoProps } from '@/types/memo';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) => {
   try {
@@ -28,7 +27,7 @@ export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdA
 };
 
 export default function usePostMemo() {
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: fetchCreateMemo,
     onSuccess: () => {
