@@ -1,5 +1,6 @@
 import QueryProvider from '@/app/provider';
 import MainLayout from '@/components/layout/MainLayout';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -48,6 +49,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.className}`}>
         <QueryProvider>
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           <MainLayout>{children}</MainLayout>
         </QueryProvider>
       </body>

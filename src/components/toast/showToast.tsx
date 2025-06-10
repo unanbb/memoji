@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import Toast from '@/components/common/Toast';
 import type { ToastArgs } from '@/types/toast';
 
-export default function showToast({ name, state, type = 'success' }: ToastArgs) {
+export default function showToast({ name, state, type = 'success', message }: ToastArgs) {
   const ariaLabel = `${name} ${state} ${type === 'error' ? '실패' : '성공'} 알림`;
   
   const getStyle = () =>
@@ -22,10 +22,8 @@ export default function showToast({ name, state, type = 'success' }: ToastArgs) 
     () => (
       <Toast
         closeToast={() => toast.dismiss()}
-        name={name}
-        state={state}
-        type={type}
         ariaLabel={ariaLabel}
+        message={message}
       />
     ),
     {
