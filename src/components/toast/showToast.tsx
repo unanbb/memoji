@@ -2,9 +2,10 @@ import { toast } from 'react-toastify';
 import Toast from '@/components/common/Toast';
 import type { ToastArgs } from '@/types/toast';
 
-export default function showToast({ name, state, type = 'success' }: ToastArgs) {
+export default function showToast({ name, state, type = 'success', message }: ToastArgs) {
   const ariaLabel = `${name} ${state} ${type === 'error' ? '실패' : '성공'} 알림`;
-  
+  const defaultMessage = type === 'success' ? `${name}가 ${state}되었습니다.` : `${name} ${state}에 실패했습니다. 다시 시도해주세요.`;
+
   const getStyle = () =>
     type === 'error'
       ? {
@@ -22,10 +23,8 @@ export default function showToast({ name, state, type = 'success' }: ToastArgs) 
     () => (
       <Toast
         closeToast={() => toast.dismiss()}
-        name={name}
-        state={state}
-        type={type}
         ariaLabel={ariaLabel}
+        message={message ?? defaultMessage}
       />
     ),
     {
