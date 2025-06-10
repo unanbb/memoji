@@ -1,5 +1,6 @@
 import getQueryClient from '@/app/getQueryClient';
 import MemoSection from '@/components/memo/MemoSection';
+import { queryKeys } from '@/lib/queryKeys';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { headers } from 'next/headers';
 
@@ -23,7 +24,7 @@ const getMemos = async () => {
 
 export default async function Home() {
   const memos = await getQueryClient().fetchQuery({
-    queryKey: ['memos'],
+    queryKey: queryKeys.memo.lists(),
     queryFn: getMemos,
     staleTime: 1000 * 60 * 5,
   });
