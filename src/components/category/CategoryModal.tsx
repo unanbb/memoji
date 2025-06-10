@@ -62,7 +62,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         showToast({
           name: '카테고리',
           state: '생성',
-          message: '카테고리 생성되었습니다.',
         });
       } catch (error) {
         console.error('카테고리 생성 실패', error);
@@ -70,7 +69,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           name: '카테고리',
           state: '생성',
           type: 'error',
-          message: '카테고리 생성에 실패했습니다. 다시 시도해주세요.',
         });
         throw new Error('카테고리 생성 실패');
       }
@@ -101,7 +99,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       showToast({
         name: '카테고리',
         state: '삭제',
-        message: '카테고리가 삭제되었습니다.',
       });
 
       // 성공 시 로컬 상태에서 제거
@@ -112,7 +109,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         name: '카테고리',
         state: '삭제',
         type: 'error',
-        message: '카테고리 삭제에 실패했습니다. 다시 시도해주세요.',
       });
     }
   };
@@ -149,7 +145,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         showToast({
           name: '카테고리',
           state: '수정',
-          message: '카테고리가 수정되었습니다.',
         });
       } catch (error) {
         console.error('카테고리 수정 실패.', error);
@@ -158,7 +153,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           name: '카테고리',
           state: '수정',
           type: 'error',
-          message: '카테고리 수정에 실패했습니다. 다시 시도해주세요.',
         });
       }
     } else {
