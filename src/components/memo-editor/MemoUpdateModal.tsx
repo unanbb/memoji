@@ -5,6 +5,7 @@ import DeleteButton from '@/components/common/DeleteButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
+import showToast from '@/components/toast/showToast';
 import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
@@ -52,7 +53,11 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       },
       onError: (error: Error) => {
         console.error('메모 삭제 중 오류가 발생했습니다:', error.message);
-        // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
+        showToast({
+          type: 'error',
+          state: '삭제',
+          name: '메모',
+        });
       },
     });
   };
@@ -71,7 +76,11 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       {
         onError: (error: Error) => {
           console.error('메모 업데이트 중 오류가 발생했습니다:', error.message);
-          //TODO: 사용자에게 메모 업데이트 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
+          showToast({
+            type: 'error',
+            state: '수정',
+            name: '메모',
+          });
         },
       },
     );

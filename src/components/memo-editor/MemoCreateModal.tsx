@@ -5,6 +5,7 @@ import CrossButton from '@/components/common/CrossButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
 import { Modal } from '@/components/Modal';
+import showToast from '@/components/toast/showToast';
 import usePostMemo from '@/hooks/usePostMemo';
 import { type MemoProps } from '@/types/memo';
 import { useRouter } from 'next/navigation';
@@ -27,7 +28,6 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
 
   const submitMemo = useCallback(async () => {
     if (!memoData.content) {
-      console.error('메모 내용은 필수입니다.');
       return;
     }
     postMemo(memoData, {
@@ -37,8 +37,12 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
         onClose();
       },
       onError: (error: Error) => {
-        console.error('메모 생성 중 오류가 발생했습니다:', error.message);
-        // TODO: 사용자에게 오류 메시지를 표시하는 로직 추가 필요 (ex: toast)
+        showToast({
+          type: 'error',
+          state: '생성',
+          name: '메모',
+        });
+        console.error('메모 생성 중 오류 발생:', error);
       },
     });
   }, [memoData, onClose, postMemo, router]);
