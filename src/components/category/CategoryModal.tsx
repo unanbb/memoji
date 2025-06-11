@@ -15,7 +15,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const [isCreating, setIsCreating] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [categoryStates, setCategoryStates] = useState<
-    { name: string; isEditing: boolean; isHovered: boolean; editValue: string }[]
+    { name: string; isEditing: boolean; isHovered: boolean; editValue: string; error?: string }[]
   >([]);
   const [isError, setIsError] = useState('');
 
@@ -26,6 +26,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         isEditing: false,
         isHovered: false,
         editValue: '',
+        error: '',
       })),
     );
   }, [fetchedCategories]);
@@ -43,7 +44,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       categoryStates.some(category => category.name.toLowerCase() === trimmedCategory.toLowerCase())
     ) {
       setIsError('이미 존재하는 카테고리입니다.');
-      //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
       return;
     } else {
       setIsError('');
@@ -121,14 +121,21 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       // isEditing이 true -> 데이터를 수정하는 로직
       const newCategoryName = target.editValue.trim();
       if (newCategoryName === '') {
-        console.error('카테고리 이름을 입력해주세요.');
+        setCategoryStates(prev =>
+          prev.map((state, i) =>
+            i === index ? { ...state, error: '카테고리 명을 입력해주세요.' } : state,
+          ),
+        );
         return;
       } else if (
         newCategoryName.toLowerCase() !== categoryName.toLowerCase() &&
         categoryStates.some(cat => cat.name.toLowerCase() === newCategoryName.toLowerCase())
       ) {
-        console.error('이미 존재하는 카테고리입니다.');
-        //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
+        setCategoryStates(prev =>
+          prev.map((state, i) =>
+            i === index ? { ...state, error: '이미 존재하는 카테고리입니다.' } : state,
+          ),
+        );
         return;
       }
 
@@ -139,7 +146,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         // 로컬 상태 업데이트: 이름 변경 & isEditing 종료
         setCategoryStates(prev =>
           prev.map((state, i) =>
-            i === index ? { ...state, name: target.editValue, isEditing: false } : state,
+            i === index ? { ...state, name: target.editValue, isEditing: false, error: '' } : state,
           ),
         );
 
@@ -263,13 +270,18 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
                   </div>
 
                   {category.isEditing ? (
-                    <input
-                      type="text"
-                      value={category.editValue}
-                      onChange={e => handleEditInputChange(idx, e.target.value)}
-                      onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
-                      className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
-                    />
+                    <div className="flex flex-col">
+                      <input
+                        type="text"
+                        value={category.editValue}
+                        onChange={e => handleEditInputChange(idx, e.target.value)}
+                        onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
+                        className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
+                      />
+                      {category.error && (
+                        <span className="text-xs text-red-600 pt-1 pb-1">{category.error}</span>
+                      )}
+                    </div>
                   ) : (
                     <span>{category.name}</span>
                   )}
