@@ -28,7 +28,7 @@ export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdA
 
 export default function usePostMemo() {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: fetchCreateMemo,
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -37,5 +37,5 @@ export default function usePostMemo() {
     },
   });
 
-  return { postMemo: mutate };
+  return { postMemo: mutate, isLoading: isPending };
 }

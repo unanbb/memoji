@@ -3,9 +3,6 @@ import useWindowSize from '@/hooks/useWindowSize';
 import '@uiw/react-markdown-preview/markdown.css';
 import type { PreviewType } from '@uiw/react-md-editor';
 import MDEditor from '@uiw/react-md-editor';
-// import { useWindowSize } from 'react-use';
-
-// TODO: 에디터 로딩 중 대신 스켈레톤 UI로 변경하기
 
 interface MarkDownEditorProps {
   value?: string;

@@ -4,6 +4,7 @@ import CrossButton from '@/components/common/CrossButton';
 import DeleteButton from '@/components/common/DeleteButton';
 import InputField from '@/components/common/InputField';
 import MarkDownEditor from '@/components/MarkdownEditor';
+import MemoEditorSkeleton from '@/components/memo-editor/MemoEditorSkeleton';
 import { Modal } from '@/components/Modal';
 import showToast from '@/components/toast/showToast';
 import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
@@ -93,7 +94,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     router.push('/');
   };
 
-  // TODO: 로딩 스켈레톤 구현 필요
   return (
     <Modal
       onClose={handleClose}
@@ -114,10 +114,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
           </button>
         </div>
       ) : isLoading ? (
-        <div className="flex items-center justify-center h-full">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          <span className="ml-2 text-gray-500">메모를 불러오는 중...</span>
-        </div>
+        <MemoEditorSkeleton />
       ) : (
         <>
           <DeleteButton
