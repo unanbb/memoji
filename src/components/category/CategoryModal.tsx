@@ -32,7 +32,9 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   }, [fetchedCategories]);
 
   const handlePlusClick = () => {
-    setIsCreating(!isCreating);
+    setIsCreating(prev => !prev);
+    setIsError('');
+    setNewCategory('');
   };
 
   const handleCreateClick = async () => {
@@ -46,12 +48,16 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       setIsError('이미 존재하는 카테고리입니다.');
       return;
     } else {
-      setIsError('');
-
       try {
         // 로컬 상태 업데이트
         setCategoryStates(prev => [
-          { name: trimmedCategory, isEditing: false, isHovered: false, editValue: trimmedCategory, error: '' },
+          {
+            name: trimmedCategory,
+            isEditing: false,
+            isHovered: false,
+            editValue: trimmedCategory,
+            error: '',
+          },
           ...prev,
         ]);
         // Create 상태 off & input창 비움
