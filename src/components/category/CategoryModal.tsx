@@ -45,8 +45,6 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       //TODO: 하단에 에러 메시지가 뜨도록 개선 필요
       return;
     } else {
-      console.log('새 카테고리 생성:', trimmedCategory);
-
       try {
         // 로컬 상태 업데이트
         setCategoryStates(prev => [
@@ -57,8 +55,8 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         setIsCreating(false);
         setNewCategory('');
 
-        const res = await fetchCreateCategory({ category: trimmedCategory });
-        console.log('카테고리 생성 성공!', res);
+        await fetchCreateCategory({ category: trimmedCategory });
+
         showToast({
           name: '카테고리',
           state: '생성',
