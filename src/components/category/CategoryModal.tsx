@@ -17,7 +17,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const [categoryStates, setCategoryStates] = useState<
     { name: string; isEditing: boolean; isHovered: boolean; editValue: string; error: string }[]
   >([]);
-  const [isError, setIsError] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     setCategoryStates(() =>
@@ -33,19 +33,19 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
   const handlePlusClick = () => {
     setIsCreating(prev => !prev);
-    setIsError('');
+    setErrorMsg('');
     setNewCategory('');
   };
 
   const handleCreateClick = async () => {
     const trimmedCategory = newCategory.trim();
     if (trimmedCategory === '') {
-      setIsError('카테고리 명을 입력해주세요.');
+      setErrorMsg('카테고리 명을 입력해주세요.');
       return;
     } else if (
       categoryStates.some(category => category.name.toLowerCase() === trimmedCategory.toLowerCase())
     ) {
-      setIsError('이미 존재하는 카테고리입니다.');
+      setErrorMsg('이미 존재하는 카테고리입니다.');
       return;
     } else {
       try {
@@ -253,7 +253,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
               </div>
             )}
           </div>
-          {isError && <span className="pl-8 text-red-600 text-sm">{isError}</span>}
+          {errorMsg && <span className="pl-8 text-red-600 text-sm">{errorMsg}</span>}
           <div className="overflow-y-auto pr-4">
             <ul>
               {categoryStates.map((category, idx) => (
