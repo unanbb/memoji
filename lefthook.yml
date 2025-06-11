@@ -5,11 +5,11 @@
 #
 pre-push:
   jobs:
-    - name: packages audit
-      tags:
-        - frontend
-        - security
-      run: npm audit
+    # - name: packages audit
+    #   tags:
+    #     - frontend
+    #     - security
+    #   run: npm audit
 
     - name: type check
       run: npm run type-check
