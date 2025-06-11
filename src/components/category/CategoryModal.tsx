@@ -15,7 +15,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const [isCreating, setIsCreating] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [categoryStates, setCategoryStates] = useState<
-    { name: string; isEditing: boolean; isHovered: boolean; editValue: string; error?: string }[]
+    { name: string; isEditing: boolean; isHovered: boolean; editValue: string; error: string }[]
   >([]);
   const [isError, setIsError] = useState('');
 
@@ -51,7 +51,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       try {
         // 로컬 상태 업데이트
         setCategoryStates(prev => [
-          { name: trimmedCategory, isEditing: false, isHovered: false, editValue: trimmedCategory },
+          { name: trimmedCategory, isEditing: false, isHovered: false, editValue: trimmedCategory, error: '' },
           ...prev,
         ]);
         // Create 상태 off & input창 비움
