@@ -257,7 +257,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           <div className="overflow-y-auto pr-4">
             <ul>
               {categoryStates.map((category, idx) => (
-                <li key={`${category}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
+                <li key={`${category.name}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
                   <div
                     className={`flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl ${'hover:bg-gray-200 cursor-pointer'}`}
                     onMouseEnter={() => handleMouseEnter(idx)}
