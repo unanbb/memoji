@@ -51,6 +51,13 @@ export default function RootLayout({
         <QueryProvider>
           {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           <MainLayout>{children}</MainLayout>
+          {process.env.REACT_SCAN === 'true' && (
+            <script
+              crossOrigin="anonymous"
+              src="//unpkg.com/react-scan/dist/auto.global.js"
+              defer
+            />
+          )}
         </QueryProvider>
       </body>
     </html>
