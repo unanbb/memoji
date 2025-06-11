@@ -16,7 +16,7 @@ export default function MemoSection({ memos }: MemoListProps) {
   const toggleOpen = (category: string) => {
     setIsOpen(prev => ({
       ...prev,
-      [category]: !prev[category],
+      [category]: prev[category] === undefined ? false : !prev[category],
     }));
   };
 
@@ -31,12 +31,15 @@ export default function MemoSection({ memos }: MemoListProps) {
               <Link href={`/${category}`} className="font-medium inline-block">
                 {category}
               </Link>
-              <ToggleButton onClick={() => toggleOpen(category)} isOpen={isOpen[category]} />
+              <ToggleButton
+                onClick={() => toggleOpen(category)}
+                isOpen={isOpen[category] ?? true}
+              />
             </div>
             <Separator my={3} />
             <div
               className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                isOpen[category] ? 'max-h-full' : 'max-h-0 opacity-0'
+                (isOpen[category] ?? true) ? 'max-h-full' : 'max-h-0 opacity-0'
               }`}
             >
               <MemoList memos={filteredMemos} />
