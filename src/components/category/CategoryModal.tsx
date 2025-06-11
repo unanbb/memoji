@@ -1,6 +1,7 @@
 'use client';
 
 import { fetchCreateCategory, fetchDeleteCategory, fetchModifyCategory } from '@/action';
+import showToast from '@/components/toast/showToast';
 import useCategories from '@/hooks/useCategories';
 import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
@@ -8,7 +9,6 @@ import { FaCheck } from 'react-icons/fa6';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdTrash } from 'react-icons/io';
 import { PiTagChevronFill } from 'react-icons/pi';
-import showToast from '@/components/toast/showToast';
 
 export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const { categories: fetchedCategories, isLoading } = useCategories();
@@ -20,8 +20,8 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     setCategoryStates(() =>
-      fetchedCategories.map((categoryName: string) => ({
-        name: categoryName,
+      fetchedCategories.map(category => ({
+        name: category.name,
         isEditing: false,
         isHovered: false,
         editValue: '',

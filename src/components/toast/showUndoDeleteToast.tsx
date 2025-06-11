@@ -1,4 +1,5 @@
 import CrossButton from '@/components/common/CrossButton';
+import showToast from '@/components/toast/showToast';
 import useUndoDeleteMemo from '@/hooks/useUndoDeleMemo';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -9,18 +10,31 @@ interface SplitButtonsProps {
 }
 
 function MemoDeleteToast({ closeToast, id }: SplitButtonsProps) {
-  const { undoDeleteMemo } = useUndoDeleteMemo(id);
+  const { undoDeleteMemo } = useUndoDeleteMemo();
 
   const router = useRouter();
 
-  const handleUndo = async () => {
-    try {
-      await undoDeleteMemo();
-      closeToast();
-      router.push('/');
-    } catch (error) {
-      console.error('메모 복원 중 오류 발생:', error);
-    }
+  const handleUndo = () => {
+    undoDeleteMemo(id, {
+      onError: () => {
+        closeToast();
+        router.push('/');
+        showToast({
+          name: '메모',
+          state: '복구 실패',
+          type: 'error',
+        });
+      },
+      onSuccess: () => {
+        closeToast();
+        router.push('/');
+        showToast({
+          name: '메모',
+          state: '복구',
+          type: 'success',
+        });
+      },
+    });
   };
 
   return (

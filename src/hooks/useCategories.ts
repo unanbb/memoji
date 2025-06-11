@@ -1,6 +1,7 @@
+import type { CategoryItem } from '@/types/category';
 import { useEffect, useState } from 'react';
 
-const fetchCategories = async (): Promise<string[]> => {
+const fetchCategories = async (): Promise<CategoryItem[]> => {
   try {
     const response = await fetch('/api/categories');
     if (!response.ok) {
@@ -13,9 +14,8 @@ const fetchCategories = async (): Promise<string[]> => {
     return [];
   }
 };
-
 export default function useCategories() {
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
