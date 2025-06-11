@@ -1,4 +1,5 @@
 import { db } from '@/lib/firebase';
+import type { CategoryItem } from '@/types/category';
 import {
   addDoc,
   collection,
@@ -52,15 +53,29 @@ export async function getCategoryById(id: string): Promise<string | null> {
   }
 }
 
-export async function getCategories(): Promise<string[]> {
+export async function getCategories(): Promise<CategoryItem[]> {
   try {
-    const querySnapshot = await getDocs(collection(db, 'categories'));
-    return querySnapshot.docs
+    const categorySnapshot = await getDocs(collection(db, 'categories'));
+    const memoSnapshot = await getDocs(collection(db, 'memos'));
+
+    const memoCounts = new Map<string, number>();
+    memoSnapshot.docs.forEach(memoDoc => {
+      const categoryId = memoDoc.data().categoryId;
+      if (categoryId) {
+        memoCounts.set(categoryId, (memoCounts.get(categoryId) || 0) + 1);
+      }
+    });
+
+    return categorySnapshot.docs
       .map(doc => {
         const data = doc.data();
-        return data.name || '';
+        return {
+          id: doc.id,
+          name: data.name || '',
+          memoCount: memoCounts.get(doc.id) || 0,
+        };
       })
-      .sort((a, b) => a.localeCompare(b));
+      .sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error('Error fetching categories:', error);
     throw new Error('Failed to fetch categories');
