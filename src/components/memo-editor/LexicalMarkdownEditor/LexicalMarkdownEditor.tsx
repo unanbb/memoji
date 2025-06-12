@@ -21,10 +21,10 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import type { EditorState } from 'lexical';
 import { useCallback } from 'react';
-import AutoLinkPlugin from '../../plugins/AutoLinkPlugin';
-import CodeHighlightPlugin from '../../plugins/CodeHighlightPlugin';
-import ListMaxIndentLevelPlugin from '../../plugins/ListMaxIndentLevelPlugin';
-import ToolbarPlugin from '../../plugins/ToolbarPlugin';
+import AutoLinkPlugin from './plugins/AutoLinkPlugin';
+import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
+import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
+import ToolbarPlugin from './plugins/ToolbarPlugin';
 import { lexicalTheme } from './LexicalMarkdownEditor.theme';
 import './LexicalMarkdownEditor.toolbar.css';
 
@@ -60,7 +60,13 @@ export default function LexicalMarkdownEditor({
       LinkNode,
       AutoLinkNode,
     ],
-    editorState: value ? () => $convertFromMarkdownString(value, TRANSFORMERS) : undefined,
+    editorState: value
+      ? () => {
+          $convertFromMarkdownString(value, TRANSFORMERS);
+
+          console.log('Converted from Markdown:', value);
+        }
+      : undefined,
   };
 
   const handleEditorChange = useCallback(
