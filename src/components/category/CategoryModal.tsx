@@ -37,7 +37,23 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     setNewCategory('');
   };
 
-  const handleCreateClick = async () => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewCategory(e.target.value);
+  };
+
+  const handleMouseEnter = (index: number) => {
+    setCategoryStates(prev =>
+      prev.map((state, i) => (i === index ? { ...state, isHovered: true } : state)),
+    );
+  };
+
+  const handleMouseLeave = (index: number) => {
+    setCategoryStates(prev =>
+      prev.map((state, i) => (i === index ? { ...state, isHovered: false } : state)),
+    );
+  };
+
+    const handleCreateClick = async () => {
     const trimmedCategory = newCategory.trim();
     if (trimmedCategory === '') {
       setErrorMsg('카테고리 명을 입력해주세요.');
@@ -84,23 +100,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       }
     }
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewCategory(e.target.value);
-  };
-
-  const handleMouseEnter = (index: number) => {
-    setCategoryStates(prev =>
-      prev.map((state, i) => (i === index ? { ...state, isHovered: true } : state)),
-    );
-  };
-
-  const handleMouseLeave = (index: number) => {
-    setCategoryStates(prev =>
-      prev.map((state, i) => (i === index ? { ...state, isHovered: false } : state)),
-    );
-  };
-
+  
   const handleDeleteClick = async (category: string, index: number) => {
     // 서버에 삭제 요청
     try {
