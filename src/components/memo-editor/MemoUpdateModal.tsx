@@ -110,6 +110,9 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
           >
             다시 시도
           </button>
+          <div className="absolute top-1 right-1">
+            <CrossButton onClick={handleClose} label="Close editor" />
+          </div>
         </div>
       ) : isLoading || isFetching ? (
         <MemoEditorSkeleton />
