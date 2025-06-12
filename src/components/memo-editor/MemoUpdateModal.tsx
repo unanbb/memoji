@@ -12,7 +12,7 @@ import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface MemoUpdateModalProps {
   onClose: () => void;
@@ -20,34 +20,31 @@ interface MemoUpdateModalProps {
 }
 
 export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
-  const { data: memo, isLoading, isError } = useGetMemoById(id);
+  const { data: memo, isLoading, isError, isFetching } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
-
-  const [memoData, setMemoData] = useState({
-    id,
-    title: memo?.title || '',
-    content: memo?.content || '',
-    category: memo?.category || '',
-  });
-
   const router = useRouter();
 
-  useEffect(() => {
-    if (memo) {
-      setMemoData({
-        id: memo.id,
-        title: memo.title,
-        content: memo.content,
-        category: memo.category || '',
-      });
-    }
-  }, [memo]);
+  const [memoData, setMemoData] = useState<{
+    id?: string;
+    title?: string;
+    content?: string;
+    category?: string;
+  }>({});
+
+  const displayMemoData = useMemo(
+    () => ({
+      id: memoData.id ?? memo?.id,
+      title: memoData.title ?? memo?.title ?? '',
+      content: memoData.content ?? memo?.content ?? '',
+      category: memoData.category ?? memo?.category ?? 'others',
+    }),
+    [memo, memoData],
+  );
 
   const handleDeleteMemo = () => {
     deleteMemo(id, {
       onSuccess: () => {
-        console.log('메모가 성공적으로 삭제되었습니다.');
         onClose();
         router.push('/');
         showUndoDeleteToast(id);
@@ -73,7 +70,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
 
   const handleUpdateMemo = () => {
     updateMemo(
-      { id, memo: memoData },
+      { id, memo: { ...displayMemoData, id } },
       {
         onError: (error: Error) => {
           console.error('메모 업데이트 중 오류가 발생했습니다:', error.message);
@@ -90,6 +87,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const handleClose = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     onClose();
+    if (isError || isLoading || isFetching) return;
     handleUpdateMemo();
     router.push('/');
   };
@@ -113,7 +111,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
             다시 시도
           </button>
         </div>
-      ) : isLoading ? (
+      ) : isLoading || isFetching ? (
         <MemoEditorSkeleton />
       ) : (
         <>
@@ -129,7 +127,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
             <InputField
               placeholder="제목"
               name="title"
-              value={memoData.title}
+              value={displayMemoData.title}
               variant="title"
               onChange={handleChange}
             />
@@ -138,7 +136,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
             <InputField
               placeholder="카테고리"
               name="category"
-              value={memoData.category}
+              value={displayMemoData.category}
               onChange={handleChange}
             />
             <AddButton
@@ -147,7 +145,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
               label="카테고리 추가"
             />
           </div>
-          <MarkDownEditor value={memoData.content} onChange={handleMemoContentChange} />
+          <MarkDownEditor value={displayMemoData.content} onChange={handleMemoContentChange} />
         </>
       )}
     </Modal>
