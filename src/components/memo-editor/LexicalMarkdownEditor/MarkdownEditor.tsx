@@ -7,12 +7,5 @@ interface MarkDownEditorProps {
 }
 
 export default function MarkDownEditor({ value, onChange }: MarkDownEditorProps) {
-  return (
-    <LexicalMarkdownEditor
-      value={value}
-      onChange={onChange}
-      placeholder="내용을 입력하세요..."
-      autoFocus
-    />
-  );
+  return <LexicalMarkdownEditor value={value} onChange={onChange} autoFocus />;
 }

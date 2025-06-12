@@ -21,12 +21,12 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import type { EditorState } from 'lexical';
 import { useCallback } from 'react';
+import { lexicalTheme } from './LexicalMarkdownEditor.theme';
+import './LexicalMarkdownEditor.toolbar.css';
 import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-import { lexicalTheme } from './LexicalMarkdownEditor.theme';
-import './LexicalMarkdownEditor.toolbar.css';
 
 interface LexicalMarkdownEditorProps {
   value?: string;
@@ -43,6 +43,7 @@ export default function LexicalMarkdownEditor({
   value = '',
   onChange,
   autoFocus = true,
+  placeholder = '내용을 입력하세요...',
 }: LexicalMarkdownEditorProps) {
   const initialConfig = {
     namespace: 'MarkdownEditor',
@@ -99,9 +100,7 @@ export default function LexicalMarkdownEditor({
             contentEditable={
               <ContentEditable className="flex-1 p-4 outline-none resize-none border border-gray-300 rounded-b-lg overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
             }
-            placeholder={
-              <div className="text-gray-400 absolute top-16 left-4">내용을 입력하세요...</div>
-            }
+            placeholder={<div className="text-gray-400 absolute top-16 left-4">{placeholder}</div>}
             ErrorBoundary={LexicalErrorBoundary}
           />
           <MyOnChangePlugin onChange={handleEditorChange} />
