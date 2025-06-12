@@ -53,7 +53,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     );
   };
 
-    const handleCreateClick = async () => {
+  const handleCreateClick = async () => {
     const trimmedCategory = newCategory.trim();
     if (trimmedCategory === '') {
       setErrorMsg('카테고리 명을 입력해주세요.');
@@ -100,9 +100,16 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       }
     }
   };
-  
+
   const handleDeleteClick = async (category: string, index: number) => {
-    // 서버에 삭제 요청
+    // TODO: 추후 useRef를 사용하도록 변경
+    // 1. 이전 상태 저장 (롤백용)
+    const prevStates = categoryStates;
+
+    // 2. 로컬 상태 업데이트 (낙관적 업데이트)
+    setCategoryStates(prev => prev.filter((_, i) => i !== index));
+
+    // 3. 서버에 삭제 요청
     try {
       await fetchDeleteCategory(category);
 
@@ -110,11 +117,10 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         name: '카테고리',
         state: '삭제',
       });
+    } catch {
+      // 4. 실패 시 롤백
+      setCategoryStates(prevStates);
 
-      // 성공 시 로컬 상태에서 제거
-      setCategoryStates(prev => prev.filter((_, i) => i !== index));
-    } catch (error) {
-      console.error('카테고리 삭제 실패', error);
       showToast({
         name: '카테고리',
         state: '삭제',
