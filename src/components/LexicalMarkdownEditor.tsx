@@ -1,24 +1,27 @@
 'use client';
 
+import useWindowSize from '@/hooks/useWindowSize';
+import { CodeHighlightNode, CodeNode } from '@lexical/code';
+import { LinkNode } from '@lexical/link';
+import { ListItemNode, ListNode } from '@lexical/list';
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+  TRANSFORMERS,
+} from '@lexical/markdown';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import { ListPlugin } from '@lexical/react/LexicalListPlugin';
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
-import { TRANSFORMERS } from '@lexical/markdown';
-import { $convertFromMarkdownString, $convertToMarkdownString } from '@lexical/markdown';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { ListItemNode, ListNode } from '@lexical/list';
-import { CodeHighlightNode, CodeNode } from '@lexical/code';
-import { LinkNode } from '@lexical/link';
 import type { EditorState } from 'lexical';
 import { useCallback } from 'react';
-import useWindowSize from '@/hooks/useWindowSize';
 
 interface LexicalMarkdownEditorProps {
   value?: string;
@@ -27,17 +30,8 @@ interface LexicalMarkdownEditorProps {
   autoFocus?: boolean;
 }
 
-function MyOnChangePlugin({
-  onChange,
-}: {
-  onChange: (editorState: EditorState) => void;
-}) {
-  return (
-    <OnChangePlugin
-      onChange={onChange}
-      ignoreSelectionChange={true}
-    />
-  );
+function MyOnChangePlugin({ onChange }: { onChange: (editorState: EditorState) => void }) {
+  return <OnChangePlugin onChange={onChange} ignoreSelectionChange={true} />;
 }
 
 const theme = {
@@ -119,26 +113,28 @@ export default function LexicalMarkdownEditor({
     onError: (error: Error) => {
       console.error('Lexical error:', error);
     },
-    nodes: [
-      HeadingNode,
-      QuoteNode,
-      ListNode,
-      ListItemNode,
-      CodeNode,
-      CodeHighlightNode,
-      LinkNode,
-    ],
+    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CodeNode, CodeHighlightNode, LinkNode],
     editorState: value ? () => $convertFromMarkdownString(value, TRANSFORMERS) : undefined,
   };
 
   const handleEditorChange = useCallback(
     (editorState: EditorState) => {
       editorState.read(() => {
-        const markdown = $convertToMarkdownString(TRANSFORMERS);
+        let markdown = $convertToMarkdownString(TRANSFORMERS);
+        markdown = markdown.replace(/\\`/g, '`');
+        markdown = markdown.replace(/\\\*/g, '*');
+        markdown = markdown.replace(/\\#/g, '#');
+        markdown = markdown.replace(/\\-/g, '-');
+        markdown = markdown.replace(/\\\[/g, '[');
+        markdown = markdown.replace(/\\\]/g, ']');
+        markdown = markdown.replace(/\\\(/g, '(');
+        markdown = markdown.replace(/\\\)/g, ')');
+        markdown = markdown.replace(/\\>/g, '>');
+        markdown = markdown.replace(/\\\|/g, '|');
         onChange?.(markdown);
       });
     },
-    [onChange]
+    [onChange],
   );
 
   return (
