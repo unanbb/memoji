@@ -9,8 +9,6 @@ declare namespace NodeJS {
     FIREBASE_MESSAGING_SENDER_ID: string;
     FIREBASE_APP_ID: string;
 
-    REACT_SCAN: 'true' | 'false';
-
-    TANSTACK_DEVTOOLS: 'true' | 'false';
+    NEXT_PUBLIC_REACT_SCAN: 'true' | 'false';
   }
 }
