@@ -48,36 +48,39 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       setErrorMsg('이미 존재하는 카테고리입니다.');
       return;
     } else {
-      try {
-        // 로컬 상태 업데이트
-        setCategoryStates(prev => [
-          {
-            name: trimmedCategory,
-            isEditing: false,
-            isHovered: false,
-            editValue: trimmedCategory,
-            error: '',
-          },
-          ...prev,
-        ]);
-        // Create 상태 off & input창 비움
-        setIsCreating(false);
-        setNewCategory('');
+      // 1. 로컬 상태 업데이트 (낙관적 업데이트)
+      setCategoryStates(prev => [
+        {
+          name: trimmedCategory,
+          isEditing: false,
+          isHovered: false,
+          editValue: trimmedCategory,
+          error: '',
+        },
+        ...prev,
+      ]);
+      // 2. UI 상태 초기화
+      setIsCreating(false);
+      setNewCategory('');
+      setErrorMsg('');
 
+      // 3. 서버와 통신
+      try {
         await fetchCreateCategory({ category: trimmedCategory });
 
         showToast({
           name: '카테고리',
           state: '생성',
         });
-      } catch (error) {
-        console.error('카테고리 생성 실패', error);
+      } catch {
+        // 실패 시 롤백
+        setCategoryStates(prev => prev.filter(category => category.name !== trimmedCategory));
+
         showToast({
           name: '카테고리',
           state: '생성',
           type: 'error',
         });
-        throw new Error('카테고리 생성 실패');
       }
     }
   };
