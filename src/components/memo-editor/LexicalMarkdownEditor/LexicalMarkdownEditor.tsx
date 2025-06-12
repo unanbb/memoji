@@ -61,13 +61,7 @@ export default function LexicalMarkdownEditor({
       LinkNode,
       AutoLinkNode,
     ],
-    editorState: value
-      ? () => {
-          $convertFromMarkdownString(value, TRANSFORMERS);
-
-          console.log('Converted from Markdown:', value);
-        }
-      : undefined,
+    editorState: value ? () => $convertFromMarkdownString(value, TRANSFORMERS) : undefined,
   };
 
   const handleEditorChange = useCallback(
@@ -84,7 +78,6 @@ export default function LexicalMarkdownEditor({
         markdown = markdown.replace(/\\\)/g, ')');
         markdown = markdown.replace(/\\>/g, '>');
         markdown = markdown.replace(/\\\|/g, '|');
-        console.log('Markdown:', markdown);
         onChange?.(markdown);
       });
     },
