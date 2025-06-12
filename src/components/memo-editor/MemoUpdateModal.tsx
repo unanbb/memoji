@@ -3,7 +3,7 @@ import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
 import DeleteButton from '@/components/common/DeleteButton';
 import InputField from '@/components/common/InputField';
-import MarkDownEditor from '@/components/MarkdownEditor';
+import MarkDownEditor from '@/components/memo-editor/LexicalMarkdownEditor/MarkdownEditor';
 import MemoEditorSkeleton from '@/components/memo-editor/MemoEditorSkeleton';
 import { Modal } from '@/components/Modal';
 import showToast from '@/components/toast/showToast';
@@ -99,7 +99,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       aria-label="메모 수정"
       aria-labelledby="memo-update-modal"
       size="large"
-      className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
+      className="max-w-3xl relative sm:h-[70vh] h-[100vh]"
     >
       {isError ? (
         <div className="flex flex-col items-center justify-center h-full space-y-4">

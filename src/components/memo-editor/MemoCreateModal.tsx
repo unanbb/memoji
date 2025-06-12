@@ -3,7 +3,7 @@ import CategoryModal from '@/components/category/CategoryModal';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
 import InputField from '@/components/common/InputField';
-import MarkDownEditor from '@/components/MarkdownEditor';
+import MarkDownEditor from '@/components/memo-editor/LexicalMarkdownEditor/MarkdownEditor';
 import MemoEditorSkeleton from '@/components/memo-editor/MemoEditorSkeleton';
 import { Modal } from '@/components/Modal';
 import showToast from '@/components/toast/showToast';
@@ -67,7 +67,7 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
       aria-label="메모 생성"
       aria-labelledby="memo-create-modal"
       size="large"
-      className="max-w-2xl relative sm:h-[70vh] h-[100vh]"
+      className="max-w-3xl relative sm:h-[70vh] h-[100vh]"
     >
       {isLoading ? (
         <MemoEditorSkeleton />
