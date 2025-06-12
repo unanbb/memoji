@@ -1,4 +1,4 @@
-name: Type Check and Lint
+name: Quality Checks
 
 on:
   push:
@@ -31,14 +31,20 @@ jobs:
         run: npm run lint
         continue-on-error: true
 
+      - name: Security Audit
+        id: audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
       - name: Report errors
-        if: ${{ steps.type-check.outcome == 'failure' || steps.lint.outcome == 'failure' }}
+        if: ${{ steps.type-check.outcome == 'failure' || steps.lint.outcome == 'failure' || steps.audit.outcome == 'failure' }}
         uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const typeCheckOutcome = '${{ steps.type-check.outcome }}';
             const lintOutcome = '${{ steps.lint.outcome }}';
+            const auditOutcome = '${{ steps.audit.outcome }}';
 
             const commitSHA = context.payload.pull_request ? context.payload.pull_request.head.sha : context.sha;
             const commitURL = `${context.payload.repository.html_url}/commit/${commitSHA}`;
@@ -50,11 +56,15 @@ jobs:
             }
 
             if (lintOutcome === 'failure') {
-              errorMessage += '## 린트 오류\nESLint 검사 중 오류가 발생했습니다. 자세한 내용은 로그를 확인해주세요.\n';
+              errorMessage += '## 린트 오류\nESLint 검사 중 오류가 발생했습니다. 자세한 내용은 로그를 확인해주세요.\n\n';
             }
 
-            if (typeCheckOutcome !== 'failure' && lintOutcome !== 'failure') {
-              errorMessage += '## 성공\n타입 체크와 린트 검사 모두 성공했습니다.';
+            if (auditOutcome === 'failure') {
+              errorMessage += '## 보안 감사 오류\n보안 취약점이 발견되었습니다. 자세한 내용은 로그를 확인해주세요.\n\n';
+            }
+
+            if (typeCheckOutcome !== 'failure' && lintOutcome !== 'failure' && auditOutcome !== 'failure') {
+              errorMessage += '## 성공\n모든 품질 검사가 성공했습니다.';
             } 
               
             github.rest.issues.createComment({
@@ -64,4 +74,4 @@ jobs:
               body: errorMessage
             });
 
-            core.setFailed('Type check or lint failed');
+            core.setFailed('Quality checks failed');
