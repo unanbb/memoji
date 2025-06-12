@@ -135,6 +135,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     if (target.isEditing) {
       // isEditing이 true -> 데이터를 수정하는 로직
       const newCategoryName = target.editValue.trim();
+
       if (newCategoryName === '') {
         setCategoryStates(prev =>
           prev.map((state, i) =>
@@ -154,32 +155,29 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         return;
       }
 
+      // 1. 이전 상태 저장
+      const prevStates = [...categoryStates];
+
+      // 2. 로컬 상태 업데이트 (낙관적 업데이트)
+      setCategoryStates(prev =>
+        prev.map((state, i) =>
+          i === index ? { ...state, name: state.editValue, isEditing: false, error: '' } : state,
+        ),
+      );
+
       try {
-        // 서버에 삭제 요청
+        // 3. 서버에 수정 요청
         await fetchModifyCategory(categoryName, newCategoryName);
 
-        // 로컬 상태 업데이트: 이름 변경 & isEditing 종료
-        setCategoryStates(prev =>
-          prev.map((state, i) =>
-            i === index ? { ...state, name: target.editValue, isEditing: false, error: '' } : state,
-          ),
-        );
+        showToast({ name: '카테고리', state: '수정' });
+      } catch {
+        // 4. 실패 시 롤백
+        setCategoryStates(prevStates);
 
-        showToast({
-          name: '카테고리',
-          state: '수정',
-        });
-      } catch (error) {
-        console.error('카테고리 수정 실패.', error);
-
-        showToast({
-          name: '카테고리',
-          state: '수정',
-          type: 'error',
-        });
+        showToast({ name: '카테고리', state: '수정', type: 'error' });
       }
     } else {
-      // isEditing이 false -> true로 바꾸고 수정 모드로 진입
+       // isEditing이 false -> true로 바꾸고 수정 모드로 진입
       setCategoryStates(prev =>
         prev.map((state, i) =>
           i === index ? { ...state, editValue: state.name, isEditing: true } : state,
