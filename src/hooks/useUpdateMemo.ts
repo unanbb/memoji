@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 async function fetchUpdateMemo(
   id: string,
-  memo: Omit<MemoProps, 'id' | 'createdAt'>,
+  memo: Omit<MemoProps, 'createdAt'>,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const response = await fetch(`/api/memos/${id}`, {
@@ -33,7 +33,7 @@ export default function useUpdateMemo() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (params: { id: string; memo: Omit<MemoProps, 'id' | 'createdAt'> }) =>
+    mutationFn: (params: { id: string; memo: Omit<MemoProps, 'createdAt'> }) =>
       fetchUpdateMemo(params.id, params.memo),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.memo.detail(variables.id) });
