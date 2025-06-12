@@ -140,12 +140,14 @@ export default function LexicalMarkdownEditor({
   return (
     <div style={{ height: editorHeight }}>
       <LexicalComposer initialConfig={initialConfig}>
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col relative">
           <RichTextPlugin
             contentEditable={
               <ContentEditable className="flex-1 p-4 outline-none resize-none border border-gray-300 rounded-lg overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
             }
-            placeholder={<div className="text-gray-400 text-sm">내용을 입력하세요...</div>}
+            placeholder={
+              <div className="text-gray-400 absolute top-4 left-4">내용을 입력하세요...</div>
+            }
             ErrorBoundary={LexicalErrorBoundary}
           />
           <MyOnChangePlugin onChange={handleEditorChange} />
@@ -154,6 +156,7 @@ export default function LexicalMarkdownEditor({
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <ListPlugin />
           <LinkPlugin />
+          <AutoFocusPlugin />
         </div>
       </LexicalComposer>
     </div>
