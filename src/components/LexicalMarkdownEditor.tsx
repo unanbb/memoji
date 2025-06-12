@@ -101,7 +101,6 @@ const theme = {
 export default function LexicalMarkdownEditor({
   value = '',
   onChange,
-  placeholder = '내용을 입력하세요...',
   autoFocus = true,
 }: LexicalMarkdownEditorProps) {
   const { width } = useWindowSize();
@@ -131,6 +130,7 @@ export default function LexicalMarkdownEditor({
         markdown = markdown.replace(/\\\)/g, ')');
         markdown = markdown.replace(/\\>/g, '>');
         markdown = markdown.replace(/\\\|/g, '|');
+        console.log('Markdown:', markdown);
         onChange?.(markdown);
       });
     },
@@ -145,11 +145,7 @@ export default function LexicalMarkdownEditor({
             contentEditable={
               <ContentEditable className="flex-1 p-4 outline-none resize-none border border-gray-300 rounded-lg overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
             }
-            placeholder={
-              <div className="absolute top-4 left-4 text-gray-400 pointer-events-none">
-                {placeholder}
-              </div>
-            }
+            placeholder={<div className="text-gray-400 text-sm">내용을 입력하세요...</div>}
             ErrorBoundary={LexicalErrorBoundary}
           />
           <MyOnChangePlugin onChange={handleEditorChange} />
