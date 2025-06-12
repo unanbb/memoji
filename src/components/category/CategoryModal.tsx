@@ -54,12 +54,12 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   };
 
   const handleCreateClick = async () => {
-    const trimmedCategory = newCategory.trim();
-    if (trimmedCategory === '') {
+    const newCategoryName = newCategory.trim();
+    if (newCategoryName === '') {
       setErrorMsg('카테고리 명을 입력해주세요.');
       return;
     } else if (
-      categoryStates.some(category => category.name.toLowerCase() === trimmedCategory.toLowerCase())
+      categoryStates.some(category => category.name.toLowerCase() === newCategoryName.toLowerCase())
     ) {
       setErrorMsg('이미 존재하는 카테고리입니다.');
       return;
@@ -67,10 +67,10 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       // 1. 로컬 상태 업데이트 (낙관적 업데이트)
       setCategoryStates(prev => [
         {
-          name: trimmedCategory,
+          name: newCategoryName,
           isEditing: false,
           isHovered: false,
-          editValue: trimmedCategory,
+          editValue: newCategoryName,
           error: '',
         },
         ...prev,
@@ -82,7 +82,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
       // 3. 서버와 통신
       try {
-        await fetchCreateCategory({ category: trimmedCategory });
+        await fetchCreateCategory({ category: newCategoryName });
 
         showToast({
           name: '카테고리',
@@ -90,7 +90,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         });
       } catch {
         // 실패 시 롤백
-        setCategoryStates(prev => prev.filter(category => category.name !== trimmedCategory));
+        setCategoryStates(prev => prev.filter(category => category.name !== newCategoryName));
 
         showToast({
           name: '카테고리',
