@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 export const fetchModifyCategory = async ({categoryName, newCategoryName} : {categoryName: string, newCategoryName: string}) => {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/categorfies/${encodeURIComponent(categoryName)}`,
+      `http://localhost:3000/api/categories/${encodeURIComponent(categoryName)}`,
       {
         method: 'PUT',
         headers: {
@@ -32,7 +32,7 @@ export default function useModifyCategory() {
   const { mutate } = useMutation({
     mutationFn: fetchModifyCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 

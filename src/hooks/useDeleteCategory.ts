@@ -26,7 +26,7 @@ export default function useDeleteCategory() {
   const { mutate } = useMutation({
     mutationFn: fetchDeleteCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 

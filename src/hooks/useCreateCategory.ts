@@ -27,7 +27,7 @@ export default function useCreateCategory() {
   const { mutate } = useMutation({
     mutationFn: fetchCreateCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [] });
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 
