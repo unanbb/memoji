@@ -15,6 +15,79 @@
   border-bottom: none;
 }
 
+/* Mobile Toolbar Styles */
+.mobile-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  z-index: 1000;
+  padding: 8px 4px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-toolbar-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.mobile-toolbar-row:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-toolbar-item {
+  border: 0;
+  display: flex;
+  background: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* Scrollbar hide utility for mobile toolbar */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.mobile-toolbar-item {
+  border: 0;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-width: 36px;
+  min-height: 36px;
+  flex: 1;
+}
+
+.mobile-toolbar-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.mobile-toolbar-item.active {
+  background-color: rgba(223, 232, 250, 0.3);
+}
+
+.mobile-toolbar-item.active svg {
+  color: #1976d2;
+}
+
+.mobile-toolbar-item:hover:not([disabled]) {
+  background-color: #eee;
+}
+
 .toolbar button.toolbar-item {
   border: 0;
   display: flex;
@@ -103,7 +176,10 @@
   z-index: 5;
   display: block;
   position: fixed;
-  box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 12px 28px 0 rgba(0, 0, 0, 0.2),
+    0 2px 4px 0 rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
   border-radius: 8px;
   min-width: 100px;
   min-height: 40px;

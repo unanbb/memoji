@@ -16,7 +16,7 @@ export default function MemoCreateButton() {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-49">
       {isModalOpen && <MemoCreateModal onClose={onClose} />}
       <div className="absolute top-2 right-2"></div>
       <PlusButton onClick={openModal} label="메모 추가" />
