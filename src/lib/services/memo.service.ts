@@ -115,7 +115,7 @@ export async function undoDeleteMemo(id: string, userId: string): Promise<MemoPr
       throw new Error('메모가 존재하지 않습니다.');
     }
     await setDoc(memoRef, { isDeleted: false, deletedAt: null }, { merge: true });
-    return docSnapshot.data() as MemoProps;
+    return { ...docSnapshot.data(), id: docSnapshot.id } as MemoProps;
   } catch (error) {
     console.error('메모 복원 중 오류 발생:', error);
     throw error;
