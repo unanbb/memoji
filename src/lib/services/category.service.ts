@@ -18,7 +18,16 @@ export async function createCategoryIfNotExists(name: string, userId: string): P
     const categoryName = !name || name.trim() === '' ? 'others' : name;
 
     return await runTransaction(db, async transaction => {
-      const newDocRef = doc(db, 'users', userId, 'categories', categoryName);
+      const slug = categoryName
+        .trim()
+        .toLowerCase()
+        .trim()
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '') // Remove special characters except word chars, spaces, hyphens
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+        .replace(/^-|-$/g, '');
+      const newDocRef = doc(db, 'users', userId, 'categories', slug);
       const snapshot = await transaction.get(newDocRef);
       if (snapshot.exists()) {
         return newDocRef.id;
