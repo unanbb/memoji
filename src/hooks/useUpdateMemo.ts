@@ -70,6 +70,12 @@ export default function useUpdateMemo() {
       console.error('Error updating memo:', error);
       throw error;
     },
+    onSettled: (data, error, variables) => {
+      queryClient.refetchQueries({ queryKey: queryKeys.memo.detail(variables.id), type: 'all' });
+      if (!data) {
+        console.error('Failed to update memo:', error);
+      }
+    },
   });
 
   return { updateMemo: mutation.mutate };
