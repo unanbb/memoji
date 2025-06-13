@@ -1,5 +1,5 @@
 'use client';
-import { handleGithubSignin } from '@/components/actions/handleGithubSignin';
+import { handleGithubSignIn } from '@/components/actions/handleGithubSignIn';
 import { handleGoogleSignIn } from '@/components/actions/handleGoogleSignIn';
 import SignInButton from '@/components/auth/SignInButton';
 import { Modal } from '@/components/Modal';
@@ -26,7 +26,7 @@ export default function SignIn({ isOpen, onClose }: SignInProps) {
           </SignInButton>
 
           <SignInButton
-            action={handleGithubSignin}
+            action={handleGithubSignIn}
             icon={<FaGithub className="text-gray-700" size={16} />}
           >
             GitHub로 로그인

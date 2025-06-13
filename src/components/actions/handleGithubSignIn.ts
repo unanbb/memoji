@@ -2,7 +2,7 @@
 
 import { signIn } from '@/auth';
 
-export async function handleGithubSignin() {
+export async function handleGithubSignIn() {
   try {
     await signIn('github', { redirectTo: '/' });
   } catch (error) {
