@@ -45,6 +45,8 @@ export default function useDeleteMemo() {
     onError: (_error, id, context) => {
       if (context?.previousMemo) {
         queryClient.setQueryData(queryKeys.memo.detail(id), context.previousMemo);
+      }
+      if (context?.previousMemos) {
         queryClient.setQueryData(queryKeys.memo.lists(), context.previousMemos);
       }
     },
