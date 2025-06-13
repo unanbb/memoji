@@ -1,5 +1,6 @@
 import type { CategoryItem } from '@/types/category';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 const fetchCategories = async (): Promise<CategoryItem[]> => {
   try {
@@ -14,18 +15,13 @@ const fetchCategories = async (): Promise<CategoryItem[]> => {
     return [];
   }
 };
-export default function useCategories() {
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedCategories = await fetchCategories();
-      setCategories(fetchedCategories);
-      setIsLoading(false);
-    };
-    fetchData();
-  }, []);
+export default function useCategories() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: fetchCategories,
+  })
+  const categories = useMemo(() => data ? data : [], [data]);
 
   return { categories, isLoading };
 }

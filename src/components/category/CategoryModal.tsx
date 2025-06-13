@@ -1,8 +1,10 @@
 'use client';
 
-import { fetchCreateCategory, fetchDeleteCategory, fetchModifyCategory } from '@/action';
 import showToast from '@/components/toast/showToast';
 import useCategories from '@/hooks/useCategories';
+import useCreateCategory from '@/hooks/useCreateCategory';
+import useDeleteCategory from '@/hooks/useDeleteCategory';
+import useModifyCategory from '@/hooks/useModifyCategory';
 import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa6';
@@ -12,6 +14,9 @@ import { PiTagChevronFill } from 'react-icons/pi';
 
 export default function CategoryModal({ onClose }: { onClose: () => void }) {
   const { categories: fetchedCategories, isLoading } = useCategories();
+  const fetchCreateCategory = useCreateCategory();
+  const fetchDeleteCategory = useDeleteCategory();
+  const fetchModifyCategory = useModifyCategory();
   const [isCreating, setIsCreating] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [categoryStates, setCategoryStates] = useState<
@@ -53,7 +58,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     );
   };
 
-  const handleCreateClick = async () => {
+  const handleCreateClick = () => {
     const newCategoryName = newCategory.trim();
     if (newCategoryName === '') {
       setErrorMsg('카테고리 명을 입력해주세요.');
@@ -81,55 +86,49 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       setErrorMsg('');
 
       // 3. 서버와 통신
-      try {
-        await fetchCreateCategory({ category: newCategoryName });
+      fetchCreateCategory(
+        { category: newCategoryName },
+        {
+          onSuccess: () => {
+            showToast({
+              name: '카테고리',
+              state: '생성',
+            });
+          },
+          onError: () => {
+            // 실패 시 롤백
+            setCategoryStates(prev => prev.filter(category => category.name !== newCategoryName));
 
+            showToast({
+              name: '카테고리',
+              state: '생성',
+              type: 'error',
+            });
+          },
+        },
+      );
+    }
+  };
+
+  const handleDeleteClick = (category: string) => {
+    fetchDeleteCategory(category, {
+      onSuccess: () => {
         showToast({
           name: '카테고리',
-          state: '생성',
+          state: '삭제',
         });
-      } catch {
-        // 실패 시 롤백
-        setCategoryStates(prev => prev.filter(category => category.name !== newCategoryName));
-
+      },
+      onError: () => {
         showToast({
           name: '카테고리',
-          state: '생성',
+          state: '삭제',
           type: 'error',
         });
-      }
-    }
+      },
+    });
   };
 
-  const handleDeleteClick = async (category: string, index: number) => {
-    // TODO: 추후 useRef를 사용하도록 변경
-    // 1. 이전 상태 저장 (롤백용)
-    const prevStates = categoryStates;
-
-    // 2. 로컬 상태 업데이트 (낙관적 업데이트)
-    setCategoryStates(prev => prev.filter((_, i) => i !== index));
-
-    // 3. 서버에 삭제 요청
-    try {
-      await fetchDeleteCategory(category);
-
-      showToast({
-        name: '카테고리',
-        state: '삭제',
-      });
-    } catch {
-      // 4. 실패 시 롤백
-      setCategoryStates(prevStates);
-
-      showToast({
-        name: '카테고리',
-        state: '삭제',
-        type: 'error',
-      });
-    }
-  };
-
-  const handleModifyClick = async (categoryName: string, index: number) => {
+  const handleModifyClick = (categoryName: string, index: number) => {
     const target = categoryStates[index];
 
     if (target.isEditing) {
@@ -155,32 +154,30 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         return;
       }
 
-      // 1. 이전 상태 저장
-      const prevStates = [...categoryStates];
-
-      // 2. 로컬 상태 업데이트 (낙관적 업데이트)
+      // 로컬 상태만 수정(isEditing / error)
       setCategoryStates(prev =>
         prev.map((state, i) =>
-          i === index ? { ...state, name: state.editValue, isEditing: false, error: '' } : state,
+          i === index ? { ...state, isEditing: false, error: '' } : state,
         ),
       );
 
-      try {
-        // 3. 서버에 수정 요청
-        await fetchModifyCategory(categoryName, newCategoryName);
-
-        showToast({ name: '카테고리', state: '수정' });
-      } catch {
-        // 4. 실패 시 롤백
-        setCategoryStates(prevStates);
-
-        showToast({ name: '카테고리', state: '수정', type: 'error' });
-      }
+      fetchModifyCategory(
+        { categoryName, newCategoryName },
+        {
+          onSuccess: () => {
+            showToast({ name: '카테고리', state: '수정' });
+          },
+          onError: () => {
+            // tanstack에서 서버 상태 롤백
+            showToast({ name: '카테고리', state: '수정', type: 'error' });
+          },
+        },
+      );
     } else {
-       // isEditing이 false -> true로 바꾸고 수정 모드로 진입
+      // isEditing이 false -> true로 바꾸고 수정 모드로 진입
       setCategoryStates(prev =>
         prev.map((state, i) =>
-          i === index ? { ...state, editValue: state.name, isEditing: true } : state,
+          i === index ? { ...state, editValue: state.name, isEditing: true, error: '' } : state,
         ),
       );
     }
@@ -271,7 +268,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
                     onMouseLeave={() => handleMouseLeave(idx)}
                     onClick={() => {
                       if (category.isHovered || window.innerWidth <= 768) {
-                        handleDeleteClick(category.name, idx);
+                        handleDeleteClick(category.name);
                       }
                     }}
                   >
