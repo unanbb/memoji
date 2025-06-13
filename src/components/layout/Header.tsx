@@ -1,5 +1,5 @@
 'use client';
-import SignIn from '@/components/auth/SiginIn';
+import SignIn from '@/components/auth/SignIn';
 import AuthSection from '@/components/auth/authSection';
 import SearchBar from '@/components/common/SearchBar';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
