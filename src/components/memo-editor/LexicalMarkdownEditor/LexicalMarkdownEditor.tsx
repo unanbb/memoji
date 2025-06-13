@@ -85,7 +85,7 @@ export default function LexicalMarkdownEditor({
   );
 
   return (
-    <div className="sm:h-[89%] h-[90vh] w-full">
+    <div className="sm:h-[85%] h-[90vh] w-full">
       <LexicalComposer initialConfig={initialConfig}>
         <div className="h-full flex flex-col relative">
           <ToolbarPlugin />
