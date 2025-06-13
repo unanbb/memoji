@@ -1,4 +1,5 @@
 import { queryKeys } from '@/lib/queryKeys';
+import { type MemoProps } from '@/types/memo';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 async function fetchDeleteMemo(id: string): Promise<{ success: boolean; message?: string }> {
@@ -24,13 +25,28 @@ export default function useDeleteMemo() {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: fetchDeleteMemo,
-    onSuccess: (_data, id) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.memo.lists(),
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.memo.detail(id) });
+      await queryClient.cancelQueries({ queryKey: queryKeys.memo.lists() });
+      const previousMemo = queryClient.getQueryData(queryKeys.memo.detail(id));
+      const previousMemos = queryClient.getQueryData(queryKeys.memo.lists());
+
+      if (!previousMemo || !previousMemos) return { previousMemo, previousMemos };
+
+      queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+        if (!old) return old;
+        return old.filter(memo => memo.id !== id);
       });
       queryClient.removeQueries({
         queryKey: queryKeys.memo.detail(id),
       });
+      return { previousMemo, previousMemos };
+    },
+    onError: (_error, id, context) => {
+      if (context?.previousMemo) {
+        queryClient.setQueryData(queryKeys.memo.detail(id), context.previousMemo);
+        queryClient.setQueryData(queryKeys.memo.lists(), context.previousMemos);
+      }
     },
   });
   return { deleteMemo: mutate };
