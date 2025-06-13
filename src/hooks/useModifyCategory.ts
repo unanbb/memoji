@@ -1,29 +1,31 @@
+import type { CategoryItem } from '@/types/category';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const fetchModifyCategory = async ({categoryName, newCategoryName} : {categoryName: string, newCategoryName: string}) => {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/categories/${encodeURIComponent(categoryName)}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          newName: newCategoryName,
-        }),
+export const fetchModifyCategory = async ({
+  categoryName,
+  newCategoryName,
+}: {
+  categoryName: string;
+  newCategoryName: string;
+}) => {
+  const response = await fetch(
+    `http://localhost:3000/api/categories/${encodeURIComponent(categoryName)}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        newName: newCategoryName,
+      }),
+    },
+  );
 
-    if (!response.ok) {
-      throw new Error('카테고리 수정에 실패했습니다.');
-    }
-
-    console.log(`카테고리명 수정 성공! ${categoryName} -> ${newCategoryName}`);
-  } catch (error) {
-    console.error('카테고리 수정 중 오류 발생: ', error);
-    throw new Error('카테고리 수정 중 오류가 발생했습니다.');
+  if (!response.ok) {
+    throw new Error('카테고리 수정에 실패했습니다.');
   }
+
+  console.log(`카테고리명 수정 성공! ${categoryName} -> ${newCategoryName}`);
 };
 
 export default function useModifyCategory() {
@@ -31,7 +33,31 @@ export default function useModifyCategory() {
 
   const { mutate } = useMutation({
     mutationFn: fetchModifyCategory,
-    onSuccess: () => {
+    onMutate: async ({
+      categoryName,
+      newCategoryName,
+    }: {
+      categoryName: string;
+      newCategoryName: string;
+    }) => {
+      await queryClient.cancelQueries({ queryKey: ['categories'] });
+
+      const prev = queryClient.getQueryData<CategoryItem[]>(['categories']);
+
+      queryClient.setQueryData<CategoryItem[]>(['categories'], old =>
+        old?.map(category =>
+          category.name === categoryName ? { ...category, name: newCategoryName } : category,
+        ),
+      );
+
+      return { prev };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.prev) {
+        queryClient.setQueryData(['categories'], context.prev);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });

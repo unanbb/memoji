@@ -22,15 +22,18 @@ export default function useDeleteCategory() {
   const { mutate } = useMutation({
     mutationFn: fetchDeleteCategory,
     onMutate: async (categoryName: string) => {
-      await queryClient.cancelQueries({queryKey:['categories']});
+      await queryClient.cancelQueries({ queryKey: ['categories'] });
 
       const prev = queryClient.getQueryData<CategoryItem[]>(['categories']);
 
-      queryClient.setQueryData<CategoryItem[]>(['categories'], old => old?.filter(category => category.name !== categoryName));
+      queryClient.setQueryData<CategoryItem[]>(['categories'], old =>
+        old?.filter(category => category.name !== categoryName),
+      );
 
       return { prev };
     },
     onError: (_err, _variables, context) => {
+      // 실패 시 롤백
       if (context?.prev) {
         queryClient.setQueryData(['categories'], context.prev);
       }

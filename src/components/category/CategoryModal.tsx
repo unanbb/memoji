@@ -154,17 +154,13 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         return;
       }
 
-      // 1. 이전 상태 저장
-      const prevStates = [...categoryStates];
-
-      // 2. 로컬 상태 업데이트 (낙관적 업데이트)
+      // 로컬 상태만 수정(isEditing / error)
       setCategoryStates(prev =>
         prev.map((state, i) =>
-          i === index ? { ...state, name: state.editValue, isEditing: false, error: '' } : state,
+          i === index ? { ...state, isEditing: false, error: '' } : state,
         ),
       );
 
-      // 3. 서버에 수정 요청
       fetchModifyCategory(
         { categoryName, newCategoryName },
         {
@@ -172,9 +168,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
             showToast({ name: '카테고리', state: '수정' });
           },
           onError: () => {
-            // 4. 실패 시 롤백
-            setCategoryStates(prevStates);
-
+            // tanstack에서 서버 상태 롤백
             showToast({ name: '카테고리', state: '수정', type: 'error' });
           },
         },
@@ -183,7 +177,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       // isEditing이 false -> true로 바꾸고 수정 모드로 진입
       setCategoryStates(prev =>
         prev.map((state, i) =>
-          i === index ? { ...state, editValue: state.name, isEditing: true } : state,
+          i === index ? { ...state, editValue: state.name, isEditing: true, error: '' } : state,
         ),
       );
     }
