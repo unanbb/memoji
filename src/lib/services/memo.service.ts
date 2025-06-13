@@ -19,30 +19,38 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 
-export async function createMemo(memo: Omit<MemoProps, 'id' | 'createdAt'>): Promise<MemoProps> {
+export async function createMemo(
+  memo: Omit<MemoProps, 'id' | 'createdAt'>,
+  userId: string,
+): Promise<MemoProps> {
   const createdAt = Timestamp.now();
 
-  const categoryId = await createCategoryIfNotExists(memo.category);
+  const categoryId = await createCategoryIfNotExists(memo.category, userId);
 
-  const newDocRef = await addDoc(collection(db, 'memos'), {
-    ...memo,
+  const memosRef = collection(db, 'users', userId, 'memos');
+
+  const newDocRef = await addDoc(memosRef, {
+    title: memo.title,
+    content: memo.content,
     categoryId,
     createdAt,
     isDeleted: false,
   });
 
   return {
-    ...memo,
+    title: memo.title,
+    content: memo.content,
+    category: memo.category,
     createdAt,
     id: newDocRef.id,
   };
 }
 
-export async function getMemos(): Promise<MemoProps[]> {
-  const memosRef = collection(db, 'memos');
+export async function getMemos(userId: string): Promise<MemoProps[]> {
+  const memosRef = collection(db, 'users', userId, 'memos');
   const q = query(memosRef, orderBy('createdAt', 'desc'), where('isDeleted', '!=', true));
   const querySnapshot = await getDocs(q);
-  const categoryMap = await getCategoryMap();
+  const categoryMap = await getCategoryMap(userId);
 
   return Promise.all(
     querySnapshot.docs.map(async doc => {
@@ -58,8 +66,8 @@ export async function getMemos(): Promise<MemoProps[]> {
   );
 }
 
-export async function getMemoById(id: string): Promise<MemoProps | null> {
-  const memosRef = collection(db, 'memos');
+export async function getMemoById(id: string, userId: string): Promise<MemoProps | null> {
+  const memosRef = collection(db, 'users', userId, 'memos');
   const docSnapshot = await getDoc(doc(memosRef, id));
   if (!docSnapshot.exists() || docSnapshot.data().isDeleted) {
     return null;
@@ -69,14 +77,14 @@ export async function getMemoById(id: string): Promise<MemoProps | null> {
     id: docSnapshot.id,
     title: data.title,
     content: data.content,
-    category: (await getCategoryById(data.categoryId)) || 'others',
+    category: (await getCategoryById(data.categoryId, userId)) || 'others',
     createdAt: Timestamp.fromDate(data.createdAt.toDate()),
   };
 }
 
-export async function deleteMemo(id: string) {
+export async function deleteMemo(id: string, userId: string) {
   try {
-    const memoRef = doc(collection(db, 'memos'), id);
+    const memoRef = doc(collection(db, 'users', userId, 'memos'), id);
     const docSnapshot = await getDoc(memoRef);
     if (!docSnapshot.exists()) {
       throw new Error('메모가 존재하지 않습니다.');
@@ -99,9 +107,9 @@ export async function deleteMemo(id: string) {
   }
 }
 
-export async function undoDeleteMemo(id: string) {
+export async function undoDeleteMemo(id: string, userId: string): Promise<MemoProps> {
   try {
-    const memoRef = doc(collection(db, 'memos'), id);
+    const memoRef = doc(collection(db, 'users', userId, 'memos'), id);
     const docSnapshot = await getDoc(memoRef);
     if (!docSnapshot.exists()) {
       throw new Error('메모가 존재하지 않습니다.');
@@ -114,14 +122,18 @@ export async function undoDeleteMemo(id: string) {
   }
 }
 
-export async function updateMemo(id: string, memo: Omit<MemoProps, 'id' | 'createdAt'>) {
-  const memoRef = doc(collection(db, 'memos'), id);
+export async function updateMemo(
+  id: string,
+  memo: Omit<MemoProps, 'id' | 'createdAt'>,
+  userId: string,
+) {
+  const memoRef = doc(collection(db, 'users', userId, 'memos'), id);
 
   const docSnapshot = await getDoc(memoRef);
   if (!docSnapshot.exists()) {
     throw new Error('메모가 존재하지 않습니다.');
   }
-  const categoryId = await createCategoryIfNotExists(memo.category);
+  const categoryId = await createCategoryIfNotExists(memo.category, userId);
 
   await setDoc(
     memoRef,
@@ -142,8 +154,9 @@ export async function updateMemo(id: string, memo: Omit<MemoProps, 'id' | 'creat
 export async function removeCategoryAndUpdateMemos(
   categoryId: string,
   newCategoryId: string,
+  userId: string,
 ): Promise<void> {
-  const memosRef = collection(db, 'memos');
+  const memosRef = collection(db, 'users', userId, 'memos');
   const q = query(memosRef, where('category', '==', categoryId));
   const querySnapshot = await getDocs(q);
   const batch = writeBatch(db);
