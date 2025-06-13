@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export function withAuth<T extends Record<string, string> = Record<string, string>>(
+export function withAuth<T = Record<string, string>>(
   handler: (req: NextRequest, context: { userId: string; params?: T }) => Promise<Response>,
 ) {
   return async (req: NextRequest, routeContext?: { params: T }) => {

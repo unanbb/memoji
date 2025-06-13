@@ -2,10 +2,13 @@ import { withAuth } from '@/lib/auth-middleware';
 import { deleteMemo, getMemoById, updateMemo } from '@/lib/services/memo.service';
 import { type NextRequest, NextResponse } from 'next/server';
 
-// GET /api/memos/[id]
-export const GET = withAuth<{ id: string }>(async (req: NextRequest, { userId, params }) => {
+interface MemoParams {
+  id: string;
+}
+
+export const GET = withAuth<Promise<MemoParams>>(async (req: NextRequest, { userId, params }) => {
   try {
-    const { id } = params!;
+    const { id } = await params!;
 
     if (!id) {
       return NextResponse.json({ error: 'Memo ID is required' }, { status: 400 });
@@ -25,9 +28,9 @@ export const GET = withAuth<{ id: string }>(async (req: NextRequest, { userId, p
 });
 
 // PUT /api/memos/[id]
-export const PUT = withAuth<{ id: string }>(async (req: NextRequest, { userId, params }) => {
+export const PUT = withAuth<Promise<MemoParams>>(async (req: NextRequest, { userId, params }) => {
   try {
-    const { id } = params!;
+    const { id } = await params!;
     const body = await req.json();
 
     if (!id) {
@@ -50,19 +53,21 @@ export const PUT = withAuth<{ id: string }>(async (req: NextRequest, { userId, p
 });
 
 // DELETE /api/memos/[id]
-export const DELETE = withAuth<{ id: string }>(async (req: NextRequest, { userId, params }) => {
-  try {
-    const { id } = params!;
+export const DELETE = withAuth<Promise<MemoParams>>(
+  async (req: NextRequest, { userId, params }) => {
+    try {
+      const { id } = await params!;
 
-    if (!id) {
-      return NextResponse.json({ error: 'Memo ID is required' }, { status: 400 });
+      if (!id) {
+        return NextResponse.json({ error: 'Memo ID is required' }, { status: 400 });
+      }
+
+      await deleteMemo(id, userId);
+
+      return NextResponse.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting memo:', error);
+      return NextResponse.json({ error: 'Failed to delete memo' }, { status: 500 });
     }
-
-    await deleteMemo(id, userId);
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting memo:', error);
-    return NextResponse.json({ error: 'Failed to delete memo' }, { status: 500 });
-  }
-});
+  },
+);

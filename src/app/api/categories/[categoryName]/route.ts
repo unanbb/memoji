@@ -10,10 +10,14 @@ import { removeCategoryAndUpdateMemos } from '@/lib/services/memo.service';
 import { validateCategoryName } from '@/utils/validateCategoryName';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export const PUT = withAuth<{ categoryName: string }>(
+interface CategoryParams {
+  categoryName: string;
+}
+
+export const PUT = withAuth<Promise<CategoryParams>>(
   async (req: NextRequest, { userId, params }) => {
     try {
-      const { categoryName } = params!;
+      const { categoryName } = await params!;
       const body = await req.json();
       const { newName } = body;
 
@@ -45,10 +49,10 @@ export const PUT = withAuth<{ categoryName: string }>(
     }
   },
 );
-export const DELETE = withAuth<{ categoryName: string }>(
+export const DELETE = withAuth<Promise<CategoryParams>>(
   async (_req: NextRequest, { userId, params }) => {
     try {
-      const { categoryName } = params!;
+      const { categoryName } = await params!;
 
       const existingCategoryId = await getCategoryIdByName(categoryName, userId);
       if (!existingCategoryId) {
