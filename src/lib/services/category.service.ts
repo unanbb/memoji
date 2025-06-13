@@ -1,7 +1,6 @@
 import { db } from '@/lib/firebase';
 import type { CategoryItem } from '@/types/category';
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -14,41 +13,22 @@ import {
   where,
 } from 'firebase/firestore';
 
-export async function createCategory(name: string, userId: string): Promise<string> {
-  const createdAt = Timestamp.now();
-  const categoriesRef = collection(db, 'users', userId, 'categories');
-  const newDocRef = await addDoc(categoriesRef, {
-    name,
-    createdAt,
-  });
-  return newDocRef.id;
-}
 export async function createCategoryIfNotExists(name: string, userId: string): Promise<string> {
   try {
     const categoryName = !name || name.trim() === '' ? 'others' : name;
 
-    // TODO: 레이스 컨디션 문제 해결 필요
     return await runTransaction(db, async transaction => {
-      const categoriesRef = collection(db, 'users', userId, 'categories');
-      const q = query(categoriesRef, where('name', '==', categoryName));
-      const snapshot = await getDocs(q);
-
-      if (!snapshot.empty) {
-        return snapshot.docs[0].id;
+      const newDocRef = doc(db, 'users', userId, 'categories', categoryName);
+      const snapshot = await transaction.get(newDocRef);
+      if (snapshot.exists()) {
+        return newDocRef.id;
       }
-
-      const createdAt = Timestamp.now();
-      const newDocRef = doc(categoriesRef);
-      transaction.set(newDocRef, {
-        name: categoryName,
-        createdAt,
-      });
-
+      transaction.set(newDocRef, { name: categoryName, createdAt: Timestamp.now() });
       return newDocRef.id;
     });
   } catch (error) {
     console.error('Error creating category if not exists:', error);
-    throw new Error('Failed to create category');
+    throw error;
   }
 }
 

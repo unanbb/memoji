@@ -1,5 +1,9 @@
 import { withAuth } from '@/lib/auth-middleware';
-import { createCategory, getCategories, isCategoryExists } from '@/lib/services/category.service';
+import {
+  createCategoryIfNotExists,
+  getCategories,
+  isCategoryExists,
+} from '@/lib/services/category.service';
 import { validateCategoryName } from '@/utils/validateCategoryName';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -25,7 +29,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     if (await isCategoryExists(category, userId)) {
       throw new Error('Category already exists');
     }
-    const newCategoryId = await createCategory(category, userId);
+    const newCategoryId = await createCategoryIfNotExists(category, userId);
     return NextResponse.json({ id: newCategoryId }, { status: 201 });
   } catch (error) {
     console.error('Error creating category:', error);
