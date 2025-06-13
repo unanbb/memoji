@@ -5,7 +5,7 @@ export interface UserProps {
   email: string;
   name: string;
   image?: string;
-  provider: 'google' | 'github';
+  providers: ('google' | 'github')[];
   createdAt: Timestamp;
   updatedAt?: Timestamp;
 }

@@ -1,41 +1,33 @@
-import { NextResponse } from 'next/server';
-
+import { withAuth } from '@/lib/auth-middleware';
 import { createMemo, getMemos } from '@/lib/services/memo.service';
-import { createMemoSchema, memoListSchema } from '@/types/memo';
+import { type NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+// GET /api/memos - 메모 목록 조회
+export const GET = withAuth(async (req: NextRequest, { userId }) => {
   try {
-    const memos = await getMemos();
-    if (memos.length === 0) {
-      return NextResponse.json({ memos: [] }, { status: 200 });
-    }
-    const validatedData = memoListSchema.parse({ memos });
-    return NextResponse.json(validatedData, { status: 200 });
+    const memos = await getMemos(userId);
+    return NextResponse.json(memos);
   } catch (error) {
     console.error('Error fetching memos:', error);
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
     return NextResponse.json({ error: 'Failed to fetch memos' }, { status: 500 });
   }
-}
+});
 
-export async function POST(req: Request) {
+// POST /api/memos - 새 메모 생성
+export const POST = withAuth(async (req: NextRequest, { userId }) => {
   try {
     const body = await req.json();
-    const validatedData = createMemoSchema.parse(body);
-    const { title, content, category } = validatedData;
-    const newDocRef = await createMemo({
-      title,
-      content,
-      category,
-    });
-    return NextResponse.json({ id: newDocRef.id }, { status: 201 });
+    const { title, content, category } = body;
+
+    if (!title || !content) {
+      return NextResponse.json({ error: 'Title and content are required' }, { status: 400 });
+    }
+
+    const memo = await createMemo({ title, content, category: category || 'others' }, userId);
+
+    return NextResponse.json(memo, { status: 201 });
   } catch (error) {
     console.error('Error creating memo:', error);
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    }
     return NextResponse.json({ error: 'Failed to create memo' }, { status: 500 });
   }
-}
+});

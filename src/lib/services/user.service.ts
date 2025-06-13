@@ -9,21 +9,18 @@ export async function createOrUpdateUser(userData: {
   image?: string;
   provider: 'google' | 'github';
 }): Promise<UserProps> {
-  const userRef = doc(db, 'users', userData.id);
+  const userRef = doc(db, 'users', userData.email);
   const userDoc = await getDoc(userRef);
 
   const now = Timestamp.now();
-
-  // TODO: 이미 다른 provider로 가입한 유저라면 에러 처리 필요
-  if (userDoc.exists() && userDoc.data().provider !== userData.provider) {
-    throw new Error('User already exists with a different provider');
-  }
 
   if (userDoc.exists()) {
     const existingUser = userDoc.data() as UserProps;
     const updatedUser = {
       ...existingUser,
-      ...userData,
+      name: userData.name,
+      image: userData.image || existingUser.image,
+      providers: Array.from(new Set([...existingUser.providers, userData.provider])),
       updatedAt: now,
     };
 
@@ -31,7 +28,11 @@ export async function createOrUpdateUser(userData: {
     return updatedUser;
   } else {
     const newUser: UserProps = {
-      ...userData,
+      id: userData.email,
+      email: userData.email,
+      name: userData.name,
+      image: userData.image,
+      providers: [userData.provider],
       createdAt: now,
     };
 
@@ -49,4 +50,8 @@ export async function getUserById(id: string): Promise<UserProps | null> {
   }
 
   return null;
+}
+
+export async function getUserByEmail(email: string): Promise<UserProps | null> {
+  return getUserById(email);
 }
