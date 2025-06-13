@@ -1,6 +1,6 @@
 'use client';
-import LoginButton from '@/components/auth/LoginButton';
 import SignIn from '@/components/auth/SiginIn';
+import AuthSection from '@/components/auth/authSection';
 import SearchBar from '@/components/common/SearchBar';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
 import Link from 'next/link';
@@ -28,7 +28,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
             <SearchBar />
           </div>
           <div className="flex items-center justify-end w-1/4 gap-3">
-            <LoginButton onClick={openSignIn} />
+            <AuthSection openSignIn={openSignIn} />
             <ToggleSidebarButton onToggle={onToggleSidebar} isOpen={!isSidebarOpen} />
           </div>
         </div>
