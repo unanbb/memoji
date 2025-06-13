@@ -23,36 +23,30 @@ import {
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
-  type RangeSelection,
   type LexicalEditor,
+  type RangeSelection,
 } from 'lexical';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // React Icons imports
 import {
-  BiUndo,
-  BiRedo,
-  BiBold,
-  BiItalic,
-  BiUnderline,
-  BiStrikethrough,
-  BiCode,
-  BiLink,
+  BiAlignJustify,
   BiAlignLeft,
   BiAlignMiddle,
   BiAlignRight,
-  BiAlignJustify,
+  BiBold,
   BiChevronDown,
-  BiParagraph,
-  BiListUl,
-  BiListOl,
+  BiCode,
   BiCodeBlock,
+  BiItalic,
+  BiListOl,
+  BiListUl,
+  BiParagraph,
+  BiRedo,
+  BiStrikethrough,
+  BiUnderline,
+  BiUndo,
 } from 'react-icons/bi';
-import { 
-  RiH1, 
-  RiH2, 
-  RiH3,
-  RiDoubleQuotesL,
-} from 'react-icons/ri';
+import { RiDoubleQuotesL, RiH1, RiH2, RiH3 } from 'react-icons/ri';
 
 interface BlockOptionsDropdownListProps {
   editor: LexicalEditor;
@@ -395,6 +389,7 @@ export default function ToolbarPlugin() {
     [editor, selectedElementKey],
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const insertLink = useCallback(() => {
     if (!isLink) {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://');
@@ -434,7 +429,9 @@ export default function ToolbarPlugin() {
             aria-label="Formatting Options"
           >
             {getBlockTypeIcon(blockType)}
-            <span className="text">{blockTypeToBlockName[blockType as keyof typeof blockTypeToBlockName]}</span>
+            <span className="text">
+              {blockTypeToBlockName[blockType as keyof typeof blockTypeToBlockName]}
+            </span>
             <BiChevronDown className="w-3 h-3" />
           </button>
           {showBlockOptionsDropDown && (
@@ -511,13 +508,13 @@ export default function ToolbarPlugin() {
           >
             <BiCode className="w-4 h-4" />
           </button>
-          <button
+          {/* <button
             onClick={insertLink}
             className={'toolbar-item spaced ' + (isLink ? 'active' : '')}
             aria-label="Insert Link"
           >
             <BiLink className="w-4 h-4" />
-          </button>
+          </button> */}
           {isLink && <div className="divider" />}
           <div className="divider" />
           <button
