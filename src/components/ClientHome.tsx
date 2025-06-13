@@ -5,9 +5,9 @@ import MemoSection from '@/components/memo/MemoSection';
 import useGetMemos from '@/hooks/useGetMemos';
 
 export default function ClientHome() {
-  const { isLoading, data: memos = [], isFetching } = useGetMemos();
+  const { isLoading, data: memos = [] } = useGetMemos();
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <MemoListSkeleton />;
   }
 
