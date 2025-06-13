@@ -7,11 +7,10 @@ import { SessionProvider } from 'next-auth/react';
 import getQueryClient from './getQueryClient';
 
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
-  // getQueryClient에서 통합된 로직 사용
   const queryClient = getQueryClient();
 
   return (
-    <SessionProvider>
+    <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={true}>
       <QueryClientProvider client={queryClient}>
         {/* <ReactQueryDevtools initialIsOpen={true} /> */}
         {children}
