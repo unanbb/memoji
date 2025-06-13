@@ -19,10 +19,10 @@ export default function showToast({ name, state, type = 'success', message }: To
           boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
         };
 
-  toast(
+  const toastId = toast(
     () => (
       <Toast
-        closeToast={() => toast.dismiss()}
+        closeToast={() => toast.dismiss(toastId)}
         ariaLabel={ariaLabel}
         message={message ?? defaultMessage}
       />
