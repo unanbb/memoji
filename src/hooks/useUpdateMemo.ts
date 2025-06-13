@@ -41,20 +41,25 @@ export default function useUpdateMemo() {
       const previousMemo = queryClient.getQueryData<MemoProps>(queryKeys.memo.detail(variables.id));
       const previousMemos = queryClient.getQueryData<MemoProps[]>(queryKeys.memo.lists());
 
-      if (!previousMemo || !previousMemos) return { previousMemo, previousMemos };
+      if (previousMemo) {
+        queryClient.setQueryData<MemoProps>(queryKeys.memo.detail(variables.id), old => {
+          if (!old) return old;
+          return {
+            ...old,
+            ...variables.memo,
+          };
+        });
+      }
 
-      queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
-        if (!old) return old;
-        return old.map(memo => (memo.id === variables.id ? { ...memo, ...variables.memo } : memo));
-      });
+      if (previousMemos) {
+        queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+          if (!old) return old;
+          return old.map(memo =>
+            memo.id === variables.id ? { ...memo, ...variables.memo } : memo,
+          );
+        });
+      }
 
-      queryClient.setQueryData<MemoProps>(queryKeys.memo.detail(variables.id), old => {
-        if (!old) return old;
-        return {
-          ...old,
-          ...variables.memo,
-        };
-      });
       return { previousMemo, previousMemos };
     },
     onError: (error, variables, context) => {
