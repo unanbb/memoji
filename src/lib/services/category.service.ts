@@ -49,8 +49,9 @@ export async function getCategories(userId: string): Promise<CategoryItem[]> {
 
     const memoCounts = new Map<string, number>();
     memoSnapshot.docs.forEach(memoDoc => {
-      const categoryId = memoDoc.data().categoryId;
-      if (categoryId) {
+      const data = memoDoc.data();
+      const categoryId = data.categoryId;
+      if (categoryId && !data.isDeleted) {
         memoCounts.set(categoryId, (memoCounts.get(categoryId) || 0) + 1);
       }
     });
