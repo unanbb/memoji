@@ -1,55 +1,73 @@
+import { withAuth } from '@/lib/auth-middleware';
 import { deleteMemo, getMemoById, updateMemo } from '@/lib/services/memo.service';
-import { updateMemoSchema } from '@/types/memo';
-import { NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
-interface Params {
+interface MemoParams {
   id: string;
 }
 
-export async function GET(req: Request, { params }: { params: Promise<Params> }) {
-  const { id } = await params;
+export const GET = withAuth<Promise<MemoParams>>(async (req: NextRequest, { userId, params }) => {
   try {
-    const memo = await getMemoById(id);
-    if (!memo) {
-      return NextResponse.json({ error: '메모를 찾을 수 없습니다.' }, { status: 404 });
+    const { id } = await params!;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Memo ID is required' }, { status: 400 });
     }
-    return NextResponse.json(memo, { status: 200 });
+
+    const memo = await getMemoById(id, userId);
+
+    if (!memo) {
+      return NextResponse.json({ error: 'Memo not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(memo);
   } catch (error) {
     console.error('Error fetching memo:', error);
-    return NextResponse.json({ error: '메모를 가져오는 중 오류가 발생했습니다.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch memo' }, { status: 500 });
   }
-}
+});
 
-export async function DELETE(req: Request, { params }: { params: Promise<Params> }) {
-  const { id } = await params;
+// PUT /api/memos/[id]
+export const PUT = withAuth<Promise<MemoParams>>(async (req: NextRequest, { userId, params }) => {
   try {
-    const deletedId = await deleteMemo(id);
-    return NextResponse.json(
-      { message: '메모가 성공적으로 삭제되었습니다.', id: deletedId },
-      { status: 200 },
-    );
-  } catch (error) {
-    console.error('Error deleting memo:', error);
-    return NextResponse.json({ error: '메모 삭제 중 오류가 발생했습니다.' }, { status: 500 });
-  }
-}
-
-export async function PUT(req: Request, { params }: { params: Promise<Params> }) {
-  const { id } = await params;
-  try {
+    const { id } = await params!;
     const body = await req.json();
 
-    const validatedData = updateMemoSchema.parse(body);
-    const updatedMemo = await updateMemo(id, validatedData);
-    return NextResponse.json(
-      { message: '메모가 성공적으로 업데이트되었습니다.', memo: updatedMemo },
-      { status: 200 },
-    );
+    if (!id) {
+      return NextResponse.json({ error: 'Memo ID is required' }, { status: 400 });
+    }
+
+    const { title, content, category } = body;
+
+    if (!title || !content) {
+      return NextResponse.json({ error: 'Title and content are required' }, { status: 400 });
+    }
+
+    await updateMemo(id, { title, content, category: category || 'others' }, userId);
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error updating memo:', error);
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    }
-    return NextResponse.json({ error: '메모 업데이트 중 오류가 발생했습니다.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update memo' }, { status: 500 });
   }
-}
+});
+
+// DELETE /api/memos/[id]
+export const DELETE = withAuth<Promise<MemoParams>>(
+  async (req: NextRequest, { userId, params }) => {
+    try {
+      const { id } = await params!;
+
+      if (!id) {
+        return NextResponse.json({ error: 'Memo ID is required' }, { status: 400 });
+      }
+
+      await deleteMemo(id, userId);
+
+      return NextResponse.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting memo:', error);
+      return NextResponse.json({ error: 'Failed to delete memo' }, { status: 500 });
+    }
+  },
+);
