@@ -18,7 +18,9 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         <h2 className="font-bold text-lg translate-y-[5px]">Categories</h2>
         <ToggleSidebarButton onToggle={onToggle} isOpen={isOpen} />
       </div>
-      <Separator px={4} my={2} />
+      <div className="py-[19px]">
+        <Separator px={4} />
+      </div>
       <ul className="">
         {categories.map((category, index) => (
           <CategoryItem
