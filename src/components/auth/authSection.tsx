@@ -9,7 +9,7 @@ export default function AuthSection({ openSignIn }: { openSignIn: () => void }) 
 
   if (isAuthenticated) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <UserProfile />
         <LogoutButton />
       </div>
