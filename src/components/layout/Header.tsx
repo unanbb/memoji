@@ -20,7 +20,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="w-full h-16 fixed top-0 left-0 bg-white z-10 border-b border-gray-200">
+      <header className="w-full h-16 fixed top-0 left-0 bg-white z-10 border-b border-gray-200 shadow">
         <div className="container mx-auto flex items-center justify-between h-full px-4">
           <div className="text-xl font-bold justify-start w-1/4">
             <Link href="/">Memoji</Link>
@@ -31,10 +31,10 @@ export default function Header() {
           <div className="flex items-center justify-end w-1/4 gap-3">
             <AuthSection openSignIn={openSignIn} />
             <div className="w-10"></div>
-            <ToggleSidebarButton onToggle={toggleSidebar} isOpen={!isSidebarOpen} />
           </div>
         </div>
       </header>
+      <ToggleSidebarButton onToggle={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
       <SignIn isOpen={isSignInOpen} onClose={closeSignIn} />
     </>

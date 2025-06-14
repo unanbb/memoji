@@ -1,16 +1,10 @@
 import { MdMenu } from 'react-icons/md';
 
-export default function ToggleSidebarButton({
-  onToggle,
-  isOpen,
-}: {
-  onToggle: () => void;
-  isOpen: boolean;
-}) {
+export default function ToggleSidebarButton({ onToggle }: { onToggle: () => void }) {
   return (
     <button
       onClick={onToggle}
-      className={`absolute top-2 right-2 p-2 rounded-full cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 ${isOpen ? 'block' : 'hidden'}`}
+      className="fixed top-2 right-2 p-2 rounded-full cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-gray-300 z-20"
       aria-label="Toggle Sidebar"
       title="Toggle Sidebar"
     >

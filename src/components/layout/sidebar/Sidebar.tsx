@@ -1,5 +1,4 @@
 import Separator from '@/components/common/Separator';
-import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
 
 import { categories } from '@/data/mocks';
 import CategoryItem from './CategoryItem';
@@ -9,14 +8,13 @@ interface SidebarProps {
   onToggle: () => void;
 }
 
-export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
+export default function Sidebar({ isOpen }: SidebarProps) {
   return (
     <aside
       className={`fixed top-0 right-0 w-64 min-h-screen bg-gray-100 overflow-y-auto z-11 ${isOpen ? 'block' : 'hidden'}`}
     >
       <div className="flex items-center justify-between px-4 pt-3 pb-1">
         <h2 className="font-bold text-lg translate-y-[5px]">Categories</h2>
-        <ToggleSidebarButton onToggle={onToggle} isOpen={isOpen} />
       </div>
       <div className="py-[19px]">
         <Separator px={4} />
