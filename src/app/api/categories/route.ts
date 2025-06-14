@@ -23,6 +23,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     const { category } = body;
 
     if (typeof category !== 'string' || !validateCategoryName(category)) {
+      console.error('Invalid category name:', category);
       return NextResponse.json({ error: 'Invalid category name' }, { status: 400 });
     }
 
