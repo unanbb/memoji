@@ -1,6 +1,8 @@
+'use client';
 import Separator from '@/components/common/Separator';
 
-import { categories } from '@/data/mocks';
+import { Skeleton } from '@/components/common/Skeleton';
+import useCategories from '@/hooks/useCategories';
 import CategoryItem from './CategoryItem';
 
 interface SidebarProps {
@@ -9,6 +11,8 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen }: SidebarProps) {
+  const { categories, isError, isLoading } = useCategories();
+
   return (
     <aside
       className={`fixed top-0 right-0 w-64 min-h-screen bg-gray-100 overflow-y-auto z-11 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
@@ -20,12 +24,28 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         <Separator px={4} />
       </div>
       <ul className="">
+        {isLoading && (
+          <div className="px-4 space-y-3">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <Skeleton className="w-24 h-6 bg-gray-300 rounded" />
+                <Skeleton className="w-6 h-6 bg-gray-300 rounded" />
+              </div>
+            ))}
+          </div>
+        )}
+        {isError && (
+          <li className="px-4 py-2 text-red-500">
+            카테고리 가져오기 실패
+            <br /> 로그인 후 다시 시도해주세요.
+          </li>
+        )}
         {categories.map((category, index) => (
           <CategoryItem
-            key={`category-${category.route}-${index}`}
+            key={`category-${category.name}-${index}`}
             name={category.name}
-            route={category.route}
-            count={category.count}
+            route={`/categories/${category.name}`}
+            count={category.memoCount}
           />
         ))}
       </ul>

@@ -12,16 +12,19 @@ const fetchCategories = async (): Promise<CategoryItem[]> => {
     return data.categories;
   } catch (error) {
     console.error('카테고리 가져오기 실패:', error);
-    return [];
+    if (error instanceof Error) {
+      throw new Error(`카테고리 가져오기 실패: ${error.message}`);
+    }
+    throw new Error('카테고리 가져오기 실패: 알 수 없는 오류');
   }
 };
 
 export default function useCategories() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['categories'],
     queryFn: fetchCategories,
-  })
-  const categories = useMemo(() => data ? data : [], [data]);
+  });
+  const categories = useMemo(() => (data ? data : []), [data]);
 
-  return { categories, isLoading };
+  return { categories, isLoading, isError };
 }
