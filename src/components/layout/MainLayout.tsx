@@ -26,7 +26,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <ToastContainer />
         </main>
       </div>
-      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} className="md:static absolute" />
+      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
       <MemoCreateButton />
     </div>
   );
