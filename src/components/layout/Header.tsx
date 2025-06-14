@@ -29,6 +29,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
           </div>
           <div className="flex items-center justify-end w-1/4 gap-3">
             <AuthSection openSignIn={openSignIn} />
+            <div className="w-10"></div>
             <ToggleSidebarButton onToggle={onToggleSidebar} isOpen={!isSidebarOpen} />
           </div>
         </div>
