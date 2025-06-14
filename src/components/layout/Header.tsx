@@ -3,16 +3,17 @@ import SignIn from '@/components/auth/SignIn';
 import AuthSection from '@/components/auth/authSection';
 import SearchBar from '@/components/common/SearchBar';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
+import Sidebar from '@/components/layout/sidebar/Sidebar';
 import Link from 'next/link';
 import { useState } from 'react';
 
-interface HeaderProps {
-  onToggleSidebar: () => void;
-  isSidebarOpen: boolean;
-}
-
-export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
+export default function Header() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  };
 
   const openSignIn = () => setIsSignInOpen(true);
   const closeSignIn = () => setIsSignInOpen(false);
@@ -30,11 +31,11 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
           <div className="flex items-center justify-end w-1/4 gap-3">
             <AuthSection openSignIn={openSignIn} />
             <div className="w-10"></div>
-            <ToggleSidebarButton onToggle={onToggleSidebar} isOpen={!isSidebarOpen} />
+            <ToggleSidebarButton onToggle={toggleSidebar} isOpen={!isSidebarOpen} />
           </div>
         </div>
       </header>
-
+      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
       <SignIn isOpen={isSignInOpen} onClose={closeSignIn} />
     </>
   );
