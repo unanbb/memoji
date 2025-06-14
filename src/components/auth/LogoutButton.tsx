@@ -26,7 +26,7 @@ export default function LogoutButton({ variant = 'button' }: LogoutButtonProps) 
   return (
     <button
       onClick={handleLogout}
-      className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-full transition-colors duration-200"
+      className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-full transition-colors duration-200 cursor-pointer"
     >
       <FaSignOutAlt size={16} />
       <span className="hidden sm:inline">로그아웃</span>

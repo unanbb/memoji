@@ -10,7 +10,7 @@ interface SignInProps {
   onClose: () => void;
 }
 
-export default function SignIn({ isOpen, onClose }: SignInProps) {
+export default function SignInModal({ isOpen, onClose }: SignInProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="medium" className="w-full max-w-md">
       <div className="text-center">

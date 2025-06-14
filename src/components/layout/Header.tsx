@@ -1,25 +1,21 @@
 'use client';
-import SignIn from '@/components/auth/SignIn';
 import AuthSection from '@/components/auth/authSection';
 import SearchBar from '@/components/common/SearchBar';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
+import Sidebar from '@/components/layout/sidebar/Sidebar';
 import Link from 'next/link';
 import { useState } from 'react';
 
-interface HeaderProps {
-  onToggleSidebar: () => void;
-  isSidebarOpen: boolean;
-}
+export default function Header() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
-
-  const openSignIn = () => setIsSignInOpen(true);
-  const closeSignIn = () => setIsSignInOpen(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  };
 
   return (
     <>
-      <header className="w-full h-16 fixed top-0 left-0 bg-white z-10 border-b border-gray-200">
+      <header className="w-full h-16 fixed top-0 left-0 bg-white z-10 border-b border-gray-200 shadow">
         <div className="container mx-auto flex items-center justify-between h-full px-4">
           <div className="text-xl font-bold justify-start w-1/4">
             <Link href="/">Memoji</Link>
@@ -28,14 +24,13 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
             <SearchBar />
           </div>
           <div className="flex items-center justify-end w-1/4 gap-3">
-            <AuthSection openSignIn={openSignIn} />
+            <AuthSection />
             <div className="w-10"></div>
-            <ToggleSidebarButton onToggle={onToggleSidebar} isOpen={!isSidebarOpen} />
           </div>
         </div>
       </header>
-
-      <SignIn isOpen={isSignInOpen} onClose={closeSignIn} />
+      <ToggleSidebarButton onToggle={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
     </>
   );
 }
