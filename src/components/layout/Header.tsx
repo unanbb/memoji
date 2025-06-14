@@ -1,5 +1,4 @@
 'use client';
-import SignIn from '@/components/auth/SignIn';
 import AuthSection from '@/components/auth/authSection';
 import SearchBar from '@/components/common/SearchBar';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
@@ -8,15 +7,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function Header() {
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
   };
-
-  const openSignIn = () => setIsSignInOpen(true);
-  const closeSignIn = () => setIsSignInOpen(false);
 
   return (
     <>
@@ -29,14 +24,13 @@ export default function Header() {
             <SearchBar />
           </div>
           <div className="flex items-center justify-end w-1/4 gap-3">
-            <AuthSection openSignIn={openSignIn} />
+            <AuthSection />
             <div className="w-10"></div>
           </div>
         </div>
       </header>
       <ToggleSidebarButton onToggle={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
-      <SignIn isOpen={isSignInOpen} onClose={closeSignIn} />
     </>
   );
 }
