@@ -31,15 +31,18 @@ export default function useDeleteMemo() {
       const previousMemo = queryClient.getQueryData(queryKeys.memo.detail(id));
       const previousMemos = queryClient.getQueryData(queryKeys.memo.lists());
 
-      if (!previousMemo || !previousMemos) return { previousMemo, previousMemos };
-
-      queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
-        if (!old) return old;
-        return old.filter(memo => memo.id !== id);
-      });
-      queryClient.removeQueries({
-        queryKey: queryKeys.memo.detail(id),
-      });
+      if (previousMemo) {
+        queryClient.removeQueries({
+          queryKey: queryKeys.memo.detail(id),
+          exact: true,
+        });
+      }
+      if (previousMemos) {
+        queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+          if (!old) return old;
+          return old.filter(memo => memo.id !== id);
+        });
+      }
       return { previousMemo, previousMemos };
     },
     onError: (_error, id, context) => {
