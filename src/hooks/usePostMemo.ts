@@ -3,7 +3,9 @@ import type { MemoProps } from '@/types/memo';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Timestamp } from 'firebase/firestore';
 
-export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) => {
+export const fetchCreateMemo = async (
+  memoData: Omit<MemoProps, 'id' | 'createdAt'>,
+): Promise<MemoProps> => {
   try {
     const response = await fetch(`/api/memos`, {
       method: 'POST',
@@ -50,14 +52,22 @@ export default function usePostMemo() {
       }
       return { previousMemos };
     },
+
+    onSuccess: (createdMemo, variables, context) => {
+      if (context?.previousMemos) {
+        queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+          if (!old) return [createdMemo];
+          return [createdMemo, ...old];
+        });
+      }
+      const categories = queryClient.getQueryData<string[]>(['categories']);
+      if (categories && !categories.includes(createdMemo.category)) {
+        queryClient.setQueryData(['categories'], [...categories, createdMemo.category]);
+      }
+    },
     onError: (error, newMemo, context) => {
       queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), context?.previousMemos);
       console.error('메모 생성 중 오류 발생:', error);
-    },
-    onSettled: () => {
-      // TODO: 전체 메모 목록을 리패치하는 대신, 새로 생성된 메모만 추가하는 방법을 고려하기
-      queryClient.refetchQueries({ queryKey: queryKeys.memo.lists() });
-      queryClient.refetchQueries({ queryKey: ['categories'] });
     },
   });
 
