@@ -2,18 +2,22 @@ import type { CategoryItem } from '@/types/category';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const fetchDeleteCategory = async (categoryName: string) => {
-  const response = await fetch(
-    `http://localhost:3000/api/categories/${encodeURIComponent(categoryName)}`,
-    {
+  try {
+    const response = await fetch(`/api/categories/${encodeURIComponent(categoryName)}`, {
       method: 'DELETE',
-    },
-  );
+    });
 
-  if (!response.ok) {
-    throw new Error('카테고리 삭제에 실패했습니다.');
+    if (!response.ok) {
+      throw new Error('카테고리 삭제에 실패했습니다.');
+    }
+  } catch (error) {
+    console.error('카테고리 삭제 중 오류 발생:', error);
+    if (error instanceof Error) {
+      throw new Error(`카테고리 삭제 실패: ${error.message}`);
+    } else {
+      throw new Error('카테고리 삭제 실패: 알 수 없는 오류');
+    }
   }
-
-  console.log(`카테고리 ${categoryName} 삭제 성공!`);
 };
 
 export default function useDeleteCategory() {

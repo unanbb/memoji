@@ -8,18 +8,15 @@ export const fetchModifyCategory = async ({
   categoryName: string;
   newCategoryName: string;
 }) => {
-  const response = await fetch(
-    `http://localhost:3000/api/categories/${encodeURIComponent(categoryName)}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        newName: newCategoryName,
-      }),
+  const response = await fetch(`/api/categories/${encodeURIComponent(categoryName)}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      newName: newCategoryName,
+    }),
+  });
 
   if (!response.ok) {
     throw new Error('카테고리 수정에 실패했습니다.');
