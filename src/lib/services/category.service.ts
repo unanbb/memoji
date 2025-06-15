@@ -1,5 +1,6 @@
 import { db } from '@/lib/firebase';
 import type { CategoryItem } from '@/types/category';
+import { validateCategoryName } from '@/utils/validateCategoryName';
 import {
   collection,
   deleteDoc,
@@ -15,19 +16,12 @@ import {
 
 export async function createCategoryIfNotExists(name: string, userId: string): Promise<string> {
   try {
-    const categoryName = !name || name.trim() === '' ? 'others' : name;
-
+    if (!validateCategoryName(name)) {
+      throw new Error('Invalid category name');
+    }
+    const categoryName = name.trim() || 'others';
     return await runTransaction(db, async transaction => {
-      const slug = categoryName
-        .trim()
-        .toLowerCase()
-        .trim()
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '') // Remove special characters except word chars, spaces, hyphens
-        .replace(/\s+/g, '-') // Replace spaces with hyphens
-        .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-        .replace(/^-|-$/g, '');
-      const newDocRef = doc(db, 'users', userId, 'categories', slug);
+      const newDocRef = doc(db, 'users', userId, 'categories', categoryName);
       const snapshot = await transaction.get(newDocRef);
       if (snapshot.exists()) {
         return newDocRef.id;
