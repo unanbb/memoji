@@ -16,10 +16,10 @@ import {
 
 export async function createCategoryIfNotExists(name: string, userId: string): Promise<string> {
   try {
-    if (validateCategoryName(name) === false || typeof name !== 'string') {
+    if (!validateCategoryName(name)) {
       throw new Error('Invalid category name');
     }
-    const categoryName = name.trim();
+    const categoryName = name.trim() || 'others';
     return await runTransaction(db, async transaction => {
       const newDocRef = doc(db, 'users', userId, 'categories', categoryName);
       const snapshot = await transaction.get(newDocRef);
