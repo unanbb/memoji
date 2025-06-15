@@ -20,13 +20,11 @@ export default function Header() {
           <div className="text-xl font-bold flex-shrink-0">
             <Link href="/">Memoji</Link>
           </div>
-          <div className="w-10"></div>
           <div className="flex-1 max-w-2xl mx-auto">
             <SearchBar />
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0 mr-10">
             <AuthSection />
-            <div className="w-10"></div>
           </div>
         </div>
       </header>
