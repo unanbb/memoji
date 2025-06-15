@@ -34,6 +34,7 @@ export default function useDeleteMemo() {
       if (previousMemo) {
         queryClient.removeQueries({
           queryKey: queryKeys.memo.detail(id),
+          exact: true,
         });
       }
       if (previousMemos) {
