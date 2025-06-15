@@ -21,10 +21,10 @@ export default function MemoCreateButton() {
     <>
       {isAuthenticated && (
         <div className="fixed bottom-4 right-4">
-          {isModalOpen && <MemoCreateModal onClose={onClose} />}
           <PlusButton onClick={openModal} label="메모 추가" />
         </div>
       )}
+      {isModalOpen && <MemoCreateModal onClose={onClose} />}
     </>
   );
 }
