@@ -35,7 +35,7 @@ export default function usePostMemo() {
     Awaited<ReturnType<typeof fetchCreateMemo>>,
     Error,
     Omit<MemoProps, 'id' | 'createdAt'>,
-    { previousMemos?: MemoProps[] }
+    { previousMemos?: MemoProps[]; newOptimisticMemo?: MemoProps }
   >({
     mutationFn: fetchCreateMemo,
     onMutate: async newMemo => {
@@ -53,14 +53,16 @@ export default function usePostMemo() {
         if (!old) return [newOptimisticMemo];
         return [newOptimisticMemo, ...old];
       });
-      return { previousMemos };
+      return { previousMemos, newOptimisticMemo };
     },
 
-    onSuccess: (createdMemo, variables, context) => {
+    onSuccess: (createdMemo, _variables, context) => {
       if (context?.previousMemos) {
         queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
           if (!old) return [createdMemo];
-          return [createdMemo, ...old];
+          return old.map(memo =>
+            memo.id === context.newOptimisticMemo?.id ? { ...memo, ...createdMemo } : memo,
+          );
         });
       }
       const categories = queryClient.getQueryData<string[]>(['categories']);
