@@ -1,8 +1,11 @@
 import { queryKeys } from '@/lib/queryKeys';
 import type { MemoProps } from '@/types/memo';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Timestamp } from 'firebase/firestore';
 
-export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) => {
+export const fetchCreateMemo = async (
+  memoData: Omit<MemoProps, 'id' | 'createdAt'>,
+): Promise<MemoProps> => {
   try {
     const response = await fetch(`/api/memos`, {
       method: 'POST',
@@ -28,12 +31,46 @@ export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdA
 
 export default function usePostMemo() {
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending } = useMutation<
+    Awaited<ReturnType<typeof fetchCreateMemo>>,
+    Error,
+    Omit<MemoProps, 'id' | 'createdAt'>,
+    { previousMemos?: MemoProps[] }
+  >({
     mutationFn: fetchCreateMemo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.memo.lists(),
+    onMutate: async newMemo => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.memo.lists() });
+      const previousMemos = queryClient.getQueryData<MemoProps[]>(queryKeys.memo.lists());
+
+      const newOptimisticMemo: MemoProps = {
+        ...newMemo,
+        id: `Temp-${crypto.randomUUID()}`,
+        category: newMemo?.category || 'others',
+        createdAt: Timestamp.now(),
+      };
+
+      queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+        if (!old) return [newOptimisticMemo];
+        return [newOptimisticMemo, ...old];
       });
+      return { previousMemos };
+    },
+
+    onSuccess: (createdMemo, variables, context) => {
+      if (context?.previousMemos) {
+        queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+          if (!old) return [createdMemo];
+          return [createdMemo, ...old];
+        });
+      }
+      const categories = queryClient.getQueryData<string[]>(['categories']);
+      if (categories && !categories.includes(createdMemo.category)) {
+        queryClient.setQueryData(['categories'], [...categories, createdMemo.category]);
+      }
+    },
+    onError: (error, newMemo, context) => {
+      queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), context?.previousMemos);
+      console.error('메모 생성 중 오류 발생:', error);
     },
   });
 
