@@ -43,6 +43,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const handleDeleteMemo = async () => {
     try {
       await deleteMemo(id);
+      onClose();
       showUndoDeleteToast(id);
     } catch (error) {
       console.error('메모 삭제 중 오류가 발생했습니다:', error);
