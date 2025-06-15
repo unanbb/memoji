@@ -1,3 +1,4 @@
+import { queryKeys } from '@/lib/queryKeys';
 import type { CategoryItem } from '@/types/category';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -44,6 +45,7 @@ export default function useDeleteCategory() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.memo.lists()});
     },
   });
 

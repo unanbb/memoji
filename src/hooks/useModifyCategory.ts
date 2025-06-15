@@ -1,3 +1,4 @@
+import { queryKeys } from '@/lib/queryKeys';
 import type { CategoryItem } from '@/types/category';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -40,14 +41,13 @@ export default function useModifyCategory() {
       await queryClient.cancelQueries({ queryKey: ['categories'] });
 
       const prev = queryClient.getQueryData<CategoryItem[]>(['categories']);
-
       queryClient.setQueryData<CategoryItem[]>(['categories'], old =>
         old?.map(category =>
           category.name === categoryName ? { ...category, name: newCategoryName } : category,
         ),
       );
 
-      return { prev };
+      return { prev, categoryName };
     },
     onError: (_err, _variables, context) => {
       if (context?.prev) {
@@ -56,6 +56,7 @@ export default function useModifyCategory() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.memo.lists() });
     },
   });
 
