@@ -11,7 +11,6 @@ import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 interface MemoUpdateModalProps {
@@ -23,7 +22,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { data: memo, isLoading, isError, isFetching } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
-  const router = useRouter();
 
   const [memoData, setMemoData] = useState<{
     id?: string;
@@ -85,7 +83,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     onClose();
     if (isError || isLoading || isFetching) return;
     handleUpdateMemo();
-    router.push('/');
   };
 
   return (
