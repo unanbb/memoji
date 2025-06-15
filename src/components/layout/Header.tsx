@@ -16,14 +16,15 @@ export default function Header() {
   return (
     <>
       <header className="w-full h-16 fixed top-0 left-0 bg-white z-10 border-b border-gray-200 shadow">
-        <div className="container mx-auto flex items-center justify-between h-full px-4">
-          <div className="text-xl font-bold justify-start w-1/4">
+        <div className="container mx-auto flex items-center h-full px-4 gap-4">
+          <div className="text-xl font-bold flex-shrink-0">
             <Link href="/">Memoji</Link>
           </div>
-          <div className="flex flex-1 justify-center">
+          <div className="w-10"></div>
+          <div className="flex-1 max-w-2xl mx-auto">
             <SearchBar />
           </div>
-          <div className="flex items-center justify-end w-1/4 gap-3">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <AuthSection />
             <div className="w-10"></div>
           </div>
