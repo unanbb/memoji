@@ -1,10 +1,17 @@
 import { auth } from '@/auth';
 import { type NextRequest, NextResponse } from 'next/server';
 
-export function withAuth<T = Record<string, string>>(
-  handler: (req: NextRequest, context: { userId: string; params?: T }) => Promise<Response>,
-) {
-  return async (req: NextRequest, routeContext?: { params: T }) => {
+type RouteContext = {
+  params: Promise<Record<string, string>>;
+};
+
+export function withAuth(
+  handler: (
+    req: NextRequest,
+    context: { userId: string; params: Promise<Record<string, string>> },
+  ) => Promise<Response>,
+): (req: NextRequest, context: RouteContext) => Promise<Response> {
+  return async (req, context) => {
     const session = await auth();
 
     if (!session?.user?.id) {
@@ -13,7 +20,7 @@ export function withAuth<T = Record<string, string>>(
 
     return handler(req, {
       userId: session.user.id,
-      params: routeContext?.params,
+      params: context.params,
     });
   };
 }
