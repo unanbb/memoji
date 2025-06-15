@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const fetchCreateMemo = async (memoData: Omit<MemoProps, 'id' | 'createdAt'>) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/memos`, {
+    const response = await fetch(`/api/memos`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
