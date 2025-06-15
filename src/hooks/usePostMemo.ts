@@ -31,11 +31,11 @@ export const fetchCreateMemo = async (
 
 export default function usePostMemo() {
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation<
+  const { mutateAsync, isPending } = useMutation<
     Awaited<ReturnType<typeof fetchCreateMemo>>,
     Error,
     Omit<MemoProps, 'id' | 'createdAt'>,
-    { previousMemos?: MemoProps[] }
+    { previousMemos?: MemoProps[]; newOptimisticMemo?: MemoProps }
   >({
     mutationFn: fetchCreateMemo,
     onMutate: async newMemo => {
@@ -53,16 +53,16 @@ export default function usePostMemo() {
         if (!old) return [newOptimisticMemo];
         return [newOptimisticMemo, ...old];
       });
-      return { previousMemos };
+      return { previousMemos, newOptimisticMemo };
     },
 
-    onSuccess: (createdMemo, variables, context) => {
-      if (context?.previousMemos) {
-        queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
-          if (!old) return [createdMemo];
-          return [createdMemo, ...old];
-        });
-      }
+    onSuccess: (createdMemo, _variables, context) => {
+      queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+        if (!old) return [createdMemo];
+        return old.map(memo =>
+          memo.id === context.newOptimisticMemo?.id ? { ...memo, ...createdMemo } : memo,
+        );
+      });
       const categories = queryClient.getQueryData<string[]>(['categories']);
       if (categories && !categories.includes(createdMemo.category)) {
         queryClient.setQueryData(['categories'], [...categories, createdMemo.category]);
@@ -74,5 +74,5 @@ export default function usePostMemo() {
     },
   });
 
-  return { postMemo: mutate, isLoading: isPending };
+  return { postMemo: mutateAsync, isLoading: isPending };
 }
