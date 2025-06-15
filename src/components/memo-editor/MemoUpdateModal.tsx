@@ -42,22 +42,18 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     [memo, memoData],
   );
 
-  const handleDeleteMemo = () => {
-    deleteMemo(id, {
-      onSuccess: () => {
-        onClose();
-        router.push('/');
-        showUndoDeleteToast(id);
-      },
-      onError: (error: Error) => {
-        console.error('메모 삭제 중 오류가 발생했습니다:', error.message);
-        showToast({
-          type: 'error',
-          state: '삭제',
-          name: '메모',
-        });
-      },
-    });
+  const handleDeleteMemo = async () => {
+    try {
+      await deleteMemo(id);
+      showUndoDeleteToast(id);
+    } catch (error) {
+      console.error('메모 삭제 중 오류가 발생했습니다:', error);
+      showToast({
+        type: 'error',
+        state: '삭제',
+        name: '메모',
+      });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
