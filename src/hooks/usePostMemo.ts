@@ -31,7 +31,7 @@ export const fetchCreateMemo = async (
 
 export default function usePostMemo() {
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation<
+  const { mutateAsync, isPending } = useMutation<
     Awaited<ReturnType<typeof fetchCreateMemo>>,
     Error,
     Omit<MemoProps, 'id' | 'createdAt'>,
@@ -76,5 +76,5 @@ export default function usePostMemo() {
     },
   });
 
-  return { postMemo: mutate, isLoading: isPending };
+  return { postMemo: mutateAsync, isLoading: isPending };
 }
