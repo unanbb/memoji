@@ -31,7 +31,12 @@ export const fetchCreateMemo = async (
 
 export default function usePostMemo() {
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending } = useMutation<
+    Awaited<ReturnType<typeof fetchCreateMemo>>,
+    Error,
+    Omit<MemoProps, 'id' | 'createdAt'>,
+    { previousMemos?: MemoProps[] }
+  >({
     mutationFn: fetchCreateMemo,
     onMutate: async newMemo => {
       await queryClient.cancelQueries({ queryKey: queryKeys.memo.lists() });
@@ -44,12 +49,10 @@ export default function usePostMemo() {
         createdAt: Timestamp.now(),
       };
 
-      if (previousMemos) {
-        queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
-          if (!old) return [newOptimisticMemo];
-          return [newOptimisticMemo, ...old];
-        });
-      }
+      queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
+        if (!old) return [newOptimisticMemo];
+        return [newOptimisticMemo, ...old];
+      });
       return { previousMemos };
     },
 
