@@ -7,7 +7,7 @@ export async function fetchMemos(cookieStore?: Awaited<ReturnType<typeof cookies
     headers.Cookie = cookieStore.toString();
   }
 
-  const res = await fetch('http://localhost:3000/api/memos', {
+  const res = await fetch('/api/memos', {
     headers,
     cache: 'no-store',
   });
