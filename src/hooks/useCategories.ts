@@ -1,6 +1,5 @@
 import type { CategoryItem } from '@/types/category';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
 
 const fetchCategories = async (): Promise<CategoryItem[]> => {
   try {
