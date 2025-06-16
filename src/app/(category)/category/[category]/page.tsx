@@ -1,6 +1,7 @@
 import ClientMemoSection from '@/components/ClientMemoSection';
 import type { MemoProps } from '@/types/memo';
 import { cookies } from 'next/headers';
+import { fetchMemos } from '@/lib/fetchers';
 
 interface PageProps {
   category: string;
@@ -8,13 +9,7 @@ interface PageProps {
 
 async function getMemos(): Promise<MemoProps[]> {
   const cookieStore = await cookies();
-  const res = await fetch(`http://localhost:3000/api/memos`, {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
-    cache: 'no-store',
-  });
-  return res.json();
+  return fetchMemos(cookieStore);
 }
 
 export default async function EachCategoryPage({ params }: { params: Promise<PageProps>}) {
