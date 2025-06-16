@@ -23,8 +23,8 @@ export default function useCategories() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['categories'],
     queryFn: fetchCategories,
+    initialData: [],
   });
-  const categories = useMemo(() => (data ? data : []), [data]);
 
-  return { categories, isLoading, isError };
+  return { categories: data, isLoading, isError };
 }
