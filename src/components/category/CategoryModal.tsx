@@ -26,13 +26,15 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     setCategoryStates(() =>
-      fetchedCategories.map(category => ({
-        name: category.name,
-        isEditing: false,
-        isHovered: false,
-        editValue: '',
-        error: '',
-      })),
+      fetchedCategories
+        .filter(category => category.name !== 'others')
+        .map(category => ({
+          name: category.name,
+          isEditing: false,
+          isHovered: false,
+          editValue: '',
+          error: '',
+        })),
     );
   }, [fetchedCategories]);
 
@@ -156,9 +158,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
 
       // 로컬 상태만 수정(isEditing / error)
       setCategoryStates(prev =>
-        prev.map((state, i) =>
-          i === index ? { ...state, isEditing: false, error: '' } : state,
-        ),
+        prev.map((state, i) => (i === index ? { ...state, isEditing: false, error: '' } : state)),
       );
 
       fetchModifyCategory(
