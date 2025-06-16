@@ -7,7 +7,7 @@ export async function fetchMemos(cookieStore?: Awaited<ReturnType<typeof cookies
     headers.Cookie = cookieStore.toString();
   }
 
-  const res = await fetch('/api/memos', {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/memos`, {
     headers,
     cache: 'no-store',
   });
