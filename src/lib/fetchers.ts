@@ -1,6 +1,6 @@
-import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import type { cookies } from 'next/headers';
 
-export async function fetchMemos(cookieStore?: ReadonlyRequestCookies) {
+export async function fetchMemos(cookieStore?:  ReturnType<typeof cookies>) {
   const headers: HeadersInit = {};
 
   if (cookieStore) {
