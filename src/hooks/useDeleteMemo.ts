@@ -23,19 +23,20 @@ async function fetchDeleteMemo(id: string): Promise<{ success: boolean; message?
 
 export default function useDeleteMemo() {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const { mutateAsync } = useMutation<
+    Awaited<ReturnType<typeof fetchDeleteMemo>>,
+    Error,
+    string,
+    { previousMemo?: MemoProps; previousMemos?: MemoProps[] }
+  >({
     mutationFn: fetchDeleteMemo,
     onMutate: async (id: string) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.memo.detail(id) });
+      const previousMemo = queryClient.getQueryData<MemoProps>(queryKeys.memo.detail(id));
       await queryClient.cancelQueries({ queryKey: queryKeys.memo.lists() });
-      const previousMemo = queryClient.getQueryData(queryKeys.memo.detail(id));
-      const previousMemos = queryClient.getQueryData(queryKeys.memo.lists());
-
+      const previousMemos = queryClient.getQueryData<MemoProps[]>(queryKeys.memo.lists());
       if (previousMemo) {
-        queryClient.removeQueries({
-          queryKey: queryKeys.memo.detail(id),
-          exact: true,
-        });
+        queryClient.removeQueries({ queryKey: queryKeys.memo.detail(id) });
       }
       if (previousMemos) {
         queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), old => {
@@ -54,5 +55,5 @@ export default function useDeleteMemo() {
       }
     },
   });
-  return { deleteMemo: mutate };
+  return { deleteMemo: mutateAsync };
 }
