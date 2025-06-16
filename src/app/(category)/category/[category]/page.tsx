@@ -3,11 +3,11 @@ import type { MemoProps } from '@/types/memo';
 import { cookies } from 'next/headers';
 
 interface PageProps {
-  params: { category: string };
+  category: string;
 }
 
 async function getMemos(): Promise<MemoProps[]> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const res = await fetch(`http://localhost:3000/api/memos`, {
     headers: {
       Cookie: cookieStore.toString(),
@@ -17,10 +17,12 @@ async function getMemos(): Promise<MemoProps[]> {
   return res.json();
 }
 
-export default async function EachCategoryPage({ params }: PageProps) {
+export default async function EachCategoryPage({ params }: { params: Promise<PageProps>}) {
+  const { category } = await params;
   const memos = await getMemos();
 
-  const decodedCategory = decodeURIComponent(params.category);
+
+  const decodedCategory = decodeURIComponent(category);
   const filteredMemo = memos.filter(memo => memo.category === decodedCategory);
 
   return <MemoSection memos={filteredMemo} />;
