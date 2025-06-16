@@ -1,4 +1,4 @@
-import MemoSection from '@/components/memo/MemoSection';// 서버에서 memos를 가져오는 함수
+import ClientMemoSection from '@/components/ClientMemoSection';
 import type { MemoProps } from '@/types/memo';
 import { cookies } from 'next/headers';
 
@@ -21,9 +21,8 @@ export default async function EachCategoryPage({ params }: { params: Promise<Pag
   const { category } = await params;
   const memos = await getMemos();
 
-
   const decodedCategory = decodeURIComponent(category);
   const filteredMemo = memos.filter(memo => memo.category === decodedCategory);
 
-  return <MemoSection memos={filteredMemo} />;
+  return <ClientMemoSection initialMemos={filteredMemo} category={decodedCategory} />;
 }
