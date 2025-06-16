@@ -60,9 +60,9 @@ export async function getMemos(
   const memosRef = collection(db, 'users', userId, 'memos');
 
   const queryConstraints = [orderBy(sortBy, sortOrder), where('isDeleted', '!=', true)];
+  const categoryMap = await getCategoryMap(userId);
 
   if (category && category !== 'all') {
-    const categoryMap = await getCategoryMap(userId);
     const categoryId = Array.from(categoryMap.entries()).find(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ([_, name]) => name === category,
@@ -75,7 +75,6 @@ export async function getMemos(
 
   const q = query(memosRef, ...queryConstraints);
   const querySnapshot = await getDocs(q);
-  const categoryMap = await getCategoryMap(userId);
 
   let memos = querySnapshot.docs.map(doc => {
     const data = doc.data();
