@@ -9,7 +9,6 @@ import { Modal } from '@/components/Modal';
 import showToast from '@/components/toast/showToast';
 import usePostMemo from '@/hooks/usePostMemo';
 import { type MemoProps } from '@/types/memo';
-import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
 interface MemoCreateModalProps {
@@ -23,8 +22,6 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
     category: '',
   });
 
-  const router = useRouter();
-
   const { postMemo, isLoading } = usePostMemo();
 
   const submitMemo = useCallback(async () => {
@@ -36,7 +33,6 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
     postMemo(memoData, {
       onSuccess: () => {
         console.log('메모가 성공적으로 생성되었습니다.');
-        router.push('/');
         onClose();
       },
       onError: (error: Error) => {
@@ -48,7 +44,7 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
         console.error('메모 생성 중 오류 발생:', error);
       },
     });
-  }, [memoData, onClose, postMemo, router]);
+  }, [memoData, onClose, postMemo]);
 
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
 
