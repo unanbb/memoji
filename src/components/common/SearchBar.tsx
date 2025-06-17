@@ -11,22 +11,26 @@ export default function SearchBar() {
   const { replace } = useRouter();
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.trim();
+    setSearchQuery(value);
+    debouncedUpdateUrl(value);
+  };
+
+  const debouncedUpdateUrl = useDebouncedCallback((value: string) => {
     const params = new URLSearchParams(searchParams);
-    if (event.target.value === '') {
+    if (value === '') {
       params.delete('search');
     } else {
-      params.set('search', event.target.value);
+      params.set('search', value);
     }
     replace(`${pathName}?${params.toString()}`);
-    setSearchQuery(event.target.value);
-  };
-  const useDebouncedSearch = useDebouncedCallback(handleSearch, 300);
+  }, 300);
 
   return (
     <div className="flex items-center w-full border-1 border-gray-300 px-2 py-2 rounded-full">
       <MdSearch size={24} className="relative left-1" />
       <input
-        onChange={useDebouncedSearch}
+        onChange={handleSearch}
         type="text"
         name="search"
         role="search"
