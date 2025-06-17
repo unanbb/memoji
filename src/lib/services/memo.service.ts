@@ -46,24 +46,57 @@ export async function createMemo(
   };
 }
 
-export async function getMemos(userId: string): Promise<MemoProps[]> {
+export async function getMemos(
+  userId: string,
+  options?: {
+    search?: string;
+    category?: string;
+    sortBy?: 'createdAt' | 'updatedAt' | 'title';
+    sortOrder?: 'asc' | 'desc';
+  },
+): Promise<MemoProps[]> {
+  const { search, category, sortBy = 'createdAt', sortOrder = 'desc' } = options || {};
+
   const memosRef = collection(db, 'users', userId, 'memos');
-  const q = query(memosRef, orderBy('createdAt', 'desc'), where('isDeleted', '!=', true));
-  const querySnapshot = await getDocs(q);
+
+  const queryConstraints = [orderBy(sortBy, sortOrder), where('isDeleted', '!=', true)];
   const categoryMap = await getCategoryMap(userId);
 
-  return Promise.all(
-    querySnapshot.docs.map(async doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        title: data.title,
-        content: data.content,
-        category: categoryMap.get(data.categoryId) || 'others',
-        createdAt: Timestamp.fromDate(data.createdAt.toDate()),
-      } as MemoProps;
-    }),
-  );
+  if (category && category !== 'all') {
+    const categoryId = Array.from(categoryMap.entries()).find(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, name]) => name === category,
+    )?.[0];
+
+    if (categoryId) {
+      queryConstraints.push(where('categoryId', '==', categoryId));
+    }
+  }
+
+  const q = query(memosRef, ...queryConstraints);
+  const querySnapshot = await getDocs(q);
+
+  let memos = querySnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      title: data.title,
+      content: data.content,
+      category: categoryMap.get(data.categoryId) || 'others',
+      createdAt: Timestamp.fromDate(data.createdAt.toDate()),
+    } as MemoProps;
+  });
+
+  if (search && search.trim()) {
+    const normalizedQuery = search.toLowerCase().trim();
+    memos = memos.filter(
+      memo =>
+        memo.title.toLowerCase().includes(normalizedQuery) ||
+        memo.content.toLowerCase().includes(normalizedQuery),
+    );
+  }
+
+  return memos;
 }
 
 export async function getMemoById(id: string, userId: string): Promise<MemoProps | null> {

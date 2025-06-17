@@ -26,24 +26,20 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
 
   const submitMemo = useCallback(async () => {
     if (!memoData.content) {
-      // console.error('메모 내용은 필수입니다.');
       onClose();
       return;
     }
-    postMemo(memoData, {
-      onSuccess: () => {
-        console.log('메모가 성공적으로 생성되었습니다.');
-        onClose();
-      },
-      onError: (error: Error) => {
-        showToast({
-          type: 'error',
-          state: '생성',
-          name: '메모',
-        });
-        console.error('메모 생성 중 오류 발생:', error);
-      },
-    });
+    try {
+      postMemo(memoData);
+      onClose();
+    } catch (error) {
+      console.error('메모 생성 중 오류 발생:', error);
+      showToast({
+        type: 'error',
+        state: '생성',
+        name: '메모',
+      });
+    }
   }, [memoData, onClose, postMemo]);
 
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
