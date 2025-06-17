@@ -22,7 +22,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { data: memo, isLoading, isError, isFetching } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
-
+  
   const [memoData, setMemoData] = useState<{
     id?: string;
     title?: string;
