@@ -1,10 +1,10 @@
-import type { cookies } from 'next/headers';
+import { cookies } from 'next/headers';
 
 export async function fetchMemos(cookieStore?: Awaited<ReturnType<typeof cookies>>) {
   const headers: HeadersInit = {};
 
   if (cookieStore) {
-    headers.Cookie = cookieStore.toString();
+    headers['cookie'] = cookieStore.toString();
   }
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/memos`, {
