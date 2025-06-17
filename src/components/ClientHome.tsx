@@ -1,33 +1,33 @@
 'use client';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import LoginPrompt from '@/components/auth/LoginPrompt';
 import MemoListSkeleton from '@/components/common/MemoListSkeleton';
 import MemoSection from '@/components/memo/MemoSection';
 import { NotFoundMemos } from '@/components/NotFoundMemos';
+import { useAuth } from '@/hooks/useAuth';
 import useDebounce from '@/hooks/useDebounce';
 import useSearchMemos from '@/hooks/useSearchMemos';
 import { useSearchStore } from '@/store/SearchStore';
 
 export default function ClientHome() {
   const searchQuery = useSearchStore(state => state.searchQuery);
-
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { debouncedValue, isDebouncing } = useDebounce(searchQuery, 300);
-
   const { isLoading, data: memos = [] } = useSearchMemos({
     search: debouncedValue,
     category: '',
   });
 
-  if (isLoading || isDebouncing) {
+  if (isLoading || isDebouncing || isAuthLoading) {
     return <MemoListSkeleton />;
   }
 
-  if (!memos || memos.length === 0) {
+  if (!isAuthenticated) {
+    return <LoginPrompt />;
+  }
+
+  if (memos.length === 0) {
     return <NotFoundMemos />;
   }
 
-  return (
-    <ProtectedRoute>
-      <MemoSection memos={memos} />
-    </ProtectedRoute>
-  );
+  return <MemoSection memos={memos} />;
 }
