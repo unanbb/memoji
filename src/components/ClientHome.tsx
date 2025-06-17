@@ -2,6 +2,7 @@
 import LoginPrompt from '@/components/auth/LoginPrompt';
 import MemoListSkeleton from '@/components/common/MemoListSkeleton';
 import MemoSection from '@/components/memo/MemoSection';
+import MemoLoadErrorFallback from '@/components/MemoLoadErrorFallback';
 import { NotFoundMemos } from '@/components/NotFoundMemos';
 import { useAuth } from '@/hooks/useAuth';
 import useDebounce from '@/hooks/useDebounce';
@@ -12,10 +13,18 @@ export default function ClientHome() {
   const searchQuery = useSearchStore(state => state.searchQuery);
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { debouncedValue, isDebouncing } = useDebounce(searchQuery, 300);
-  const { isLoading, data: memos = [] } = useSearchMemos({
+  const {
+    isLoading,
+    data: memos = [],
+    isError,
+  } = useSearchMemos({
     search: debouncedValue,
     category: '',
   });
+
+  if (isError) {
+    return <MemoLoadErrorFallback />;
+  }
 
   if (isLoading || isDebouncing || isAuthLoading) {
     return <MemoListSkeleton />;
