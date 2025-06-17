@@ -22,8 +22,9 @@ export default function useCategories() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['categories'],
     queryFn: fetchCategories,
-    placeholderData: [],
   });
+  
+  const categories = data ?? []; // undefined 방어 코드
 
-  return { categories: data, isLoading, isError };
+  return { categories, isLoading, isError };
 }
