@@ -2,7 +2,7 @@
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import MemoListSkeleton from '@/components/common/MemoListSkeleton';
 import MemoSection from '@/components/memo/MemoSection';
-import { NotFondMemos } from '@/components/NotFoundMemos';
+import { NotFoundMemos } from '@/components/NotFoundMemos';
 import useDebounce from '@/hooks/useDebounce';
 import useSearchMemos from '@/hooks/useSearchMemos';
 import { useSearchStore } from '@/store/SearchStore';
@@ -22,7 +22,7 @@ export default function ClientHome() {
   }
 
   if (!memos || memos.length === 0) {
-    return <NotFondMemos />;
+    return <NotFoundMemos />;
   }
 
   return (
