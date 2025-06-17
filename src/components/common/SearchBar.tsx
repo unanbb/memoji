@@ -1,20 +1,24 @@
 'use client';
-import { useState } from 'react';
+import { useSearchStore } from '@/store/SearchStore';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MdSearch } from 'react-icons/md';
 
-interface SearchBarProps {
-  onSearch?: (query: string) => void;
-}
-
-export default function SearchBar({ onSearch }: SearchBarProps) {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+export default function SearchBar() {
+  const setSearchQuery = useSearchStore(state => state.setSearchQuery);
+  const searchQuery = useSearchStore(state => state.searchQuery);
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const { replace } = useRouter();
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchQuery(value);
-    if (onSearch) {
-      onSearch(value);
+    const params = new URLSearchParams(searchParams);
+    if (event.target.value === '') {
+      params.delete('search');
+    } else {
+      params.set('search', event.target.value);
     }
+    replace(`${pathName}?${params.toString()}`);
+    setSearchQuery(event.target.value);
   };
 
   return (
@@ -29,6 +33,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         placeholder="Search..."
         className="border-none outline-none relative left-3 w-full"
         aria-label="Search"
+        defaultValue={searchParams.get('search') || ''}
       />
     </div>
   );

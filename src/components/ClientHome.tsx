@@ -2,10 +2,16 @@
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import MemoListSkeleton from '@/components/common/MemoListSkeleton';
 import MemoSection from '@/components/memo/MemoSection';
-import useGetMemos from '@/hooks/useGetMemos';
+import useSearchMemos from '@/hooks/useSearchMemos';
+import { useSearchStore } from '@/store/SearchStore';
 
 export default function ClientHome() {
-  const { isLoading, data: memos = [] } = useGetMemos();
+  const searchQuery = useSearchStore(state => state.searchQuery);
+
+  const { isLoading, data: memos = [] } = useSearchMemos({
+    search: searchQuery,
+    category: '',
+  });
 
   if (isLoading) {
     return <MemoListSkeleton />;
