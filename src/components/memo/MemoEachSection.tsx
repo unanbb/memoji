@@ -22,7 +22,7 @@ export default function MemoEachSection({ category, memos }: MemoEachSectionProp
   return (
     <div className="mb-6">
       <div className="flex justify-between">
-        <Link href={`/${encodeURIComponent(category)}`} className="font-medium inline-block">
+        <Link href={`/category/${encodeURIComponent(category)}`} className="font-medium inline-block">
           {category}
         </Link>
         <ToggleButton onClick={toggleOpen} isOpen={isOpen} />
