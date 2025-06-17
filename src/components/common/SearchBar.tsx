@@ -2,10 +2,10 @@
 import { useSearchStore } from '@/store/SearchStore';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MdSearch } from 'react-icons/md';
+import { useDebouncedCallback } from 'use-debounce';
 
 export default function SearchBar() {
   const setSearchQuery = useSearchStore(state => state.setSearchQuery);
-  const searchQuery = useSearchStore(state => state.searchQuery);
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const { replace } = useRouter();
@@ -20,13 +20,13 @@ export default function SearchBar() {
     replace(`${pathName}?${params.toString()}`);
     setSearchQuery(event.target.value);
   };
+  const useDebouncedSearch = useDebouncedCallback(handleSearch, 300);
 
   return (
     <div className="flex items-center w-full border-1 border-gray-300 px-2 py-2 rounded-full">
       <MdSearch size={24} className="relative left-1" />
       <input
-        value={searchQuery}
-        onChange={handleSearch}
+        onChange={useDebouncedSearch}
         type="text"
         name="search"
         role="search"
