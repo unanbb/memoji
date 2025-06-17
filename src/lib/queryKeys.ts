@@ -1,3 +1,5 @@
+import type { SearchOptions } from '@/hooks/useSearchMemos';
+
 export const queryKeys = {
   memo: {
     all: ['memos'] as const,
@@ -5,6 +7,7 @@ export const queryKeys = {
     list: (filters: string) => [...queryKeys.memo.lists(), { filters }] as const,
     details: () => [...queryKeys.memo.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.memo.details(), id] as const,
+    search: (options: SearchOptions) => [...queryKeys.memo.all, 'search', options] as const,
   },
 
   category: {

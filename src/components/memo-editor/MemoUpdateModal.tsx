@@ -11,7 +11,6 @@ import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
-// import { usePathname, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 interface MemoUpdateModalProps {
@@ -23,8 +22,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { data: memo, isLoading, isError, isFetching } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
-  // const router = useRouter();
-  // const pathname = usePathname();
   
   const [memoData, setMemoData] = useState<{
     id?: string;
@@ -43,22 +40,19 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     [memo, memoData],
   );
 
-  const handleDeleteMemo = () => {
-    deleteMemo(id, {
-      onSuccess: () => {
-        onClose();
-        // router.push('/');
-        showUndoDeleteToast(id);
-      },
-      onError: (error: Error) => {
-        console.error('메모 삭제 중 오류가 발생했습니다:', error.message);
-        showToast({
-          type: 'error',
-          state: '삭제',
-          name: '메모',
-        });
-      },
-    });
+  const handleDeleteMemo = async () => {
+    try {
+      await deleteMemo(id);
+      onClose();
+      showUndoDeleteToast(id);
+    } catch (error) {
+      console.error('메모 삭제 중 오류가 발생했습니다:', error);
+      showToast({
+        type: 'error',
+        state: '삭제',
+        name: '메모',
+      });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +84,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     onClose();
     if (isError || isLoading || isFetching) return;
     handleUpdateMemo();
-    // router.push(pathname);
   };
 
   return (
