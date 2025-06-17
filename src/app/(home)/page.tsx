@@ -1,15 +1,15 @@
-import { cookies } from 'next/headers';
-import { HydrationBoundary, dehydrate, QueryClient } from '@tanstack/react-query';
 import ClientHome from '@/components/ClientHome';
 import { fetchMemos } from '@/lib/fetchers';
 import { queryKeys } from '@/lib/queryKeys';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+import { cookies } from 'next/headers';
 
 export default async function Home() {
   const cookieStore = await cookies();
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.memo.all,
+    queryKey: queryKeys.memo.lists(),
     queryFn: () => fetchMemos(cookieStore),
   });
 
@@ -19,4 +19,3 @@ export default async function Home() {
     </HydrationBoundary>
   );
 }
-

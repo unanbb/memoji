@@ -1,19 +1,42 @@
 'use client';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import LoginPrompt from '@/components/auth/LoginPrompt';
 import MemoListSkeleton from '@/components/common/MemoListSkeleton';
 import MemoSection from '@/components/memo/MemoSection';
-import useGetMemos from '@/hooks/useGetMemos';
+import MemoLoadErrorFallback from '@/components/MemoLoadErrorFallback';
+import { NotFoundMemos } from '@/components/NotFoundMemos';
+import { useAuth } from '@/hooks/useAuth';
+import useDebounce from '@/hooks/useDebounce';
+import useSearchMemos from '@/hooks/useSearchMemos';
+import { useSearchStore } from '@/store/SearchStore';
 
 export default function ClientHome() {
-  const { isLoading, data: memos = [] } = useGetMemos();
+  const searchQuery = useSearchStore(state => state.searchQuery);
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { debouncedValue, isDebouncing } = useDebounce(searchQuery, 300);
+  const {
+    isLoading,
+    data: memos = [],
+    isError,
+  } = useSearchMemos({
+    search: debouncedValue,
+    category: '',
+  });
 
-  if (isLoading) {
+  if (isError) {
+    return <MemoLoadErrorFallback />;
+  }
+
+  if (isLoading || isDebouncing || isAuthLoading) {
     return <MemoListSkeleton />;
   }
 
-  return (
-    <ProtectedRoute>
-      <MemoSection memos={memos} />
-    </ProtectedRoute>
-  );
+  if (!isAuthenticated) {
+    return <LoginPrompt />;
+  }
+
+  if (memos.length === 0) {
+    return <NotFoundMemos />;
+  }
+
+  return <MemoSection memos={memos} />;
 }
