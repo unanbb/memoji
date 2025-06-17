@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import type { cookies } from 'next/headers';
 
 export async function fetchMemos(cookieStore?: Awaited<ReturnType<typeof cookies>>) {
   const headers: HeadersInit = {};
