@@ -4,7 +4,7 @@ export default function useDebounce<T>(
   value: T,
   delay: number,
 ): { debouncedValue: T; isDebouncing: boolean } {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
   const [isDebouncing, setIsDebouncing] = useState<boolean>(true);
 
