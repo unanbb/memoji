@@ -4,7 +4,7 @@ import SearchBar from '@/components/common/SearchBar';
 import ToggleSidebarButton from '@/components/layout/ToggleSidebarButton';
 import Sidebar from '@/components/layout/sidebar/Sidebar';
 import Link from 'next/link';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,7 +21,9 @@ export default function Header() {
             <Link href="/">Memoji</Link>
           </div>
           <div className="flex-1 max-w-2xl mx-auto">
-            <SearchBar />
+            <Suspense>
+              <SearchBar />
+            </Suspense>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0 mr-10">
             <AuthSection />
