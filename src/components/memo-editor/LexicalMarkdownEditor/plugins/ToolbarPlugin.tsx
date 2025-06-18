@@ -60,14 +60,14 @@ const LowPriority = 1;
 const supportedBlockTypes = new Set(['paragraph', 'quote', 'code', 'h1', 'h2', 'h3', 'ul', 'ol']);
 
 const blockTypeToBlockName = {
-  code: 'Code Block',
-  h1: 'Heading 1',
-  h2: 'Heading 2',
-  h3: 'Heading 3',
-  ol: 'Numbered List',
+  code: 'Code',
+  h1: 'H1',
+  h2: 'H2',
+  h3: 'H3',
+  ol: 'OL',
   paragraph: 'Normal',
   quote: 'Quote',
-  ul: 'Bulleted List',
+  ul: 'UL',
 };
 
 function getBlockTypeIcon(blockType: string) {
@@ -420,7 +420,7 @@ export default function ToolbarPlugin() {
       >
         <BiRedo className="w-4 h-4" />
       </button>
-      <div className="divider" />
+      {/* <div className="divider" /> */}
       {supportedBlockTypes.has(blockType) && (
         <>
           <button
@@ -442,7 +442,7 @@ export default function ToolbarPlugin() {
               setShowBlockOptionsDropDown={setShowBlockOptionsDropDown}
             />
           )}
-          <div className="divider" />
+          {/* <div className="divider" /> */}
         </>
       )}
       {blockType === 'code' ? (
@@ -516,12 +516,12 @@ export default function ToolbarPlugin() {
             <BiLink className="w-4 h-4" />
           </button> */}
           {isLink && <div className="divider" />}
-          <div className="divider" />
+          {/* <div className="divider" /> */}
           <button
             onClick={() => {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
             }}
-            className="toolbar-item spaced"
+            className="mobile-toolbar-item"
             aria-label="Left Align"
           >
             <BiAlignLeft className="w-4 h-4" />
@@ -530,7 +530,7 @@ export default function ToolbarPlugin() {
             onClick={() => {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
             }}
-            className="toolbar-item spaced"
+            className="mobile-toolbar-item"
             aria-label="Center Align"
           >
             <BiAlignMiddle className="w-4 h-4" />
@@ -539,7 +539,7 @@ export default function ToolbarPlugin() {
             onClick={() => {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
             }}
-            className="toolbar-item spaced"
+            className="mobile-toolbar-item"
             aria-label="Right Align"
           >
             <BiAlignRight className="w-4 h-4" />
@@ -548,7 +548,7 @@ export default function ToolbarPlugin() {
             onClick={() => {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
             }}
-            className="toolbar-item"
+            className="mobile-toolbar-item"
             aria-label="Justify Align"
           >
             <BiAlignJustify className="w-4 h-4" />

@@ -51,7 +51,7 @@ export const Modal = ({ isOpen, onClose, children, size = 'large', className }: 
       <div
         ref={modalRef}
         className={cn(
-          'relative z-50 w-full rounded-lg bg-white p-6 shadow-xl',
+          'relative z-50 w-full rounded-lg bg-white p-5 shadow-xl',
           sizeClasses[size],
           className,
         )}
