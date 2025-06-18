@@ -27,7 +27,6 @@ import './LexicalMarkdownEditor.toolbar.css';
 import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
-import MobileToolbarPlugin from './plugins/MobileToolbarPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 
 interface LexicalMarkdownEditorProps {
@@ -93,19 +92,17 @@ export default function LexicalMarkdownEditor({
     <div className="sm:h-[80%] h-[87%] w-full">
       <LexicalComposer initialConfig={initialConfig}>
         <div className="h-full flex flex-col relative">
-          {!isMobile && <ToolbarPlugin />}
+          <ToolbarPlugin />
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                className={`flex-1 p-4 outline-none resize-none border border-gray-300 ${
-                  !isMobile ? 'rounded-b-lg' : 'rounded-lg'
-                } overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+                className={`flex-1 p-4 outline-none resize-none border border-gray-300 overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
                   isMobile ? 'pb-20' : ''
                 }`}
               />
             }
             placeholder={
-              <div className={`text-gray-400 absolute ${!isMobile ? 'top-16' : 'top-4'} left-4`}>
+              <div className={`sm:hidden text-gray-400 absolute sm:top-4 top-[60px] left-4`}>
                 {placeholder}
               </div>
             }
@@ -120,7 +117,7 @@ export default function LexicalMarkdownEditor({
           <AutoLinkPlugin />
           <CodeHighlightPlugin />
           <ListMaxIndentLevelPlugin maxDepth={7} />
-          {isMobile && <MobileToolbarPlugin />}
+          {/* {isMobile && <MobileToolbarPlugin />} */}
         </div>
       </LexicalComposer>
     </div>
