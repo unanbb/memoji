@@ -24,7 +24,6 @@ import type { EditorState } from 'lexical';
 import { useCallback } from 'react';
 import { lexicalTheme } from './LexicalMarkdownEditor.theme';
 import './LexicalMarkdownEditor.toolbar.css';
-import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
@@ -114,7 +113,6 @@ export default function LexicalMarkdownEditor({
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <ListPlugin />
           <LinkPlugin />
-          <AutoLinkPlugin />
           <CodeHighlightPlugin />
           <ListMaxIndentLevelPlugin maxDepth={7} />
           {/* {isMobile && <MobileToolbarPlugin />} */}
