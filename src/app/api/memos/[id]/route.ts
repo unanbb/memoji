@@ -35,8 +35,8 @@ export const PUT = withAuth(async (req: NextRequest, { userId, params }) => {
 
     const { title, content, category } = body;
 
-    if (!title || !content) {
-      return NextResponse.json({ error: 'Title and content are required' }, { status: 400 });
+    if (!(title || content)) {
+      return NextResponse.json({ error: 'Title or Content is required' }, { status: 400 });
     }
 
     await updateMemo(id, { title, content, category: category || 'others' }, userId);
