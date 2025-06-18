@@ -20,12 +20,12 @@ const fetchCategories = async (): Promise<CategoryItem[]> => {
 };
 
 export default function useCategories() {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<CategoryItem[], Error>({
     queryKey: ['categories'],
     queryFn: fetchCategories,
   });
 
-  const categories = useMemo(() => data || [], [data]);
+  const categories = useMemo<CategoryItem[]>(() => data || [], [data]);
 
   return { categories, isLoading, isError };
 }
