@@ -38,6 +38,7 @@ import {
   BiCode,
   BiCodeBlock,
   BiItalic,
+  BiLink,
   BiListOl,
   BiListUl,
   BiParagraph,
@@ -389,7 +390,6 @@ export default function ToolbarPlugin() {
     [editor, selectedElementKey],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const insertLink = useCallback(() => {
     if (!isLink) {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://');
@@ -508,14 +508,13 @@ export default function ToolbarPlugin() {
           >
             <BiCode className="w-4 h-4" />
           </button>
-          {/* <button
+          <button
             onClick={insertLink}
             className={'toolbar-item spaced ' + (isLink ? 'active' : '')}
             aria-label="Insert Link"
           >
             <BiLink className="w-4 h-4" />
-          </button> */}
-          {isLink && <div className="divider" />}
+          </button>
           {/* <div className="divider" /> */}
           <button
             onClick={() => {

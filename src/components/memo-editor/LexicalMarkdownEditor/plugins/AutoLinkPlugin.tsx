@@ -87,7 +87,16 @@ export default function AutoLinkPlugin(): React.ReactElement | null {
       editor.registerNodeTransform(TextNode, (textNode: TextNode) => {
         const parent = textNode.getParent();
         if ($isAutoLinkNode(parent)) {
-          $handleLinkCreation(textNode);
+          const text = textNode.getTextContent();
+          const match = getFirstLinkMatch(text);
+
+          if (match === null || match.index !== 0 || match.length < text.length) {
+            parent.replace(textNode);
+            return;
+          }
+          if (parent.getURL() !== match.url) {
+            parent.setURL(match.url);
+          }
         } else if (!$isLinkNode(parent)) {
           if (textNode.isSimpleText()) {
             $handleLinkCreation(textNode);
