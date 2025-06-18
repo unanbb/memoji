@@ -73,7 +73,6 @@ export default function useUpdateMemo() {
         queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), context.previousMemos);
       }
       console.error('Error updating memo:', error);
-      throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.category.lists() });
