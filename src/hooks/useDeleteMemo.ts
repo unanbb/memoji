@@ -54,6 +54,9 @@ export default function useDeleteMemo() {
         queryClient.setQueryData(queryKeys.memo.lists(), context.previousMemos);
       }
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.category.lists() });
+    },
   });
   return { deleteMemo: mutateAsync };
 }
