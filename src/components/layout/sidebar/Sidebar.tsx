@@ -2,6 +2,7 @@
 import Separator from '@/components/common/Separator';
 
 import { Skeleton } from '@/components/common/Skeleton';
+import { ROUTE } from '@/components/constants/path';
 import useCategories from '@/hooks/useCategories';
 import { useMemo } from 'react';
 import CategoryItem from './CategoryItem';
@@ -50,7 +51,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           <CategoryItem
             key={`category-${category.name}-${index}`}
             name={category.name}
-            route={`/categories/${category.name}`}
+            route={`${ROUTE.CATEGORIES}/${encodeURIComponent(category.name)}`}
             count={category.memoCount}
           />
         ))}
