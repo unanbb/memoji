@@ -13,6 +13,11 @@
   gap: 4px;
   border: 1px solid #ccc;
   border-bottom: none;
+
+  @media screen and (max-width: 640px) {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+  }
 }
 
 /* Mobile Toolbar Styles */
@@ -61,14 +66,10 @@
 }
 
 .mobile-toolbar-item {
-  border: 0;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  min-width: 36px;
-  min-height: 36px;
-  flex: 1;
+  @media (width >= 40rem /* 640px */) {
+    display: block;
+  }
+  display: none;
 }
 
 .mobile-toolbar-item:disabled {
@@ -156,11 +157,19 @@
   gap: 8px;
   padding: 8px 12px;
   min-width: auto;
+  @media screen and (max-width: 640px) {
+    padding: 0px 0px;
+    width: 50px;
+  }
 }
 
 .toolbar button.block-controls .text {
   font-size: 14px;
   color: #333;
+
+  @media screen and (max-width: 640px) {
+    font-size: 12px;
+  }
 }
 
 .chevron-down.inside {
