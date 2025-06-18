@@ -3,6 +3,7 @@ import Separator from '@/components/common/Separator';
 
 import { Skeleton } from '@/components/common/Skeleton';
 import useCategories from '@/hooks/useCategories';
+import { useMemo } from 'react';
 import CategoryItem from './CategoryItem';
 
 interface SidebarProps {
@@ -12,6 +13,11 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen }: SidebarProps) {
   const { categories, isError, isLoading } = useCategories();
+
+  const fiteredCategories = useMemo(
+    () => categories.filter(categorie => categorie.memoCount > 0),
+    [categories],
+  );
 
   return (
     <aside
@@ -40,7 +46,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
             <br /> 로그인 후 다시 시도해주세요.
           </li>
         )}
-        {categories.map((category, index) => (
+        {fiteredCategories.map((category, index) => (
           <CategoryItem
             key={`category-${category.name}-${index}`}
             name={category.name}

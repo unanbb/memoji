@@ -1,5 +1,6 @@
 import type { CategoryItem } from '@/types/category';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 const fetchCategories = async (): Promise<CategoryItem[]> => {
   try {
@@ -19,12 +20,12 @@ const fetchCategories = async (): Promise<CategoryItem[]> => {
 };
 
 export default function useCategories() {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<CategoryItem[], Error>({
     queryKey: ['categories'],
     queryFn: fetchCategories,
   });
-  
-  const categories = data ?? []; // undefined 방어 코드
+
+  const categories = useMemo<CategoryItem[]>(() => data || [], [data]);
 
   return { categories, isLoading, isError };
 }
