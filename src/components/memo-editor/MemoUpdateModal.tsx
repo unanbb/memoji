@@ -1,4 +1,5 @@
 'use client';
+import CategoryModal from '@/components/category/CategoryModal';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
 import DeleteButton from '@/components/common/DeleteButton';
@@ -11,7 +12,7 @@ import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 interface MemoUpdateModalProps {
   onClose: () => void;
@@ -22,13 +23,15 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { data: memo, isLoading, isError, isFetching } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
-  
+
   const [memoData, setMemoData] = useState<{
     id?: string;
     title?: string;
     content?: string;
     category?: string;
   }>({});
+
+  const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
 
   const displayMemoData = useMemo(
     () => ({
@@ -86,6 +89,10 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     handleUpdateMemo();
   };
 
+  const openCategoryModal = useCallback(() => {
+    setIsOpenCategoryModal(true);
+  }, []);
+
   return (
     <Modal
       onClose={handleClose}
@@ -137,10 +144,15 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
               onChange={handleChange}
             />
             <AddButton
-              onClick={() => {}}
+              onClick={openCategoryModal}
               className="absolute -top-1 right-0"
               label="카테고리 추가"
             />
+            {isOpenCategoryModal && (
+              <div className="absolute top-4 right-1 z-51">
+                <CategoryModal onClose={() => setIsOpenCategoryModal(false)} />
+              </div>
+            )}
           </div>
           <LexicalMarkdownEditor
             value={displayMemoData.content}
