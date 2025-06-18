@@ -1,11 +1,11 @@
-import QueryProvider from '@/app/provider';
+import QueryProvider from '@/app/QueryProvider';
 import MainLayout from '@/components/layout/MainLayout';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import AuthProvider from '@/app/AuthProvider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 
-// Pretendard 폰트 설정
 const pretendard = localFont({
   src: [
     {
@@ -48,17 +48,19 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${pretendard.className}`}>
-        <QueryProvider>
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-          <MainLayout>{children}</MainLayout>
-          {process.env.NEXT_PUBLIC_REACT_SCAN === 'true' && (
-            <script
-              crossOrigin="anonymous"
-              src="//unpkg.com/react-scan/dist/auto.global.js"
-              defer
-            />
-          )}
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            <MainLayout>{children}</MainLayout>
+            {process.env.NEXT_PUBLIC_REACT_SCAN === 'true' && (
+              <script
+                crossOrigin="anonymous"
+                src="//unpkg.com/react-scan/dist/auto.global.js"
+                defer
+              />
+            )}
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
