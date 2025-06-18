@@ -1,11 +1,12 @@
 'use client';
 
-import MemoList from './MemoList';
-import Link from 'next/link';
 import Separator from '@/components/common/Separator';
 import ToggleButton from '@/components/common/ToggleButton';
-import { useState } from 'react';
+import { ROUTE } from '@/components/constants/path';
 import type { MemoListProps } from '@/types/memo';
+import Link from 'next/link';
+import { useState } from 'react';
+import MemoList from './MemoList';
 
 interface MemoEachSectionProps {
   category: string;
@@ -22,7 +23,10 @@ export default function MemoEachSection({ category, memos }: MemoEachSectionProp
   return (
     <div className="mb-6">
       <div className="flex justify-between">
-        <Link href={`/category/${encodeURIComponent(category)}`} className="font-medium inline-block">
+        <Link
+          href={`${ROUTE.CATEGORIES}/${encodeURIComponent(category)}`}
+          className="font-medium inline-block"
+        >
           {category}
         </Link>
         <ToggleButton onClick={toggleOpen} isOpen={isOpen} />
