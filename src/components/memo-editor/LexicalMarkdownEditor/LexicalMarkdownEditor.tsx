@@ -24,7 +24,7 @@ import type { EditorState } from 'lexical';
 import { useCallback } from 'react';
 import { lexicalTheme } from './LexicalMarkdownEditor.theme';
 import './LexicalMarkdownEditor.toolbar.css';
-import AutoLinkPlugin from './plugins/AutoLinkPlugin';
+import AutoLinkPlugin from './plugins/AutoLinkPlugin.js';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
