@@ -36,7 +36,10 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Memo',
+  title: {
+    template: '%s | Memoji',
+    default: 'Memoji',
+  },
   description: 'Simple Memo App',
 };
 
