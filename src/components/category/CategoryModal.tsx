@@ -6,7 +6,7 @@ import useCreateCategory from '@/hooks/useCreateCategory';
 import useDeleteCategory from '@/hooks/useDeleteCategory';
 import useModifyCategory from '@/hooks/useModifyCategory';
 import { validateCategoryName } from '@/utils/validateCategoryName';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa6';
 import { HiPencil } from 'react-icons/hi';
@@ -24,6 +24,8 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     { name: string; isEditing: boolean; isHovered: boolean; editValue: string; error: string }[]
   >([]);
   const [errorMsg, setErrorMsg] = useState('');
+  const createInputRef = useRef<HTMLInputElement>(null);
+  const editInputRef = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     setCategoryStates(() =>
@@ -225,6 +227,20 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
     }
   };
 
+  useEffect(() => {
+    if(isCreating){
+      createInputRef.current?.focus();
+    }
+  },[isCreating])
+
+  useEffect(() => {
+    categoryStates.forEach((state,idx) => {
+      if(state.isEditing){
+        editInputRef.current[idx]?.focus();
+      }
+    })
+  },[categoryStates])
+
   return (
     <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 pr-0 border border-gray-300 rounded-xs overflow-y-auto">
       {isLoading ? (
@@ -255,6 +271,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
                 placeholder="새 카테고리 입력"
                 className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
                 onKeyDown={handleCategoryCreateKeyDown}
+                ref={createInputRef}
               />
             ) : (
               <div>Create New Category</div>
@@ -298,6 +315,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
                         onChange={e => handleEditInputChange(idx, e.target.value)}
                         onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
                         className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
+                        ref={el => {editInputRef.current[idx] = el}}
                       />
                       {category.error && (
                         <span className="text-xs text-red-600 pt-1 pb-1">{category.error}</span>
