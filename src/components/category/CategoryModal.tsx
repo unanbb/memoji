@@ -228,18 +228,19 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   };
 
   useEffect(() => {
-    if(isCreating){
+    if (isCreating) {
       createInputRef.current?.focus();
     }
-  },[isCreating])
+  }, [isCreating]);
 
+  const editingIdx = categoryStates.findIndex(state => state.isEditing);
+  
   useEffect(() => {
-    categoryStates.forEach((state,idx) => {
-      if(state.isEditing){
-        editInputRef.current[idx]?.focus();
-      }
-    })
-  },[categoryStates])
+    // editingIdx가 바뀔 때만 실행되도록 최적화
+    if (editingIdx !== -1) {
+      editInputRef.current[editingIdx]?.focus();
+    }
+  }, [editingIdx]);
 
   return (
     <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 pr-0 border border-gray-300 rounded-xs overflow-y-auto">
@@ -315,7 +316,9 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
                         onChange={e => handleEditInputChange(idx, e.target.value)}
                         onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
                         className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
-                        ref={el => {editInputRef.current[idx] = el}}
+                        ref={el => {
+                          editInputRef.current[idx] = el;
+                        }}
                       />
                       {category.error && (
                         <span className="text-xs text-red-600 pt-1 pb-1">{category.error}</span>
