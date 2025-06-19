@@ -167,6 +167,13 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           ),
         );
         return;
+      } else if (categoryName === newCategoryName){
+        setCategoryStates(prev =>
+          prev.map((state, i) =>
+            i === index ? { ...state, isEditing: false } : state,
+          ),
+        );
+        return;
       }
 
       // 로컬 상태만 수정(isEditing / error)
