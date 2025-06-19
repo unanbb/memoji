@@ -167,11 +167,9 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           ),
         );
         return;
-      } else if (categoryName === newCategoryName){
+      } else if (categoryName === newCategoryName) {
         setCategoryStates(prev =>
-          prev.map((state, i) =>
-            i === index ? { ...state, isEditing: false } : state,
-          ),
+          prev.map((state, i) => (i === index ? { ...state, isEditing: false } : state)),
         );
         return;
       }
@@ -194,11 +192,14 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
         },
       );
     } else {
-      // isEditing이 false -> true로 바꾸고 수정 모드로 진입
+      // isEditing이 false -> 현재 index만 true로, 나머지는 false로 설정
       setCategoryStates(prev =>
-        prev.map((state, i) =>
-          i === index ? { ...state, editValue: state.name, isEditing: true, error: '' } : state,
-        ),
+        prev.map((state, i) => ({
+          ...state,
+          editValue: i === index ? state.name : state.editValue,
+          isEditing: i === index ? true : false,
+          error: '',
+        })),
       );
     }
   };
@@ -241,7 +242,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   }, [isCreating]);
 
   const editingIdx = categoryStates.findIndex(state => state.isEditing);
-  
+
   useEffect(() => {
     // editingIdx가 바뀔 때만 실행되도록 최적화
     if (editingIdx !== -1) {
@@ -323,6 +324,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
                         onChange={e => handleEditInputChange(idx, e.target.value)}
                         onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
                         className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
+                        placeholder={category.name}
                         ref={el => {
                           editInputRef.current[idx] = el;
                         }}
