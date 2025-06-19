@@ -158,6 +158,13 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           ),
         );
         return;
+      } else if (!validateCategoryName(newCategoryName)) {
+        setCategoryStates(prev =>
+          prev.map((state, i) =>
+            i === index ? { ...state, error: '특수문자는 사용할 수 없습니다.' } : state,
+          ),
+        );
+        return;
       }
 
       // 로컬 상태만 수정(isEditing / error)
