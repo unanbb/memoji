@@ -63,10 +63,7 @@ export default function usePostMemo() {
           memo.id === context.newOptimisticMemo?.id ? { ...memo, ...createdMemo } : memo,
         );
       });
-      const categories = queryClient.getQueryData<string[]>(['categories']);
-      if (categories && !categories.includes(createdMemo.category)) {
-        queryClient.setQueryData(['categories'], [...categories, createdMemo.category]);
-      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.category.lists() });
     },
     onError: (error, newMemo, context) => {
       queryClient.setQueryData<MemoProps[]>(queryKeys.memo.lists(), context?.previousMemos);

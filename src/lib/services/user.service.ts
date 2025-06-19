@@ -1,6 +1,7 @@
 import { db } from '@/lib/firebase';
 import type { UserProps } from '@/types/user';
 import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
+import { initializeNewUser } from './user-initialization.service';
 
 export async function createOrUpdateUser(userData: {
   id: string;
@@ -37,6 +38,13 @@ export async function createOrUpdateUser(userData: {
     };
 
     await setDoc(userRef, newUser);
+
+    try {
+      await initializeNewUser(userData.email);
+    } catch (error) {
+      console.error('Failed to initialize new user:', error);
+    }
+
     return newUser;
   }
 }

@@ -75,6 +75,9 @@ export default function useUpdateMemo() {
       console.error('Error updating memo:', error);
       throw error;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.category.lists() });
+    },
   });
 
   return { updateMemo: mutation.mutate };

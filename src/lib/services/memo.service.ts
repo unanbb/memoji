@@ -190,13 +190,13 @@ export async function removeCategoryAndUpdateMemos(
   userId: string,
 ): Promise<void> {
   const memosRef = collection(db, 'users', userId, 'memos');
-  const q = query(memosRef, where('category', '==', categoryId));
+  const q = query(memosRef, where('categoryId', '==', categoryId));
   const querySnapshot = await getDocs(q);
   const batch = writeBatch(db);
 
   for (const docSnap of querySnapshot.docs) {
     const memoRef = doc(memosRef, docSnap.id);
-    batch.update(memoRef, { category: newCategoryId });
+    batch.update(memoRef, { categoryId: newCategoryId });
   }
 
   await batch.commit();
