@@ -87,6 +87,19 @@ export default function LexicalMarkdownEditor({
     [onChange],
   );
 
+  const handleContentEditableClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const targetParent = target.closest('a') || target.parentElement?.closest('a');
+    if (targetParent?.tagName === 'A') {
+      const href = (targetParent as HTMLAnchorElement).href;
+      if (href) {
+        window.open(href, '_blank');
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+  };
+
   return (
     <div className="sm:h-[80%] h-[87%] w-full">
       <LexicalComposer initialConfig={initialConfig}>
@@ -98,6 +111,7 @@ export default function LexicalMarkdownEditor({
                 className={`flex-1 p-4 outline-none resize-none border border-gray-300 overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
                   isMobile ? 'pb-20' : ''
                 }`}
+                onClick={handleContentEditableClick}
               />
             }
             placeholder={
