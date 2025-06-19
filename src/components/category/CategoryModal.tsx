@@ -167,7 +167,7 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           ),
         );
         return;
-      } else if (categoryName.toLowerCase() === newCategoryName.toLowerCase()){
+      } else if (categoryName === newCategoryName){
         setCategoryStates(prev =>
           prev.map((state, i) =>
             i === index ? { ...state, isEditing: false } : state,
