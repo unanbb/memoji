@@ -1,5 +1,5 @@
 import MemoListSkeleton from '@/components/common/MemoListSkeleton';
 
-export default function loading() {
+export default function Loading() {
   return <MemoListSkeleton />;
 }

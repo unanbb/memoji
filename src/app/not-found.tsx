@@ -4,7 +4,7 @@ import { IoHomeOutline } from 'react-icons/io5';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-br   flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="text-center space-y-6 max-w-md">
         <div className="space-y-2">
           <h1 className="text-8xl font-black text-gray-900 tracking-tight">404</h1>
@@ -13,7 +13,7 @@ export default function NotFound() {
 
         <div className="space-y-3">
           <h2 className="text-2xl font-bold text-gray-800">페이지를 찾을 수 없습니다</h2>
-          <p className="text-gray leading-relaxed">
+          <p className="text-gray-600 leading-relaxed">
             요청하신 페이지가 존재하지 않거나
             <br />
             이동되었을 수 있습니다.

@@ -7,7 +7,7 @@ interface ErrorFallbackProps {
 
 export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="text-center space-y-6 max-w-md">
         <div className="space-y-2">
           <h1 className="text-8xl font-black text-gray-900 tracking-tight">!</h1>
@@ -16,7 +16,7 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
 
         <div className="space-y-3">
           <h2 className="text-2xl font-bold text-gray-800">오류가 발생했습니다</h2>
-          <p className="text-gray leading-relaxed">
+          <p className="text-gray-600 leading-relaxed">
             {error?.message || '일시적인 문제가 발생했습니다.'}
             <br />
             잠시 후 다시 시도해주세요.
