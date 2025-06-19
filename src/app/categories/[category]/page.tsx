@@ -3,8 +3,15 @@ import { fetchMemos } from '@/lib/fetchers';
 import type { MemoProps } from '@/types/memo';
 import { cookies } from 'next/headers';
 
-interface PageProps {
+interface CategoryParams {
   category: string;
+}
+
+export async function generateMetadata({params}: {params : Promise<CategoryParams>}){
+  const { category } = await params;
+  return {
+    title: category,
+  }
 }
 
 async function getMemos(): Promise<MemoProps[]> {
@@ -12,7 +19,7 @@ async function getMemos(): Promise<MemoProps[]> {
   return fetchMemos(cookieStore);
 }
 
-export default async function EachCategoryPage({ params }: { params: Promise<PageProps> }) {
+export default async function EachCategoryPage({ params }: { params: Promise<CategoryParams> }) {
   const { category } = await params;
   const memos = await getMemos();
 
