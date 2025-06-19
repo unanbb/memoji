@@ -90,7 +90,6 @@ export default function LexicalMarkdownEditor({
   const handleContentEditableClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     const targetParent = target.closest('a') || target.parentElement?.closest('a');
-    console.log('target', e);
     if (targetParent?.tagName === 'A') {
       const href = (targetParent as HTMLAnchorElement).href;
       if (href) {
