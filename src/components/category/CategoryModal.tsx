@@ -5,6 +5,7 @@ import useCategories from '@/hooks/useCategories';
 import useCreateCategory from '@/hooks/useCreateCategory';
 import useDeleteCategory from '@/hooks/useDeleteCategory';
 import useModifyCategory from '@/hooks/useModifyCategory';
+import { validateCategoryName } from '@/utils/validateCategoryName';
 import { useEffect, useState } from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa6';
@@ -69,6 +70,9 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
       categoryStates.some(category => category.name.toLowerCase() === newCategoryName.toLowerCase())
     ) {
       setErrorMsg('이미 존재하는 카테고리입니다.');
+      return;
+    } else if (!validateCategoryName(newCategoryName)) {
+      setErrorMsg('특수문자는 사용할 수 없습니다.');
       return;
     } else {
       // 1. 로컬 상태 업데이트 (낙관적 업데이트)
