@@ -113,18 +113,18 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
         <MemoEditorSkeleton />
       ) : (
         <div className="flex h-full flex-col">
-          <header className="flex flex-shrink-0 items-center justify-end gap-2 border-gray-200 px-4 py-2">
+          <div className="modal-header flex flex-shrink-0 items-center justify-end gap-2 px-4 py-2">
             <DeleteButton onClick={handleDeleteMemo} label="Delete memo" className="p-1.5" />
             <CrossButton onClick={handleClose} label="Close editor" className="p-1.5" />
-          </header>
-          <main className="flex flex-grow flex-col overflow-y-hidden p-4">
-            <div className="flex flex-col gap-2 pb-4">
+          </div>
+          <div className="modal-main flex flex-grow flex-col overflow-y-hidden pb-4 pl-4 pr-4">
+            <div className="flex flex-col gap-2">
               <input
                 placeholder="제목을 입력하세요"
                 name="title"
                 value={displayMemoData.title}
                 onChange={handleChange}
-                className="w-full bg-transparent px-2 py-1 text-3xl font-bold tracking-tight text-gray-900 focus:outline-none focus:border-b-2 focus:border-blue-500 placeholder:text-gray-400"
+                className="w-full bg-transparent px-2 py-1 text-3xl font-bold tracking-tight text-gray-900 focus:outline-none border-b-2 border-transparent focus:border-blue-500 placeholder:text-gray-400 transition-colors"
                 autoFocus
               />
               <div className="flex items-center gap-2 px-2 py-1">
@@ -134,7 +134,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                     #
                   </div>
                   <input
-                    placeholder="카테고리"
+                    placeholder="카테고리 추가 or 변경"
                     name="category"
                     value={displayMemoData.category}
                     onChange={handleChange}
@@ -145,14 +145,14 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                       onClick={() => {
                         /* TODO: Implement category selection */
                       }}
-                      label="카테고리 선택"
+                      label="카테고리 추가 or 변경"
                       className="p-1"
                     />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="h-full flex-grow border-t border-gray-100 pt-4">
+            <div className="h-full flex-grow pt-4">
               <LexicalMarkdownEditor
                 value={displayMemoData.content}
                 onChange={handleMemoContentChange}
@@ -160,7 +160,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                 placeholder="마크다운으로 메모를 작성해보세요..."
               />
             </div>
-          </main>
+          </div>
         </div>
       )}
     </Modal>

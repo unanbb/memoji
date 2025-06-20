@@ -101,14 +101,14 @@ export default function LexicalMarkdownEditor({
   };
 
   return (
-    <div className="sm:h-[80%] h-[87%] w-full">
+    <div className="h-full w-full">
       <LexicalComposer initialConfig={initialConfig}>
         <div className="h-full flex flex-col relative">
           <ToolbarPlugin />
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                className={`flex-1 p-4 outline-none resize-none border border-gray-300 overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+                className={`flex-1 p-4 outline-none resize-none border rounded-b-lg border-gray-300 overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
                   isMobile ? 'pb-20' : ''
                 }`}
                 onClick={handleContentEditableClick}

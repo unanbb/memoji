@@ -2,7 +2,6 @@
 import CategoryModal from '@/components/category/CategoryModal';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
-import InputField from '@/components/common/InputField';
 import LexicalMarkdownEditor from '@/components/memo-editor/LexicalMarkdownEditor/LexicalMarkdownEditor';
 import MemoEditorSkeleton from '@/components/memo-editor/MemoEditorSkeleton';
 import { Modal } from '@/components/Modal';
@@ -59,49 +58,59 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
       aria-label="메모 생성"
       aria-labelledby="memo-create-modal"
       size="large"
-      className="max-w-4xl relative sm:h-[85%] h-full"
+      className="max-w-5xl w-full relative flex flex-col rounded-lg bg-white shadow-xl sm:h-[85vh] h-full border border-gray-100"
     >
       {isLoading ? (
         <MemoEditorSkeleton />
       ) : (
-        <>
-          <div className="absolute top-1 right-1">
-            <CrossButton onClick={submitMemo} label="Close editor" />
+        <div className="flex h-full flex-col">
+          <div className="modal-header flex flex-shrink-0 items-center justify-end gap-2 border-gray-200 px-4 py-2">
+            <CrossButton onClick={submitMemo} label="Close editor" className="p-1.5" />
           </div>
-          <div className="mb-2 mt-2">
-            <InputField
-              placeholder="제목"
-              name="title"
-              value={memoData.title}
-              variant="title"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="mb-4 relative">
-            <InputField
-              placeholder="카테고리"
-              name="category"
-              value={memoData.category}
-              onChange={handleChange}
-            />
-            <AddButton
-              onClick={openCategoryModal}
-              className="absolute -top-1 right-0"
-              label="카테고리 추가"
-            />
-            {isOpenCategoryModal && (
-              <div className="absolute top-4 right-1 z-51">
-                <CategoryModal onClose={() => setIsOpenCategoryModal(false)} />
+          <div className="modal-main flex flex-grow flex-col overflow-y-hidden pb-4 pl-4 pr-4">
+            <div className="flex flex-col gap-2">
+              <input
+                placeholder="제목을 입력하세요"
+                name="title"
+                value={memoData.title}
+                onChange={handleChange}
+                className="w-full bg-transparent px-2 py-1 text-3xl font-bold tracking-tight text-gray-900 focus:outline-none border-b-2 border-transparent focus:border-blue-500 placeholder:text-gray-400 transition-colors"
+                autoFocus
+              />
+              <div className="flex items-center gap-2 px-2 py-1">
+                <span className="text-xs font-medium text-gray-500">Category:</span>
+                <div className="relative flex-1 max-w-[200px]">
+                  <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    #
+                  </div>
+                  <input
+                    placeholder="카테고리 추가"
+                    name="category"
+                    value={memoData.category}
+                    onChange={handleChange}
+                    className="w-full rounded-md border border-gray-200 bg-gray-50 px-6 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                  />
+                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+                    <AddButton onClick={openCategoryModal} label="카테고리 추가" className="p-1" />
+                  </div>
+                </div>
               </div>
-            )}
+              {isOpenCategoryModal && (
+                <div className="absolute top-16 right-4 z-50">
+                  <CategoryModal onClose={() => setIsOpenCategoryModal(false)} />
+                </div>
+              )}
+            </div>
+            <div className="h-full flex-grow pt-4">
+              <LexicalMarkdownEditor
+                placeholder="마크다운으로 메모를 작성해보세요..."
+                value={memoData.content}
+                onChange={newValue => setMemoData(prev => ({ ...prev, content: newValue || '' }))}
+                autoFocus={false}
+              />
+            </div>
           </div>
-          <LexicalMarkdownEditor
-            autoFocus
-            placeholder="내용을 입력하세요..."
-            value={memoData.content}
-            onChange={newValue => setMemoData(prev => ({ ...prev, content: newValue || '' }))}
-          />
-        </>
+        </div>
       )}
     </Modal>
   );
