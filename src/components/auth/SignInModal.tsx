@@ -12,7 +12,7 @@ interface SignInProps {
 
 export default function SignInModal({ isOpen, onClose }: SignInProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="medium" className="w-full max-w-md">
+    <Modal isOpen={isOpen} onClose={onClose} size="medium" className="w-full max-w-md p-6">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">로그인</h2>
         <p className="text-gray-600 mb-8">Memoji에 오신 것을 환영합니다!</p>

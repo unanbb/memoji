@@ -1,16 +1,17 @@
 'use client';
+import CategoryModal from '@/components/category/CategoryModal';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
 import DeleteButton from '@/components/common/DeleteButton';
+import MemoEditorSkeleton from '@/components/common/MemoEditorSkeleton';
 import LexicalMarkdownEditor from '@/components/memo-editor/LexicalMarkdownEditor/LexicalMarkdownEditor';
-import MemoEditorSkeleton from '@/components/memo-editor/MemoEditorSkeleton';
 import { Modal } from '@/components/Modal';
 import showToast from '@/components/toast/showToast';
 import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 interface MemoUpdateModalProps {
   onClose: () => void;
@@ -21,6 +22,8 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { data: memo, isLoading, isError, isFetching } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
+
+  const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
 
   const [memoData, setMemoData] = useState<{
     id?: string;
@@ -85,6 +88,14 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
     handleUpdateMemo();
   };
 
+  const handleCloseCategoryModal = useCallback(() => {
+    setIsOpenCategoryModal(false);
+  }, []);
+
+  const handleOpenCategoryModal = useCallback(() => {
+    setIsOpenCategoryModal(true);
+  }, []);
+
   return (
     <Modal
       onClose={handleClose}
@@ -142,13 +153,16 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                   />
                   <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
                     <AddButton
-                      onClick={() => {
-                        /* TODO: Implement category selection */
-                      }}
+                      onClick={handleOpenCategoryModal}
                       label="카테고리 추가 or 변경"
                       className="p-1"
                     />
                   </div>
+                  {isOpenCategoryModal && (
+                    <div className="absolute top-1 left-44 z-50">
+                      <CategoryModal onClose={handleCloseCategoryModal} />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
