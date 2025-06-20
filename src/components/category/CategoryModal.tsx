@@ -42,7 +42,16 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   }, [fetchedCategories]);
 
   const handlePlusClick = () => {
-    setIsCreating(prev => !prev);
+    // 모든 수정 중 상태 취소
+    setIsCreating(prev => {
+      const next = !prev;
+      if (next) {
+        setCategoryStates(prev => prev.map(state => ({ ...state, isEditing: false })));
+      }
+
+      return next;
+    });
+
     setErrorMsg('');
     setNewCategory('');
   };
@@ -201,6 +210,8 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
           error: '',
         })),
       );
+      // 생성 중 상태 취소
+      setIsCreating(false);
     }
   };
 
