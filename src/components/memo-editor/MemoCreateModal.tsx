@@ -1,4 +1,5 @@
 'use client';
+import CategoryList from '@/components/category/CategoryList';
 import CategoryModal from '@/components/category/CategoryModal';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
@@ -6,6 +7,7 @@ import MemoEditorSkeleton from '@/components/common/MemoEditorSkeleton';
 import LexicalMarkdownEditor from '@/components/memo-editor/LexicalMarkdownEditor/LexicalMarkdownEditor';
 import { Modal } from '@/components/Modal';
 import showToast from '@/components/toast/showToast';
+import useCategories from '@/hooks/useCategories';
 import usePostMemo from '@/hooks/usePostMemo';
 import { type MemoProps } from '@/types/memo';
 import { useCallback, useState } from 'react';
@@ -20,7 +22,9 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
     content: '',
     category: '',
   });
+  const [isCategoryFocused, setIsCategoryFocused] = useState(false);
 
+  const { categories } = useCategories();
   const { postMemo, isLoading } = usePostMemo();
 
   const submitMemo = useCallback(async () => {
@@ -92,6 +96,8 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
                     name="category"
                     value={memoData.category}
                     onChange={handleChange}
+                    onFocus={() => setIsCategoryFocused(true)}
+                    onBlur={() => setIsCategoryFocused(false)}
                     className="w-full rounded-md border border-gray-200 bg-gray-50 px-6 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                   />
                   <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
@@ -101,6 +107,16 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
                       className="p-1"
                     />
                   </div>
+                  {isCategoryFocused && (
+                    <div className="absolute top-full left-0 mt-1 z-5">
+                      <CategoryList
+                        categories={categories}
+                        onClick={name => {
+                          setMemoData(prev => ({ ...prev, category: name }));
+                        }}
+                      />
+                    </div>
+                  )}
                   {isOpenCategoryModal && (
                     <div className="absolute top-1 left-44 z-50">
                       <CategoryModal onClose={handleCloseCategoryModal} />
