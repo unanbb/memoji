@@ -1,3 +1,4 @@
+import { useAuth } from '@/hooks/useAuth';
 import type { CategoryItem } from '@/types/category';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -20,9 +21,11 @@ const fetchCategories = async (): Promise<CategoryItem[]> => {
 };
 
 export default function useCategories() {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { data, isLoading, isError } = useQuery<CategoryItem[], Error>({
     queryKey: ['categories'],
     queryFn: fetchCategories,
+    enabled: isAuthenticated && !isAuthLoading,
   });
 
   const categories = useMemo<CategoryItem[]>(() => data || [], [data]);
