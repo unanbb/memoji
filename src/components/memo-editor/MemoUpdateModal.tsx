@@ -188,7 +188,6 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                 value={displayMemoData.content}
                 onChange={handleMemoContentChange}
                 autoFocus={false}
-                placeholder="마크다운으로 메모를 작성해보세요..."
               />
             </div>
           </div>
