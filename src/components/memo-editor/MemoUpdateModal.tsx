@@ -1,4 +1,5 @@
 'use client';
+import CategoryList from '@/components/category/CategoryList';
 import CategoryModal from '@/components/category/CategoryModal';
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
@@ -8,6 +9,7 @@ import LexicalMarkdownEditor from '@/components/memo-editor/LexicalMarkdownEdito
 import { Modal } from '@/components/Modal';
 import showToast from '@/components/toast/showToast';
 import { showUndoDeleteToast } from '@/components/toast/showUndoDeleteToast';
+import useCategories from '@/hooks/useCategories';
 import useDeleteMemo from '@/hooks/useDeleteMemo';
 import useGetMemoById from '@/hooks/useGetMemoById';
 import useUpdateMemo from '@/hooks/useUpdateMemo';
@@ -24,6 +26,9 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { deleteMemo } = useDeleteMemo();
 
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
+  const [isCategoryFocused, setIsCategoryFocused] = useState(false);
+
+  const { categories } = useCategories();
 
   const [memoData, setMemoData] = useState<{
     id?: string;
@@ -149,6 +154,8 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                     name="category"
                     value={displayMemoData.category}
                     onChange={handleChange}
+                    onFocus={() => setIsCategoryFocused(true)}
+                    onBlur={() => setIsCategoryFocused(false)}
                     className="w-full rounded-md border border-gray-200 bg-gray-50 px-6 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                   />
                   <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
@@ -158,6 +165,16 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                       className="p-1"
                     />
                   </div>
+                  {isCategoryFocused && (
+                    <div className="absolute top-full left-0 mt-1 z-5">
+                      <CategoryList
+                        categories={categories}
+                        onMouseDown={name => {
+                          setMemoData(prev => ({ ...prev, category: name }));
+                        }}
+                      />
+                    </div>
+                  )}
                   {isOpenCategoryModal && (
                     <div className="absolute top-1 left-44 z-50">
                       <CategoryModal onClose={handleCloseCategoryModal} />
