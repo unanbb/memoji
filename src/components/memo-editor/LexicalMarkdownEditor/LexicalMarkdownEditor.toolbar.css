@@ -15,6 +15,13 @@
   border-bottom: none;
 }
 
+.toolbar button,
+.toolbar select,
+.dropdown button {
+  outline: none !important;
+  user-select: none;
+}
+
 /* Mobile Toolbar Styles */
 .mobile-toolbar {
   position: fixed;
