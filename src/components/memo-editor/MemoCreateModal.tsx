@@ -43,7 +43,11 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
 
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false);
 
-  const openCategoryModal = useCallback(() => {
+  const handleCloseCategoryModal = useCallback(() => {
+    setIsOpenCategoryModal(false);
+  }, []);
+
+  const handleOpenCategoryModal = useCallback(() => {
     setIsOpenCategoryModal(true);
   }, []);
 
@@ -91,13 +95,17 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
                     className="w-full rounded-md border border-gray-200 bg-gray-50 px-6 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                   />
                   <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
-                    <AddButton onClick={openCategoryModal} label="카테고리 추가" className="p-1" />
+                    <AddButton
+                      onClick={handleOpenCategoryModal}
+                      label="카테고리 추가"
+                      className="p-1"
+                    />
                   </div>
                 </div>
               </div>
               {isOpenCategoryModal && (
                 <div className="absolute top-16 right-4 z-50">
-                  <CategoryModal onClose={() => setIsOpenCategoryModal(false)} />
+                  <CategoryModal onClose={handleCloseCategoryModal} />
                 </div>
               )}
             </div>
