@@ -101,13 +101,13 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
                       className="p-1"
                     />
                   </div>
+                  {isOpenCategoryModal && (
+                    <div className="absolute top-1 left-44 z-50">
+                      <CategoryModal onClose={handleCloseCategoryModal} />
+                    </div>
+                  )}
                 </div>
               </div>
-              {isOpenCategoryModal && (
-                <div className="absolute top-16 right-4 z-50">
-                  <CategoryModal onClose={handleCloseCategoryModal} />
-                </div>
-              )}
             </div>
             <div className="h-full flex-grow pt-4">
               <LexicalMarkdownEditor
