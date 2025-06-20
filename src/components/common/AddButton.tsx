@@ -19,6 +19,7 @@ export default function AddButton({ className, onClick, label }: PlusButtonProps
       name="add-button"
       type="button"
       title={label}
+      tabIndex={-1}
     >
       <CiCirclePlus className="h-[20px] w-[20px] text-gray-500 hover:text-blue-500" />
     </button>

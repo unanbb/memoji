@@ -1,6 +1,5 @@
 'use client';
 
-import useWindowSize from '@/hooks/useWindowSize';
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
@@ -31,7 +30,6 @@ import ToolbarPlugin from './plugins/ToolbarPlugin';
 interface LexicalMarkdownEditorProps {
   value?: string;
   onChange?: (value: string | undefined) => void;
-  placeholder?: string;
   autoFocus?: boolean;
 }
 
@@ -43,11 +41,7 @@ export default function LexicalMarkdownEditor({
   value = '',
   onChange,
   autoFocus = true,
-  placeholder = '내용을 입력하세요...',
 }: LexicalMarkdownEditorProps) {
-  const { width } = useWindowSize();
-  const isMobile = width < 768;
-
   const initialConfig = {
     namespace: 'MarkdownEditor',
     theme: lexicalTheme,
@@ -108,16 +102,9 @@ export default function LexicalMarkdownEditor({
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                className={`flex-1 p-4 outline-none resize-none border rounded-b-lg border-gray-300 overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
-                  isMobile ? 'pb-20' : ''
-                }`}
+                className={`flex-1 p-4 outline-none resize-none border rounded-b-lg border-gray-300 overflow-y-auto focus:border-blue-500 focus:ring-1 focus:ring-blue-500 `}
                 onClick={handleContentEditableClick}
               />
-            }
-            placeholder={
-              <div className={`sm:hidden text-gray-400 absolute sm:top-4 top-[60px] left-4`}>
-                {placeholder}
-              </div>
             }
             ErrorBoundary={LexicalErrorBoundary}
           />

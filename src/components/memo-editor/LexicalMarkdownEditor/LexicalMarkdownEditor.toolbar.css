@@ -13,11 +13,13 @@
   gap: 4px;
   border: 1px solid #ccc;
   border-bottom: none;
+}
 
-  @media screen and (max-width: 640px) {
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-  }
+.toolbar button,
+.toolbar select,
+.dropdown button {
+  outline: none !important;
+  user-select: none;
 }
 
 /* Mobile Toolbar Styles */

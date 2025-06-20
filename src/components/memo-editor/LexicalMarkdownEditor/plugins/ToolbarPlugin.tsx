@@ -246,35 +246,35 @@ function BlockOptionsDropdownList({
 
   return (
     <div className="dropdown" ref={dropDownRef}>
-      <button className="item" onClick={formatParagraph}>
+      <button className="item" onClick={formatParagraph} tabIndex={-1}>
         <BiParagraph className="icon" />
         <span className="text">Normal</span>
       </button>
-      <button className="item" onClick={formatLargeHeading}>
+      <button className="item" onClick={formatLargeHeading} tabIndex={-1}>
         <RiH1 className="icon" />
         <span className="text">Heading 1</span>
       </button>
-      <button className="item" onClick={formatSmallHeading}>
+      <button className="item" onClick={formatSmallHeading} tabIndex={-1}>
         <RiH2 className="icon" />
         <span className="text">Heading 2</span>
       </button>
-      <button className="item" onClick={formatHeading}>
+      <button className="item" onClick={formatHeading} tabIndex={-1}>
         <RiH3 className="icon" />
         <span className="text">Heading 3</span>
       </button>
-      <button className="item" onClick={formatBulletList}>
+      <button className="item" onClick={formatBulletList} tabIndex={-1}>
         <BiListUl className="icon" />
         <span className="text">Bullet List</span>
       </button>
-      <button className="item" onClick={formatNumberedList}>
+      <button className="item" onClick={formatNumberedList} tabIndex={-1}>
         <BiListOl className="icon" />
         <span className="text">Numbered List</span>
       </button>
-      <button className="item" onClick={formatQuote}>
+      <button className="item" onClick={formatQuote} tabIndex={-1}>
         <RiDoubleQuotesL className="icon" />
         <span className="text">Quote</span>
       </button>
-      <button className="item" onClick={formatCode}>
+      <button className="item" onClick={formatCode} tabIndex={-1}>
         <BiCodeBlock className="icon" />
         <span className="text">Code Block</span>
       </button>
@@ -407,6 +407,7 @@ export default function ToolbarPlugin() {
         }}
         className="toolbar-item spaced"
         aria-label="Undo"
+        tabIndex={-1}
       >
         <BiUndo className="w-4 h-4" />
       </button>
@@ -417,6 +418,7 @@ export default function ToolbarPlugin() {
         }}
         className="toolbar-item"
         aria-label="Redo"
+        tabIndex={-1}
       >
         <BiRedo className="w-4 h-4" />
       </button>
@@ -427,6 +429,7 @@ export default function ToolbarPlugin() {
             className="toolbar-item block-controls"
             onClick={() => setShowBlockOptionsDropDown(!showBlockOptionsDropDown)}
             aria-label="Formatting Options"
+            tabIndex={-1}
           >
             {getBlockTypeIcon(blockType)}
             <span className="text">
@@ -451,6 +454,7 @@ export default function ToolbarPlugin() {
             className="toolbar-item code-language"
             onChange={onCodeLanguageSelect}
             value={codeLanguage}
+            tabIndex={-1}
           >
             <option value="">— Select language —</option>
             {codeLanguges.map(option => (
@@ -469,6 +473,7 @@ export default function ToolbarPlugin() {
             }}
             className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
             aria-label="Format Bold"
+            tabIndex={-1}
           >
             <BiBold className="w-4 h-4" />
           </button>
@@ -478,6 +483,7 @@ export default function ToolbarPlugin() {
             }}
             className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
             aria-label="Format Italics"
+            tabIndex={-1}
           >
             <BiItalic className="w-4 h-4" />
           </button>
@@ -487,6 +493,7 @@ export default function ToolbarPlugin() {
             }}
             className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
             aria-label="Format Underline"
+            tabIndex={-1}
           >
             <BiUnderline className="w-4 h-4" />
           </button>
@@ -496,6 +503,7 @@ export default function ToolbarPlugin() {
             }}
             className={'toolbar-item spaced ' + (isStrikethrough ? 'active' : '')}
             aria-label="Format Strikethrough"
+            tabIndex={-1}
           >
             <BiStrikethrough className="w-4 h-4" />
           </button>
@@ -505,6 +513,7 @@ export default function ToolbarPlugin() {
             }}
             className={'toolbar-item spaced ' + (isCode ? 'active' : '')}
             aria-label="Insert Code"
+            tabIndex={-1}
           >
             <BiCode className="w-4 h-4" />
           </button>
@@ -512,16 +521,17 @@ export default function ToolbarPlugin() {
             onClick={insertLink}
             className={'toolbar-item spaced ' + (isLink ? 'active' : '')}
             aria-label="Insert Link"
+            tabIndex={-1}
           >
             <BiLink className="w-4 h-4" />
           </button>
-          {/* <div className="divider" /> */}
           <button
             onClick={() => {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
             }}
             className="mobile-toolbar-item"
             aria-label="Left Align"
+            tabIndex={-1}
           >
             <BiAlignLeft className="w-4 h-4" />
           </button>
@@ -531,6 +541,7 @@ export default function ToolbarPlugin() {
             }}
             className="mobile-toolbar-item"
             aria-label="Center Align"
+            tabIndex={-1}
           >
             <BiAlignMiddle className="w-4 h-4" />
           </button>
@@ -540,6 +551,7 @@ export default function ToolbarPlugin() {
             }}
             className="mobile-toolbar-item"
             aria-label="Right Align"
+            tabIndex={-1}
           >
             <BiAlignRight className="w-4 h-4" />
           </button>
@@ -549,6 +561,7 @@ export default function ToolbarPlugin() {
             }}
             className="mobile-toolbar-item"
             aria-label="Justify Align"
+            tabIndex={-1}
           >
             <BiAlignJustify className="w-4 h-4" />
           </button>
