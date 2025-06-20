@@ -16,11 +16,11 @@ export default function CategoryList({
   return (
     <div className="max-h-[250px] overflow-y-auto w-[200px] h-auto py-2 rounded-xs bg-white shadow-sm text-neutral-800">
       <ul>
-        {categories.map((category, idx) => {
-          const { name } = category;
+        {categories.map(category => {
+          const { name, id } = category;
           return (
             <li
-              key={`${category}-${idx}`}
+              key={id}
               className="px-2.5 py-1 cursor-pointer hover:bg-gray-100"
               onMouseDown={() => onClick(name)}
             >
