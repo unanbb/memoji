@@ -111,7 +111,7 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
                     <div className="absolute top-full left-0 mt-1 z-5">
                       <CategoryList
                         categories={categories}
-                        onClick={name => {
+                        onMouseDown={name => {
                           setMemoData(prev => ({ ...prev, category: name }));
                         }}
                       />

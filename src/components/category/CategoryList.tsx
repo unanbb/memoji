@@ -4,10 +4,10 @@ import type { CategoryItem } from '@/types/category';
 
 export default function CategoryList({
   categories,
-  onClick,
+  onMouseDown,
 }: {
   categories: CategoryItem[];
-  onClick: (category: string) => void;
+  onMouseDown: (category: string) => void;
 }) {
   if (categories.length === 0) {
     return <div className="w-[200px] h-[200px] py-2">카테고리가 없습니다.</div>;
@@ -22,7 +22,7 @@ export default function CategoryList({
             <li
               key={id}
               className="px-2.5 py-1 cursor-pointer hover:bg-gray-100"
-              onMouseDown={() => onClick(name)}
+              onMouseDown={() => onMouseDown(name)}
             >
               {name}
             </li>
