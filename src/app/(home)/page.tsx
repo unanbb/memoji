@@ -1,3 +1,5 @@
+import { auth } from '@/auth';
+import LoginPrompt from '@/components/auth/LoginPrompt';
 import ClientHome from '@/components/ClientHome';
 import { fetchMemos } from '@/lib/fetchers';
 import { queryKeys } from '@/lib/queryKeys';
@@ -7,6 +9,7 @@ import { cookies } from 'next/headers';
 export default async function Home() {
   const cookieStore = await cookies();
   const queryClient = new QueryClient();
+  const isLogined = !!(await auth())?.user?.id;
 
   await queryClient.prefetchQuery({
     queryKey: queryKeys.memo.lists(),
@@ -15,7 +18,7 @@ export default async function Home() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ClientHome />
+      {isLogined ? <ClientHome /> : <LoginPrompt />}
     </HydrationBoundary>
   );
 }

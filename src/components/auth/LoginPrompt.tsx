@@ -1,6 +1,7 @@
 'use client';
 import SignInModal from '@/components/auth/SignInModal';
 import { useState } from 'react';
+import { IoMdLock } from 'react-icons/io';
 import { IoLogInOutline } from 'react-icons/io5';
 
 export default function LoginPrompt() {
@@ -11,7 +12,9 @@ export default function LoginPrompt() {
       <div className="min-h-screen bg-gradient-to-br flex flex-col items-center justify-center p-4">
         <div className="text-center space-y-6 max-w-md">
           <div className="space-y-2">
-            <h1 className="text-8xl font-black text-gray-900 tracking-tight">🔐</h1>
+            <div className="text-8xl text-gray-900 flex justify-center">
+              <IoMdLock />
+            </div>
             <div className="w-24 h-1 bg-black mx-auto"></div>
           </div>
 
@@ -26,7 +29,7 @@ export default function LoginPrompt() {
 
           <button
             onClick={() => setIsSignInOpen(true)}
-            className="inline-flex items-center px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="inline-flex items-center px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 cursor-pointer"
           >
             <IoLogInOutline className="w-4 h-4 mr-2" />
             로그인하기
