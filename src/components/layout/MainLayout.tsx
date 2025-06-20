@@ -1,5 +1,5 @@
 import Header from '@/components/layout/Header';
-import MemoCreateButton from '@/components/memo-editor/MemoCreateButton';
+import MemoCreateButton from '@/components/common/MemoCreateButton';
 import { ToastContainer } from 'react-toastify';
 
 interface MainLayoutProps {
