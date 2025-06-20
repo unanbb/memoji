@@ -1,3 +1,4 @@
+import { cn } from '@/utils/cn';
 import { CiCirclePlus } from 'react-icons/ci';
 
 interface PlusButtonProps {
@@ -9,14 +10,17 @@ interface PlusButtonProps {
 export default function AddButton({ className, onClick, label }: PlusButtonProps) {
   return (
     <button
-      className={`cursor-pointer ${className}`}
+      className={cn(
+        'cursor-pointer rounded-full p-2 transition-colors hover:bg-gray-200/70',
+        className,
+      )}
       onClick={onClick}
       aria-label={label}
       name="add-button"
       type="button"
       title={label}
     >
-      <CiCirclePlus size={30} />
+      <CiCirclePlus className="h-[20px] w-[20px] text-gray-500 hover:text-blue-500" />
     </button>
   );
 }

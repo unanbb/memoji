@@ -2,7 +2,6 @@
 import AddButton from '@/components/common/AddButton';
 import CrossButton from '@/components/common/CrossButton';
 import DeleteButton from '@/components/common/DeleteButton';
-import InputField from '@/components/common/InputField';
 import LexicalMarkdownEditor from '@/components/memo-editor/LexicalMarkdownEditor/LexicalMarkdownEditor';
 import MemoEditorSkeleton from '@/components/memo-editor/MemoEditorSkeleton';
 import { Modal } from '@/components/Modal';
@@ -22,7 +21,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
   const { data: memo, isLoading, isError, isFetching } = useGetMemoById(id);
   const { updateMemo } = useUpdateMemo();
   const { deleteMemo } = useDeleteMemo();
-  
+
   const [memoData, setMemoData] = useState<{
     id?: string;
     title?: string;
@@ -93,61 +92,76 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
       aria-label="메모 수정"
       aria-labelledby="memo-update-modal"
       size="large"
-      className="max-w-4xl relative sm:h-[85%] h-full"
+      className="max-w-5xl w-full relative flex flex-col rounded-lg bg-white shadow-xl sm:h-[85vh] h-full border border-gray-100"
     >
       {isError ? (
-        <div className="flex flex-col items-center justify-center h-full space-y-4">
-          <div className="text-red-500 text-center">메모를 불러오는 중 오류가 발생했습니다.</div>
+        <div className="flex h-full flex-col items-center justify-center space-y-4 p-6">
+          <div className="text-center text-red-600 font-medium">
+            메모를 불러오는 중 오류가 발생했습니다.
+          </div>
           <button
             onClick={() => handleUpdateMemo()}
-            className="px-4 py-2 bg-gray-700 text-white rounded"
+            className="rounded-md bg-gray-800 px-4 py-2 text-white text-sm transition-colors hover:bg-gray-900 focus:ring-2 focus:ring-gray-300 focus:outline-none"
           >
             다시 시도
           </button>
-          <div className="absolute top-1 right-1">
-            <CrossButton onClick={handleClose} label="Close editor" />
+          <div className="absolute top-2 right-2">
+            <CrossButton onClick={handleClose} label="Close editor" className="p-1.5" />
           </div>
         </div>
       ) : isLoading || isFetching ? (
         <MemoEditorSkeleton />
       ) : (
-        <>
-          <DeleteButton
-            onClick={handleDeleteMemo}
-            label="Delete memo"
-            className="absolute top-1 right-12"
-          />
-          <div className="absolute top-1 right-1">
-            <CrossButton onClick={handleClose} label="Close editor" />
-          </div>
-          <div className="mb-2 mt-2">
-            <InputField
-              placeholder="제목"
-              name="title"
-              value={displayMemoData.title}
-              variant="title"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="mb-4 relative">
-            <InputField
-              placeholder="카테고리"
-              name="category"
-              value={displayMemoData.category}
-              onChange={handleChange}
-            />
-            <AddButton
-              onClick={() => {}}
-              className="absolute -top-1 right-0"
-              label="카테고리 추가"
-            />
-          </div>
-          <LexicalMarkdownEditor
-            value={displayMemoData.content}
-            onChange={handleMemoContentChange}
-            autoFocus={true}
-          />
-        </>
+        <div className="flex h-full flex-col">
+          <header className="flex flex-shrink-0 items-center justify-end gap-2 border-gray-200 px-4 py-2">
+            <DeleteButton onClick={handleDeleteMemo} label="Delete memo" className="p-1.5" />
+            <CrossButton onClick={handleClose} label="Close editor" className="p-1.5" />
+          </header>
+          <main className="flex flex-grow flex-col overflow-y-hidden p-4">
+            <div className="flex flex-col gap-2 pb-4">
+              <input
+                placeholder="제목을 입력하세요"
+                name="title"
+                value={displayMemoData.title}
+                onChange={handleChange}
+                className="w-full bg-transparent px-2 py-1 text-3xl font-bold tracking-tight text-gray-900 focus:outline-none focus:border-b-2 focus:border-blue-500 placeholder:text-gray-400"
+                autoFocus
+              />
+              <div className="flex items-center gap-2 px-2 py-1">
+                <span className="text-xs font-medium text-gray-500">Category:</span>
+                <div className="relative flex-1 max-w-[200px]">
+                  <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    #
+                  </div>
+                  <input
+                    placeholder="카테고리"
+                    name="category"
+                    value={displayMemoData.category}
+                    onChange={handleChange}
+                    className="w-full rounded-md border border-gray-200 bg-gray-50 px-6 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                  />
+                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+                    <AddButton
+                      onClick={() => {
+                        /* TODO: Implement category selection */
+                      }}
+                      label="카테고리 선택"
+                      className="p-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="h-full flex-grow border-t border-gray-100 pt-4">
+              <LexicalMarkdownEditor
+                value={displayMemoData.content}
+                onChange={handleMemoContentChange}
+                autoFocus={false}
+                placeholder="마크다운으로 메모를 작성해보세요..."
+              />
+            </div>
+          </main>
+        </div>
       )}
     </Modal>
   );
