@@ -262,108 +262,116 @@ export default function CategoryModal({ onClose }: { onClose: () => void }) {
   }, [editingIdx]);
 
   return (
-    <div className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 pr-0 border border-gray-300 rounded-xs overflow-y-auto">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <div className="flex justify-between mb-2  pr-4">
-            <h1 className="text-lg font-semibold">Category List</h1>
-            <div
-              className="flex w-[28px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
-              onClick={onClose}
-            >
-              <FaTimes />
-            </div>
-          </div>
-          <div className="flex h-[24px] gap-2 my-2 pr-4">
-            <div
-              className="flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
-              onClick={handlePlusClick}
-            >
-              {isCreating ? <FaTimes /> : <FaPlus />}
-            </div>
-            {isCreating ? (
-              <input
-                type="text"
-                value={newCategory}
-                onChange={handleChange}
-                placeholder="새 카테고리 입력"
-                className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
-                onKeyDown={handleCategoryCreateKeyDown}
-                ref={createInputRef}
-              />
-            ) : (
-              <div>Create New Category</div>
-            )}
-            {isCreating && (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white flex flex-col w-[300px] h-auto min-h-[200px] max-h-[400px] p-4 pr-0 border border-gray-300 rounded-xs overflow-y-auto"
+        onClick={e => e.stopPropagation()}
+      >
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            <div className="flex justify-between mb-2  pr-4">
+              <h1 className="text-lg font-semibold">Category List</h1>
               <div
-                className="ml-auto flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
-                onClick={handleCreateClick}
+                className="flex w-[28px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+                onClick={onClose}
               >
-                <FaPlus />
+                <FaTimes />
               </div>
-            )}
-          </div>
-          {errorMsg && <span className="pl-8 text-red-600 text-sm">{errorMsg}</span>}
-          <div className="overflow-y-auto pr-4">
-            <ul>
-              {categoryStates.map((category, idx) => (
-                <li key={`${category.name}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
-                  <div
-                    className={`flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl ${'hover:bg-gray-200 cursor-pointer'}`}
-                    onMouseEnter={() => handleMouseEnter(idx)}
-                    onMouseLeave={() => handleMouseLeave(idx)}
-                    onClick={() => {
-                      if (category.isHovered || window.innerWidth <= 768) {
-                        handleDeleteClick(category.name);
-                      }
-                    }}
-                  >
-                    {category.isHovered ? (
-                      <IoMdTrash className="p-0.25 w-[20px] h-[20px]" />
-                    ) : (
-                      <PiTagChevronFill />
-                    )}
-                  </div>
-
-                  {category.isEditing ? (
-                    <div className="flex flex-col">
-                      <input
-                        type="text"
-                        value={category.editValue}
-                        onChange={e => handleEditInputChange(idx, e.target.value)}
-                        onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
-                        className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
-                        placeholder={category.name}
-                        ref={el => {
-                          editInputRef.current[idx] = el;
-                        }}
-                      />
-                      {category.error && (
-                        <span className="text-xs text-red-600 pt-1 pb-1">{category.error}</span>
+            </div>
+            <div className="flex h-[24px] gap-2 my-2 pr-4">
+              <div
+                className="flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+                onClick={handlePlusClick}
+              >
+                {isCreating ? <FaTimes /> : <FaPlus />}
+              </div>
+              {isCreating ? (
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={handleChange}
+                  placeholder="새 카테고리 입력"
+                  className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
+                  onKeyDown={handleCategoryCreateKeyDown}
+                  ref={createInputRef}
+                />
+              ) : (
+                <div>Create New Category</div>
+              )}
+              {isCreating && (
+                <div
+                  className="ml-auto flex w-[24px] aspect-square items-center justify-center cursor-pointer hover:bg-gray-200 rounded-2xl"
+                  onClick={handleCreateClick}
+                >
+                  <FaPlus />
+                </div>
+              )}
+            </div>
+            {errorMsg && <span className="pl-8 text-red-600 text-sm">{errorMsg}</span>}
+            <div className="overflow-y-auto pr-4">
+              <ul>
+                {categoryStates.map((category, idx) => (
+                  <li key={`${category.name}-${idx}`} className="flex h-[48px] -mx-4 px-4 py-3">
+                    <div
+                      className={`flex items-center justify-center w-[24px] h-[24px] mr-2 rounded-2xl ${'hover:bg-gray-200 cursor-pointer'}`}
+                      onMouseEnter={() => handleMouseEnter(idx)}
+                      onMouseLeave={() => handleMouseLeave(idx)}
+                      onClick={() => {
+                        if (category.isHovered || window.innerWidth <= 768) {
+                          handleDeleteClick(category.name);
+                        }
+                      }}
+                    >
+                      {category.isHovered ? (
+                        <IoMdTrash className="p-0.25 w-[20px] h-[20px]" />
+                      ) : (
+                        <PiTagChevronFill />
                       )}
                     </div>
-                  ) : (
-                    <span>{category.name}</span>
-                  )}
 
-                  <div
-                    className="ml-auto flex items-center justify-center w-[24px] h-[24px] rounded-2xl hover:bg-gray-200 cursor-pointer"
-                    onClick={() => handleModifyClick(category.name, idx)}
-                  >
                     {category.isEditing ? (
-                      <FaCheck className="w-[20px] h-[20px]" />
+                      <div className="flex flex-col">
+                        <input
+                          type="text"
+                          value={category.editValue}
+                          onChange={e => handleEditInputChange(idx, e.target.value)}
+                          onKeyDown={e => handleCategoryModifyKeyDown(e, category.name, idx)}
+                          className="w-[180px] border-b border-gray-300 focus:border-gray-500 focus:outline-none"
+                          placeholder={category.name}
+                          ref={el => {
+                            editInputRef.current[idx] = el;
+                          }}
+                        />
+                        {category.error && (
+                          <span className="text-xs text-red-600 pt-1 pb-1">{category.error}</span>
+                        )}
+                      </div>
                     ) : (
-                      <HiPencil className="w-[20px] h-[20px]" />
+                      <span>{category.name}</span>
                     )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      )}
+
+                    <div
+                      className="ml-auto flex items-center justify-center w-[24px] h-[24px] rounded-2xl hover:bg-gray-200 cursor-pointer"
+                      onClick={() => handleModifyClick(category.name, idx)}
+                    >
+                      {category.isEditing ? (
+                        <FaCheck className="w-[20px] h-[20px]" />
+                      ) : (
+                        <HiPencil className="w-[20px] h-[20px]" />
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
