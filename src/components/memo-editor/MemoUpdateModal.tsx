@@ -183,7 +183,7 @@ export default function MemoUpdateModal({ onClose, id }: MemoUpdateModalProps) {
                 </div>
               </div>
             </div>
-            <div className="h-full flex-grow pt-4">
+            <div className="h-full flex-grow pt-4 overflow-y-hidden">
               <LexicalMarkdownEditor
                 value={displayMemoData.content}
                 onChange={handleMemoContentChange}

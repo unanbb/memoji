@@ -125,7 +125,7 @@ export default function MemoCreateModal({ onClose }: MemoCreateModalProps) {
                 </div>
               </div>
             </div>
-            <div className="h-full flex-grow pt-4">
+            <div className="h-full flex-grow pt-4 overflow-y-hidden">
               <LexicalMarkdownEditor
                 placeholder="마크다운으로 메모를 작성해보세요..."
                 value={memoData.content}
